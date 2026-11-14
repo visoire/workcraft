@@ -4,31 +4,15 @@ All notable changes to WorkCraft. The format follows [Keep a Changelog](https://
 numbers follow [Semantic Versioning](https://semver.org/).
 
 **Alpha phase.** WorkCraft is in its alpha phase. Versions look like `0.1.0-alpha.N`. There is no stable release yet, and settings,
-data formats and tools may change between alphas. Every change goes under `## [Unreleased]` first; the maintainer turns it into a
-numbered entry when a release is cut ([docs/PUBLISHING.md](docs/PUBLISHING.md)).
+data formats and tools may change between alphas. Every change goes under `## [Unreleased]
 
-**Why the numbering starts at `0.1.0-alpha.1`.** This is the first public release, and the numbers start fresh. A `1.0` would promise
-a stable surface the project does not have yet, and the old internal history of this repository used `1.0.0-alpha.N` numbers and carries a
-`v1.0.0` tag, which `1.0.0-alpha.1` would sort below. `0.1.0-alpha.1` is a clean start; `1.0.0` is for the day the maintainer calls the project
-stable. The long internal changelog from before the first public release is not part of this repository.
-
-## [Unreleased]
-
-### Changed
-
-- **Node.js 22 is the minimum** (`engines`, README, docs, CI matrix 22 and 24; it said 20). Reading a PDF on the server needs the `Iterator` global that Node 20 lacks, so on Node 20 the PDF
-  tools, the search of PDFs and some tests failed. Found by the first CI run on GitHub.
-
-### Fixed
-
-- A test that checks that no source file names the former data folder compared Windows paths (`src\\server\\home.ts`) and failed on Linux; it compares normalized paths now.
-
-Add a line here with every change that a user could notice.
+Nothing yet. Add a line here with every change that a user could notice.
 
 ## [0.1.0-alpha.1] - 2026-11-14
 
-The first public alpha of WorkCraft: a local-first workspace for real work. It runs in your browser from a small server on your own computer, or
-as a browser-only version ([workcraft.cc/app](https://workcraft.cc/app/)) with nothing to install.
+The first public alpha of WorkCraft: a local-first workspace for real work. It runs in your browser from a small server on your own computer (**Node.js 22 or newer**), or
+as a browser-only version ([workcraft.cc/app](https://workcraft.cc/app/)) with nothing to install. All 44 apps and every workspace are available in the browser version; on your own
+computer the repository holds the four office apps and `npm run apps:fetch -- --yes` installs the other 40.
 
 ### What is in it
 
