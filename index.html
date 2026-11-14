@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="format-detection" content="telephone=no">
+  <title>WorkCraft</title>
+  <meta name="description" content="WorkCraft: a unified local-first workspace. WordCraft, GridCraft, DeckCraft and PdfCraft as panels in one window, with a code editor, a terminal and a private AI assistant over MCP.">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="WorkCraft">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; frame-src 'self'; worker-src 'self' blob:; connect-src 'self' http: https: ws: wss:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <link rel="manifest" href="/workspace.webmanifest">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/src/styles/tokens.css">
+  <link rel="stylesheet" href="/src/styles/base.css">
+  <link rel="stylesheet" href="/src/styles/workspace.css">
+  <link rel="stylesheet" href="/src/styles/tools.css">
+  <link rel="stylesheet" href="/src/styles/blip.css">
+  <link rel="stylesheet" href="/src/styles/chat-ui.css">
+  <link rel="stylesheet" href="/src/styles/polish.css">
+  <link rel="stylesheet" href="/src/styles/ecosystems.css">
+  <script type="module" src="/src/app/main.ts"></script>
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar" id="topbar"></header>
+    <nav class="activity" id="activity" aria-label="Tools"></nav>
+    <div class="ws" id="ws">
+      <aside class="zone zone-left" id="zone-left" aria-label="Project tree"></aside>
+      <div class="side-gutter" id="gutter-left" role="separator" aria-orientation="vertical" title="Drag to resize, double click resets"></div>
+      <main class="stage" id="stage" aria-label="Panels"></main>
+      <div class="side-gutter" id="gutter-right" role="separator" aria-orientation="vertical" title="Drag to resize, double click resets"></div>
+      <aside class="zone zone-right" id="zone-right" aria-label="AI chat"></aside>
+    </div>
+    <div class="dock" id="dock" role="toolbar" aria-label="Minimized panels" hidden></div>
+    <footer class="statusbar mono" id="statusbar"></footer>
+  </div>
+  <noscript>WorkCraft needs JavaScript.</noscript>
+</body>
+</html>

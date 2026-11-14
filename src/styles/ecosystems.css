@@ -1,0 +1,342 @@
+/* Ecosystems: workspace picker, launcher, Recent files, monogram marks, apps without a web build.
+   Loaded after polish.css. Monochrome surfaces; the app color shows only on app marks and the current border.
+   Touch targets are 44 px (iPad). */
+
+/* A monogram where an app has no logo file (registry.ts toolMark) */
+.tool-mono {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--tool);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  line-height: 1;
+  flex: none;
+}
+
+/* ---------- Wide dialogs (Switch workspace, Launcher) ---------- */
+dialog.modal.wide {
+  max-width: min(1180px, calc(100vw - 36px));
+}
+/* The title stays at the top and the buttons at the bottom; only the content between them scrolls, so a tall list of workspaces
+   never pushes its own header out of view. */
+dialog.modal.wide .well {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(var(--vvh, 100dvh) - 44px);
+  overflow: hidden;
+  padding: 22px 24px 18px;
+  gap: 16px;
+}
+dialog.modal.wide .well > .dlg-head, dialog.modal.wide .well > .dlg-actions, dialog.modal.wide .well > .dlg-error { flex: none; }
+dialog.modal.wide .well > .eco, dialog.modal.wide .well > .launcher { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px 6px 2px 2px; margin: -2px -6px -2px -2px; }
+dialog.modal.wide .well > .dlg-actions { padding-top: 14px; border-top: 1px solid var(--line); }
+
+/* ---------- Version status visualization ---------- */
+:root {
+  --ver-newest: #10b981;
+  --ver-ready: #0d9488;
+  --ver-outdated: #d97706;
+}
+:root[data-theme='dark'] {
+  --ver-newest: #34d399;
+  --ver-ready: #2dd4bf;
+  --ver-outdated: #fbbf24;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ver-newest: #34d399;
+    --ver-ready: #2dd4bf;
+    --ver-outdated: #fbbf24;
+  }
+}
+
+.ver-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.ver-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.ver-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: none;
+}
+.ver-dot[data-ver-state='newest'] { background: var(--ver-newest); }
+.ver-dot[data-ver-state='ready'] { background: var(--ver-ready); }
+.ver-dot[data-ver-state='outdated'] { background: var(--ver-outdated); }
+
+.ver-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono, var(--mono));
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.ver-pill[data-ver-state='newest'] { color: var(--ver-newest); }
+.ver-pill[data-ver-state='ready'] { color: var(--ver-ready); }
+.ver-pill[data-ver-state='outdated'] { color: var(--ver-outdated); }
+
+/* ---------- Picker ---------- */
+/* One card per workspace: a solid dark surface with one neutral border, all real app icons in a responsive grid, and the status line on
+   the bottom edge. Only the workspace in use gets a stronger neutral border and a clean green checkmark. */
+/* Surfaces are the neutral workspace tokens only: a card is the dialog surface lifted by a few percent of ink (lighter in dark,
+   a touch greyer in light), never a tinted color. */
+.eco {
+  --eco-bg: color-mix(in srgb, var(--ink) 3.5%, var(--card));
+  --eco-bg-hover: color-mix(in srgb, var(--ink) 6.5%, var(--card));
+  --eco-line: var(--line);
+  --eco-line-on: var(--line-strong);
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.eco-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.eco-intro .dlg-text { max-width: 62ch; }
+.eco-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  align-items: stretch;
+  gap: 12px;
+}
+.eco-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  height: 100%;
+  text-align: left;
+  padding: 16px 16px 12px;
+  border: 1px solid var(--eco-line);
+  border-radius: var(--r-card);
+  background: var(--eco-bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.14s ease, background 0.14s ease;
+}
+.eco-card:hover { border-color: var(--eco-line-on); background: var(--eco-bg-hover); }
+.eco-card:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.eco-card.is-current { border-color: color-mix(in srgb, var(--ink) 60%, transparent); }
+.eco-title { display: flex; align-items: center; gap: 8px; justify-content: space-between; min-width: 0; min-height: 22px; font-size: 15px; }
+.eco-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.eco-current-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: 20px;
+  padding: 0 8px 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-mono, var(--mono));
+  font-size: 10.5px;
+  line-height: 1;
+}
+.eco-current-pill > span { display: inline-flex; }
+/* Two lines at most: the cards in a row keep the same rhythm whatever the blurb length */
+.eco-blurb { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.42; min-height: 2.84em; font-size: 13px; }
+.eco-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+  gap: 12px 6px;
+  align-items: start;
+  justify-items: stretch;
+  padding: 4px 0 2px;
+}
+.eco-tile { display: grid; justify-items: center; gap: 5px; min-width: 0; overflow: hidden; }
+.eco-icon-wrap { position: relative; display: inline-flex; }
+/* The version status as a dot at the corner of the icon: the legend names the three colors, the tooltip has the number */
+.eco-ver-dot { position: absolute; right: -3px; bottom: -3px; width: 10px; height: 10px; border: 2px solid var(--eco-bg); box-sizing: content-box; }
+.eco-card:hover .eco-ver-dot { border-color: var(--eco-bg-hover); }
+.eco-icon {
+  display: inline-flex;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  overflow: hidden;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.eco-icon.is-repo-link, .empty-mark.is-repo-link { cursor: pointer; }
+.eco-icon.is-repo-link:hover, .empty-mark.is-repo-link:hover {
+  transform: translateY(-1.5px) scale(1.04);
+  box-shadow: 0 0 0 2px var(--tool, var(--line-strong));
+}
+.eco-icon.is-repo-link:focus-visible, .empty-mark.is-repo-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.eco-icon .tool-logo { width: 100%; height: 100%; border-radius: 9px; display: block; object-fit: cover; }
+.eco-icon .tool-mono { width: 100% !important; height: 100% !important; border-radius: 9px; }
+.eco-label { display: block; width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; line-height: 1.3; color: var(--ink-2); }
+.eco-tile.is-missing .eco-icon, .eco-pick.is-missing .eco-icon, .launcher-app.is-missing .empty-mark { filter: grayscale(1); opacity: 0.45; }
+.eco-tile.is-missing .eco-label { opacity: 0.7; }
+.eco-state { display: flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--eco-line); font-size: 11px; }
+.eco-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); opacity: 0.6; }
+.eco-state[data-state="ok"] .eco-dot { background: var(--ver-newest); opacity: 1; }
+.eco-state[data-state="part"] .eco-dot { background: var(--ver-outdated); opacity: 1; }
+.eco-new { border-style: dashed; justify-content: center; align-items: center; text-align: center; }
+.eco-new .eco-title { justify-content: center; }
+.eco-new:hover { border-color: var(--eco-line-on); }
+.eco-plus { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 1px dashed var(--eco-line); border-radius: 12px; color: var(--muted); }
+.eco-new:hover .eco-plus { color: var(--ink); border-color: var(--ink); }
+.eco-card-wrap { display: grid; grid-template-rows: 1fr auto; gap: 6px; min-height: 0; }
+.eco-card-tools { display: flex; gap: 6px; justify-content: flex-end; }
+
+/* Create your own: a grid of icon tiles you tick */
+.eco-pick-scroll { display: grid; gap: 10px; max-height: 48vh; overflow: auto; padding: 2px; align-content: start; }
+.eco-group { margin: 6px 0 0; }
+.eco-picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.eco-pick[hidden], .eco-picks[hidden], .eco-group[hidden] { display: none; }
+.eco-pick {
+  position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px;
+  min-height: 58px; padding: 8px 12px 8px 10px; border: 1px solid var(--line); border-radius: var(--r-inner);
+  background: var(--card); cursor: pointer; transition: border-color 0.1s ease, background 0.1s ease;
+}
+.eco-pick:hover { border-color: var(--line-strong); }
+.eco-pick input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.eco-pick .eco-icon { position: relative; z-index: 1; width: 40px; height: 40px; border-radius: 10px; }
+.eco-pick:has(input:checked) { border-color: color-mix(in srgb, var(--ink) 55%, transparent); background: color-mix(in srgb, var(--ink) 7%, var(--card)); }
+.eco-pick:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.eco-pick-name { display: grid; gap: 2px; line-height: 1.25; min-width: 0; }
+.eco-pick-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.eco-pick-top strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.eco-pick-top .ver-pill { flex: 0 1 auto; min-width: 0; max-width: 11ch; overflow: hidden; text-overflow: ellipsis; }
+.eco-pick-name small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.eco-check { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--ver-newest); color: #fff; opacity: 0; transform: scale(0.7); transition: opacity 0.1s ease, transform 0.1s ease; }
+.eco-pick:has(input:checked) .eco-check { opacity: 1; transform: none; }
+/* ---------- Launcher and empty stage ---------- */
+.launcher { display: grid; gap: 16px; min-width: 0; }
+.launcher-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.launcher-name { font-size: 18px; }
+.launcher-apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.launcher-app { display: flex; flex-direction: column; align-items: stretch; gap: 6px; text-align: left; }
+.launcher-app-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+.launcher-app-meta { font-size: 10.5px; margin-top: auto; padding-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.launcher-offline { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.recent { display: grid; gap: 6px; min-width: 0; }
+.recent-list { display: grid; gap: 4px; }
+.recent-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 10px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: var(--r-inner);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.recent-item:hover { border-color: var(--line); background: var(--card); }
+.recent-item:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.recent-mark .tool-logo { border-radius: 5px; }
+.recent-name { display: grid; line-height: 1.25; min-width: 0; }
+.recent-name strong, .recent-name small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recent-when { font-size: 11px; white-space: nowrap; }
+
+/* The panel of an app without a web build: the text wraps inside a narrow panel */
+.ca-missing .ca-error { grid-template-columns: minmax(0, 1fr); overflow: auto; }
+.ca-missing .ca-error .frame { justify-self: center; }
+.ca-missing .ca-missing-mark { display: inline-flex; margin-bottom: 8px; }
+.ca-missing .ca-missing-mark .tool-logo { border-radius: 8px; }
+
+/* Narrow windows and iPad Split View: one column, bigger touch rows */
+@media (max-width: 560px) {
+  .eco-grid, .launcher-apps { grid-template-columns: 1fr; }
+  .eco-picks { grid-template-columns: 1fr 1fr; }
+  .recent-when { display: none; }
+}
+@media (pointer: coarse) {
+  .eco-card, .eco-pick, .recent-item { min-height: 56px; }
+}
+/* ---------- App panels: the frame matches the look of the app (src/workspace/app-theme.ts, docs/THEMING.md) ---------- */
+/* An app that follows the workspace switch needs nothing here: the frame is the workspace's own. An app that keeps a look that
+   differs from the workspace (a dark-only app in a light workspace, or the reverse) gets a frame in its own colors. */
+.ca[data-differs="true"][data-look="dark"] { background: #121214; color-scheme: dark; }
+.ca[data-differs="true"][data-look="light"] { background: #f3f3f3; color-scheme: light; }
+.ca[data-differs="true"] .ca-frame { background: transparent; }
+
+/* ---------- Touch keys: shortcut buttons for apps worked with a keyboard (src/workspace/touch-keys-ui.ts) ---------- */
+/* Workspace tokens only, 44 px targets. The bar floats over the app at the bottom (or the top), folds to one button, and never takes the focus. */
+.ca-keys {
+  position: absolute;
+  left: 0;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: calc(100% - 20px);
+  padding: 4px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-inner);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+  color: var(--ink);
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+.ca-keys[hidden] { display: none; }
+.ca-keys.is-top { bottom: auto; top: calc(10px + env(safe-area-inset-top, 0px)); }
+.ca-keys.is-min .ca-keys-row, .ca-keys.is-min .ca-keys-ctl:last-child { display: none; }
+.ca-keys-row { display: flex; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.ca-keys-row::-webkit-scrollbar { display: none; }
+.ca-key, .ca-keys-ctl {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 46px;
+  height: 44px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--inset);
+  color: var(--ink);
+  font: 600 12px/1 var(--font-sans, system-ui, sans-serif);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ca-key small { font-weight: 500; font-size: 10px; color: var(--muted); }
+.ca-key:hover, .ca-keys-ctl:hover { background: var(--card-hover, var(--card)); }
+.ca-key.is-hot { box-shadow: inset 0 -2px 0 var(--danger, #d9534f); }
+.ca-key:active, .ca-key.is-on { background: var(--ink); color: var(--bg); }
+.ca-key:active small, .ca-key.is-on small { color: var(--bg); }
+.ca-keys-ctl { min-width: 36px; background: transparent; color: var(--muted); }
+.ca-key-sep { flex: none; width: 1px; align-self: stretch; margin: 6px 2px; background: var(--line-strong); }
+.ca-key:focus-visible, .ca-keys-ctl:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }

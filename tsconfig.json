@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": false,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "types": [
+      "vite/client"
+    ]
+  },
+  "include": [
+    "src/app",
+    "src/chat",
+    "src/mcp",
+    "src/workspace",
+    "src/project",
+    "src/core",
+    "src/docs",
+    "src/ipados",
+    "src/ecosystems",
+    "src/storage"
+  ],
+  "exclude": [
+    "src/app/assistant.js",
+    "src/app/chat-api.js",
+    "src/app/attention.js",
+    "src/app/consent.js",
+    "src/app/rich.js",
+    "src/app/lib.js",
+    "src/app/craft-theme-sync.js"
+  ]
+}
+

@@ -1,0 +1,186 @@
+/* =========================================================
+   WorkCraft · Polish
+   Loaded last. One place for the consistency pass: controls of the same height and alignment, short labels with
+   (i) tips, quiet status chips, calm window controls. Monochrome, no gradients, every color from tokens.css.
+   ========================================================= */
+
+/* ---------- (i) tips and status chips ---------- */
+.info-tip { position: relative; display: inline-grid; place-items: center; width: 18px; height: 18px; flex: none; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: help; vertical-align: middle; transition: color var(--t-color), background-color var(--t-color); }
+.info-tip::before { content: ''; position: absolute; inset: -10px; }
+.info-tip:hover, .info-tip:focus-visible, .info-tip[aria-expanded='true'] { color: var(--ink); background: var(--card-hover); outline: none; }
+.info-tip:focus-visible { box-shadow: 0 0 0 2px var(--accent-soft), 0 0 0 3px var(--ide-primary); }
+.info-tip svg { width: 14px; height: 14px; }
+.info-pop { position: fixed; z-index: 160; max-width: min(320px, calc(100vw - 16px)); padding: 9px 11px; border: 1px solid var(--line-strong); border-radius: var(--r-inner); background: var(--bg); color: var(--ink-2); font: 400 12.5px/1.45 var(--font); box-shadow: var(--shadow-lift); pointer-events: none; animation: oc-rise .14s ease-out both; }
+.field > span { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 6px; min-height: 20px; }
+label.switch > span { display: block; }
+label.switch > .info-tip, label.switch > span > .info-tip { margin-left: 2px; }
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.status-chip { display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 24px; padding: 0 9px 0 7px; border: 1px solid var(--line-strong); border-radius: var(--r-pill); color: var(--ink-2); font: 500 11.5px/1 var(--mono); white-space: nowrap; flex: none; }
+.status-chip.is-icon-only { width: 26px; padding: 0; border-radius: 7px; }
+.status-chip .status-ic { display: inline-grid; place-items: center; }
+.status-chip[data-state='ok'] .status-ic { color: var(--success); }
+.status-chip[data-state='local'] .status-ic { color: var(--ide-primary); }
+.status-chip[data-state='warn'] { color: var(--warn-text); border-color: color-mix(in srgb, var(--warn-text) 40%, var(--line)); }
+.status-chip[data-state='off'] { color: var(--muted); border-style: dashed; }
+
+/* ---------- Settings: one control height, one alignment ---------- */
+.sp { --sp-ctl: 40px; --sp-ctl-sm: 32px; }
+html.is-touch .sp, html.is-ipad .sp { --sp-ctl: 44px; --sp-ctl-sm: 40px; }
+/* Buttons beside inputs share the input's height; small buttons share one smaller height */
+.sp .btn.sm, .sp .btn.ghost.sm { box-sizing: border-box; height: var(--sp-ctl-sm); min-height: var(--sp-ctl-sm); padding: 0 12px; font-size: 12.5px; }
+.sp .icon-btn { width: var(--sp-ctl); height: var(--sp-ctl); }
+/* A grid row with fields and a button row: the button sits on the baseline of the inputs, not at the top */
+.sp-grid { align-items: start; }
+.sp-grid > .sp-actions { align-self: end; min-height: var(--sp-ctl); }
+.sp-grid > .field > .btn, .sp-grid > .field > .oc-select-wrap { justify-self: start; }
+.sp-grid > .field > .oc-select-wrap.is-block { justify-self: stretch; }
+.sp-actions { align-items: center; }
+.sp-actions > .btn, .sp-actions > .input, .sp-actions > .oc-select-wrap { margin: 0; }
+.sp-actions > small { align-self: center; }
+/* Every dropdown in Settings: same height and the same text size, long names are cut with an ellipsis */
+.sp .oc-select-wrap { display: flex; width: 100%; }
+.sp .oc-select-wrap > .oc-select { width: 100%; }
+.sp-actions > .oc-select-wrap { width: auto; flex: 0 0 auto; min-width: 160px; }
+.sp .oc-select-name { font-size: 13px; }
+/* The card head: logo, name, status, then the action at the far edge, all on one centre line */
+.sp-card-head { min-height: 36px; }
+.sp-card-head h3 { margin: 0; line-height: 1.2; }
+.sp-card-head .btn.sm { margin-left: 0; }
+/* Rows with a toggle and a control */
+.sp-toggles { gap: 6px; }
+.sp .switch { min-height: 32px; }
+/* MCP rows: the policy dropdowns line up with each other */
+.sp-mcp-row { align-items: center; flex-wrap: wrap; }
+.sp-mcp-row .oc-select-wrap { width: auto; min-width: 150px; }
+.sp-mcp-row .oc-select { height: var(--sp-ctl-sm); min-height: var(--sp-ctl-sm); }
+.sp-builds-list, .sp-builds-compact { max-height: 440px; overflow-y: auto; padding-right: 4px; }
+.sp-build-row { display: grid; grid-template-columns: minmax(180px, 1.3fr) minmax(140px, 1fr) auto; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+.sp-build-row:last-child { border-bottom: 0; }
+.sp-app-repo { display: inline-flex; align-items: center; justify-content: center; flex: none; border-radius: 6px; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.sp-app-repo:hover { transform: translateY(-1px) scale(1.05); box-shadow: 0 0 0 2px var(--line-strong); }
+.sp-app-repo .tool-logo, .sp-app-repo .tool-mono { border-radius: 5px; }
+.sp-app-meta { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-build-ver { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; }
+
+/* ---------- Chat header and prompt bar ---------- */
+/* The model lives in one place (the chip in the prompt bar); the select behind it only stores the choice */
+.chat-provider-sync { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.chat-select-btn.is-icon-only { padding: 0 7px; gap: 3px; min-width: 0; }
+.chat-mode-btn.is-icon-only { padding: 0 8px; min-width: 28px; justify-content: center; }
+.chat-badges .chat-badge.is-icon-only { width: 24px; height: 22px; padding: 0; justify-content: center; gap: 0; }
+.chat-badges [data-kind='mcp'] { display: inline-flex; align-items: center; gap: 4px; }
+.chat-badges .chat-status { max-width: none; flex: none; gap: 5px; }
+.chat-badges .chat-status::before { content: none; }
+.chat-badges .chat-status svg { flex: none; }
+.chat-badges .chat-status[data-state='ok'] { color: var(--ink-2); }
+.chat-badges .chat-status[data-state='ok'] svg { color: var(--success); }
+.chat-badges .chat-status[data-state='local'] svg { color: var(--ide-primary); }
+.chat-badges .chat-status[data-state='error'] { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+/* Prompt bar: the approval chip never shrinks, the model chip gives way (ellipsis) */
+.chat-toolbar .chat-mode-chip { flex: none; }
+.chat-toolbar .chat-mode-chip.is-icon-only { padding: 0 7px; gap: 3px; }
+.chat-toolbar .chat-model-chip { flex: 0 1 auto; min-width: 54px; max-width: 100%; }
+.chat-mode-chip[data-approval='auto'] { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, var(--line)); }
+.chat-mode-chip[data-approval='auto']:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ---------- Project tree: the filter is a button, the field opens only while it is used ---------- */
+.tree-actions { gap: 2px; }
+.tree-filter { position: relative; display: flex; align-items: center; animation: oc-rise .14s ease-out both; }
+.tree-filter[hidden] { display: none; }
+.tree-filter-ic { position: absolute; left: 10px; display: grid; place-items: center; color: var(--muted); pointer-events: none; }
+.tree-filter .tree-search { flex: 1; padding-left: 30px; height: 30px; }
+html.is-touch .tree-filter .tree-search, html.is-ipad .tree-filter .tree-search { height: 44px; }
+.tree-actions .icon-btn[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent-text); }
+
+/* ---------- Window header: Maximize, Hide and Close; the rest sits behind More ---------- */
+.panel-head [data-btn='more'] { color: var(--muted); }
+.panel.is-crowded:not(.is-max) .panel-head [data-btn='max'] { display: none; }
+.panel[data-zone='left'] .panel-head [data-btn='more'] { display: none; }
+
+/* ---------- Team Mode: calm surfaces, no glow, no colored side bars ---------- */
+/* The agent color stays on small things only: the dot, the name and the icon tile */
+.team-member, details.team-worker { box-shadow: none; border-color: var(--line); }
+.team-member[data-enabled='false'] { opacity: .72; }
+.team-mc, .team-mc.frame { border-color: var(--line); box-shadow: none; }
+.panel[data-agent] { box-shadow: none; outline: 1px solid color-mix(in srgb, var(--agent) 50%, var(--line)); outline-offset: -1px; transition: outline-color .3s ease; }
+.panel-agent.is-flash { animation: none; }
+.team-agent { border-color: var(--line); background: var(--bg); }
+.team-agent[data-status='waiting'] { border-color: var(--warn-text); box-shadow: none; }
+.team-chip { border-color: var(--line); background: var(--bg); }
+.team-chip:hover, .team-chip:focus-visible { background: var(--card-hover); }
+.team-chip i, .team-chip i svg { background: none; }
+.team-chip i { width: 20px; height: 20px; border-radius: 6px; }
+.team-chip i img, .team-chip i svg { width: 16px; height: 16px; }
+.att-chip[data-kind='team'], .att-chip[data-kind='tool'] { box-shadow: none; }
+.team-ask { border-left-width: 1px; border-left-color: color-mix(in srgb, var(--warn-text) 45%, var(--line)); }
+.team-lead-activity, .team-feedback { border-left: 0; padding-left: 0; }
+.team-memory-list li { border-left: 0; padding-left: 0; }
+.team-node { border-color: var(--line); }
+.team-node[data-status='done'] { background: var(--card); }
+.team-tool { background: var(--card); color: var(--ink-2); }
+/* The icon tile: a real logo sits on a quiet neutral tile; agents you make keep their color */
+.team-role-ic { background: var(--card); border: 1px solid var(--line); }
+.team-role-ic:has(> img), .team-role-ic:has(> .mark), .team-role-ic:has(> .tool-logo) { color: var(--ink); }
+.team-role-ic img, .team-role-ic .tool-logo { width: 16px; height: 16px; border-radius: 4px; }
+.team-role-ic .mark { width: 16px; height: 16px; }
+.team-lead-badge .mark { width: 14px; height: 14px; }
+.team-lane-head .team-role-ic, .team-member-head .team-role-ic { width: 28px; height: 28px; border-radius: 8px; }
+/* Roster: the three fields of a member in one aligned row */
+.team-member-fields { align-items: center; }
+.team-member-fields .oc-select-wrap, .team-member-fields .input { min-width: 0; }
+.team-member-head { align-items: center; }
+/* ---------- Blip: the chat accent can follow Blip's color (Settings, Companion) ---------- */
+.chat[data-pet-theme='blue'] { --pet-accent: #2C84FC; --pet-accent-h: #1E64D0; }
+.chat[data-pet-theme='indigo'] { --pet-accent: #335CFF; --pet-accent-h: #2447D9; }
+.chat[data-pet-theme='ice'] { --pet-accent: #2C84FC; --pet-accent-h: #1E64D0; }
+.chat[data-pet-theme='teal'] { --pet-accent: #0E9A82; --pet-accent-h: #088573; }
+.chat[data-pet-theme='amber'] { --pet-accent: #D97706; --pet-accent-h: #B45309; }
+.chat[data-pet-theme='coral'] { --pet-accent: #E11D48; --pet-accent-h: #BE123C; }
+.chat[data-pet-theme='emerald'] { --pet-accent: #059669; --pet-accent-h: #047857; }
+.chat[data-pet-theme='mono'] { --pet-accent: #4B5563; --pet-accent-h: #374151; }
+:root[data-theme='dark'] .chat[data-pet-theme='mono'] { --pet-accent: #9CA3AF; --pet-accent-h: #D1D5DB; }
+:root[data-theme='dark'] .chat[data-pet-theme='teal'] { --pet-accent: #21CEB2; --pet-accent-h: #5EEAD4; }
+:root[data-theme='dark'] .chat[data-pet-theme='emerald'] { --pet-accent: #34D399; --pet-accent-h: #6EE7B7; }
+:root[data-theme='dark'] .chat[data-pet-theme='coral'] { --pet-accent: #FB7185; --pet-accent-h: #FDA4AF; }
+:root[data-theme='dark'] .chat[data-pet-theme='amber'] { --pet-accent: #FBBF24; --pet-accent-h: #FCD34D; }
+.chat[data-pet-theme]:not([data-pet-theme='']) {
+  --ide-primary: var(--pet-accent);
+  --accent: var(--pet-accent);
+  --accent-h: var(--pet-accent-h);
+  --accent-text: var(--pet-accent);
+  --accent-soft: color-mix(in srgb, var(--pet-accent) 14%, transparent);
+}
+.chat-pet { display: inline-grid; place-items: center; }
+
+/* ---------- Voice strip: the hint while the microphone delivers silence ---------- */
+.chat-voice[data-hint='1'] .chat-voice-text { color: var(--warn-text); }
+.chat-voice[data-state='listening'] .chat-voice-bars i { transition: transform .08s linear; }
+/* ---------- Chat actions: Answer again and Undo changes ---------- */
+.msg-act { position: relative; }
+.msg-act[data-action='retry-msg']:hover:not(:disabled) svg { transform: rotate(60deg); }
+.msg-act svg { transition: transform .24s var(--ease-out); }
+.msg-act.is-busy { color: var(--ink); cursor: progress; }
+.msg-act.is-busy svg { animation: oc-spin .9s linear infinite; }
+.msg-undo { gap: 6px; height: 28px; padding: 0 10px 0 8px; border: 1px solid var(--line-strong); color: var(--ink-2); }
+.msg-undo:hover { border-color: var(--ink-2); color: var(--ink); }
+.msg-undo-count { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--card-hover); color: var(--ink); font-size: 10.5px; }
+html.is-touch .msg-undo, html.is-ipad .msg-undo { height: 40px; }
+/* Panel menu: the info card and the tree row that "Show in the project tree" lands on */
+.panel-info { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0 0 4px; max-height: min(52vh, 420px); overflow: auto; }
+.panel-info dt { margin: 0; align-self: baseline; color: var(--muted); }
+.panel-info dd { margin: 0; min-width: 0; overflow-wrap: anywhere; color: var(--ink); font-size: 12.5px; }
+.tree-row.is-found { animation: oc-found 1.4s ease-out 1; }
+@keyframes oc-found { 0%, 35% { box-shadow: inset 0 0 0 2px var(--ink-2); } 100% { box-shadow: inset 0 0 0 2px transparent; } }
+@media (prefers-reduced-motion: reduce) { .tree-row.is-found { animation: none; box-shadow: inset 0 0 0 2px var(--ink-2); } }

@@ -1,0 +1,24 @@
+WorkCraft is licensed under either of
+
+  * MIT License        (LICENSE-MIT or https://opensource.org/licenses/MIT)
+  * Apache License 2.0 (LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0)
+
+at your option. SPDX-License-Identifier: MIT OR Apache-2.0
+
+Copyright (c) 2026 visoire and the WorkCraft contributors.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in
+WorkCraft by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without
+any additional terms or conditions.
+
+Third-party software
+--------------------
+
+The four office engines in versions/<set>/web/ (WordCraft, GridCraft, DeckCraft and PdfCraft) are
+open-source Crafting Apps by the ArtCraft team and contributors (https://github.com/storytold), each
+licensed under MIT or Apache-2.0. Their own LICENSE-MIT, LICENSE-APACHE and NOTICE files ship inside
+each app folder and apply to those files. The ArtCraft name and the logos from the engines'
+docs/brand/ folders are trademarks of their owners and are not part of this repository.
+
+The fonts (Inter, DM Mono) are installed from npm (Fontsource) under the SIL Open Font License 1.1.
+npm dependencies keep their own licenses, see node_modules/<package>/LICENSE after npm install.

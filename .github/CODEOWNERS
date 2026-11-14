@@ -1,0 +1,7 @@
+# Who is asked to review what. Replace or extend with team handles when more maintainers join.
+*                         @visoire
+/docs/                    @visoire
+/src/ipados/              @visoire
+/src/mcp/                 @visoire
+/.github/                 @visoire
+/SECURITY.md              @visoire

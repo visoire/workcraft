@@ -1,0 +1,38 @@
+<svg class="blip-icon-svg" width="216" height="180" viewBox="0 0 18 15" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" role="img" aria-label="Blip">
+  <style>
+      @keyframes bi-blink { 0%,45%,49%,100%{opacity:1} 46%,48%{opacity:0} }
+      @keyframes bi-line  { 0%,45%,49%,100%{opacity:0} 46%,48%{opacity:1} }
+      @keyframes bi-bob   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-0.35px)} }
+      .bi-body { animation: bi-bob 3.2s steps(2,end) infinite; }
+      .bi-open { animation: bi-blink 6s steps(1,end) infinite; }
+      .bi-shut { opacity:0; animation: bi-line 6s steps(1,end) infinite; }
+    </style>
+  <g class="bi-body">
+    <rect x="4" y="0" width="1" height="1" fill="#FFBF35"/>
+    <rect x="4" y="1" width="1" height="2" fill="#1E64D0"/>
+    <rect x="13" y="1" width="1" height="1" fill="#FFBF35"/>
+    <rect x="13" y="2" width="1" height="1" fill="#1E64D0"/>
+    <rect x="3" y="3" width="12" height="1" fill="#2C84FC"/>
+    <rect x="2" y="4" width="14" height="8" fill="#2C84FC"/>
+    <rect x="0" y="8" width="2" height="2" fill="#2C84FC"/>
+    <rect x="16" y="8" width="2" height="2" fill="#2C84FC"/>
+    <rect x="3" y="9" width="2" height="1" fill="#FE947F"/>
+    <rect x="13" y="9" width="2" height="1" fill="#FE947F"/>
+    <g class="bi-open">
+      <rect x="5" y="6" width="2" height="3" fill="#081C38"/>
+      <rect x="5" y="6" width="1" height="1" fill="#FFFFFF"/>
+      <rect x="11" y="6" width="2" height="3" fill="#081C38"/>
+      <rect x="11" y="6" width="1" height="1" fill="#FFFFFF"/>
+    </g>
+    <g class="bi-shut">
+      <rect x="5" y="7.5" width="2" height="0.7" fill="#081C38"/>
+      <rect x="11" y="7.5" width="2" height="0.7" fill="#081C38"/>
+    </g>
+    <rect x="7" y="9" width="1" height="1" fill="#081C38"/>
+    <rect x="8" y="10" width="2" height="1" fill="#081C38"/>
+    <rect x="10" y="9" width="1" height="1" fill="#081C38"/>
+    <rect x="3" y="12" width="12" height="1" fill="#1E64D0"/>
+    <rect x="4" y="13" width="3" height="2" fill="#164DA8"/>
+    <rect x="11" y="13" width="3" height="2" fill="#164DA8"/>
+  </g>
+</svg>

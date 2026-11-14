@@ -1,0 +1,109 @@
+{
+  "name": "workcraft",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "description": "WorkCraft: a unified local-first workspace for documents, spreadsheets, presentations and PDFs, with a private AI assistant (local models via Ollama, or your own API keys) that works across every file.",
+  "license": "MIT OR Apache-2.0",
+  "author": "visoire (https://github.com/visoire)",
+  "contributors": [
+    {
+      "name": "visoire",
+      "url": "https://github.com/visoire"
+    },
+    {
+      "name": "ArtCraft Team and contributors (storytold)",
+      "url": "https://github.com/storytold"
+    },
+    {
+      "name": "Claude (Anthropic)",
+      "url": "https://www.anthropic.com/claude"
+    }
+  ],
+  "homepage": "https://github.com/visoire/workcraft#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visoire/workcraft.git"
+  },
+  "bugs": {
+    "url": "https://github.com/visoire/workcraft/issues"
+  },
+  "keywords": [
+    "workcraft",
+    "workspace",
+    "local-first",
+    "privacy",
+    "ollama",
+    "ai-assistant",
+    "mcp",
+    "model-context-protocol",
+    "webassembly",
+    "webgpu",
+    "documents",
+    "spreadsheets",
+    "presentations",
+    "pdf",
+    "typescript",
+    "ipados",
+    "open-source"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs --lan",
+    "dev:local": "node scripts/dev.mjs",
+    "dev:lan": "node scripts/dev.mjs --lan",
+    "build": "vite build && node scripts/copy-apps.mjs && node scripts/postbuild.mjs && tsc -p tsconfig.server.json",
+    "start": "node dist-server/server/index.js --lan --open",
+    "start:local": "node dist-server/server/index.js --open",
+    "start:lan": "node dist-server/server/index.js --lan --open",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.server.json --noEmit",
+    "test": "tsx --test tests/server/backend.test.ts tests/server/windows.test.ts tests/server/lan.test.ts tests/server/usage.test.ts tests/server/features.test.ts tests/server/core.test.ts tests/server/projects.test.ts tests/server/releases.test.ts tests/server/brand.test.ts tests/server/blank.test.ts tests/server/updates.test.ts tests/server/qr.test.ts tests/server/export.test.ts tests/server/ollama.test.ts tests/server/ollama-chat.test.ts tests/server/loop-guard.test.ts tests/server/approval.test.ts tests/server/popout.test.ts tests/server/args-repair.test.ts tests/server/providers.test.ts tests/server/ai-workspace.test.ts tests/server/ipados.test.ts tests/server/tls.test.ts tests/server/pencil.test.ts tests/server/chat-ui.test.ts tests/server/voice.test.ts tests/server/economy.test.ts tests/server/team-ux.test.ts tests/server/polish.test.ts tests/server/ecosystems.test.ts tests/server/datahome.test.ts tests/server/versions.test.ts tests/server/mirror.test.ts tests/server/app-agents.test.ts tests/server/theme.test.ts tests/server/stage-plan.test.ts tests/server/touch-keys.test.ts tests/server/cloud-browser.test.ts tests/server/mcp-validator.test.ts tests/server/panel-menu.test.ts",
+    "test:e2e": "node tests/e2e.mjs",
+    "themes:sync": "node scripts/sync-themes.mjs",
+    "apps:audit": "node scripts/audit-apps.mjs",
+    "apps:audit-panels": "node scripts/audit-panels.mjs",
+    "test:e2e:features": "node tests/e2e-features.mjs",
+    "test:ipad": "node tests/e2e-ipad.mjs",
+    "check:clean": "node scripts/check-clean.mjs",
+    "check:docs": "node scripts/check-docs.mjs",
+    "lan:cert": "node scripts/lan-cert.mjs",
+    "apps:fetch": "node scripts/fetch-apps.mjs",
+    "apps:import": "node scripts/fetch-apps.mjs --local",
+    "preview": "vite preview --host 127.0.0.1 --port 4174",
+    "github:metadata": "node scripts/github-metadata.mjs",
+    "versions": "tsx scripts/check-versions.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.2.5",
+    "@fontsource/dm-mono": "^5.2.5",
+    "@hono/node-server": "^1.19.17",
+    "@hono/node-ws": "^1.3.1",
+    "@modelcontextprotocol/client": "^2.3.1",
+    "@modelcontextprotocol/server": "^2.3.1",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "docx": "^9.12.0",
+    "exceljs": "^4.4.0",
+    "fflate": "^0.8.3",
+    "gpt-tokenizer": "4.0.0",
+    "hono": "^4.13.13",
+    "mammoth": "^1.13.0",
+    "pdf-lib": "^1.17.1",
+    "pptxgenjs": "^4.0.1",
+    "unpdf": "^1.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "jsqr": "^1.4.0",
+    "playwright": "^1.65.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^6.0.0"
+  },
+  "optionalDependencies": {
+    "node-pty": "^1.1.0"
+  }
+}

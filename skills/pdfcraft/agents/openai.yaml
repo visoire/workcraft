@@ -1,0 +1,3 @@
+interface:
+  display_name: "PdfCraft"
+  short_description: "Acrobat-style PDF workbench: merge, split, forms, OCR, redact, sign — CLI + MCP"

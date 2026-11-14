@@ -1,0 +1,29 @@
+name: release
+
+# Publishes a GitHub PRE-RELEASE when a version tag is pushed (v0.1.0-alpha.1, ...). GitHub attaches the source archives itself.
+# No secrets are needed: the built-in GITHUB_TOKEN is enough. Every release stays a pre-release until the maintainer decides otherwise.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Release notes
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          if [ -f "docs/releases/$ver.md" ]; then cp "docs/releases/$ver.md" notes.md
+          else
+            awk -v v="## [$ver]" 'index($0, v)==1 {p=1; next} /^## \[/ {p=0} p' CHANGELOG.md > notes.md
+            [ -s notes.md ] || echo "Alpha build $ver. See CHANGELOG.md." > notes.md
+          fi
+          printf '\n\n> **Alpha.** This is a pre-release. Expect bugs and changes between alphas.\n' >> notes.md
+      - name: Publish pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "WorkCraft ${GITHUB_REF_NAME#v}" --notes-file notes.md --prerelease --verify-tag

@@ -1,0 +1,70 @@
+# WorkCraft (open source). Only these stay out: credentials, local data, dependencies,
+# build output and large release archives. `npm run check:clean` scans the content for API keys
+# before every commit (git config core.hooksPath .githooks).
+
+# ---------------------------------------------------------------------------
+# Credentials and local data
+private/
+**/private/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.dump
+.env
+.env.*
+!.env.example
+*.local.*
+*.secret.*
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+# The workspace keeps its settings and API keys in ~/Workspace, never in the repository
+/Workspace/
+config.json.tmp
+config.json.broken-*
+
+# ---------------------------------------------------------------------------
+# Dependencies and build output
+node_modules/
+dist/
+dist-server/
+.vite/
+.temp/
+test-results/
+playwright-report/
+
+# ---------------------------------------------------------------------------
+# Release archives (too large for Git). versions/ holds, flat, the Rust source trees (<app>-<ver>/), the web builds
+# (<app>-web-<ver>/), their zips (zip/) and the installed builds of the other apps (web-builds/). Only the four office web
+# builds named in public/releases.json are tracked; everything else stays local (npm run apps:import / apps:fetch fill it).
+/versions/*
+!/versions/wordcraft-web-*/
+!/versions/gridcraft-web-*/
+!/versions/deckcraft-web-*/
+!/versions/pdfcraft-web-*/
+
+# Protected brand assets and original logos of the engines
+docs/brand/
+**/docs/brand/
+/public/assets/logos/*
+!/public/assets/logos/*.webp
+
+# ---------------------------------------------------------------------------
+# Operating system and editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.swp
+.idea/
+.vscode/
+
+# Private scratch scripts of the maintainer (they hold personal documents): never published
+/scripts/gen-fahrschule.mjs
+/scripts/read-all-pdfs.mjs

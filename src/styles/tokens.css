@@ -1,0 +1,135 @@
+/* =========================================================
+   WorkCraft · Tokens
+   Monochrome paper surfaces, .frame > .well with concentric radii,
+   two-tone headings, DM Mono for data accents, workspace accent #335CFF.
+   Colors from src/site.css, workspace sizes below.
+   Tool accents only inside their own panel:
+   WordCraft #3B82F6 · GridCraft #10B981 · DeckCraft #F97316 · PdfCraft #14B8A6
+   ========================================================= */
+
+/* Fonts served locally through Fontsource (no CDN) */
+@import '@fontsource-variable/inter';
+@import '@fontsource/dm-mono/400.css';
+@import '@fontsource/dm-mono/500.css';
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  /* src/site.css */
+  --bg: #FFFFFF;
+  --card: #F4F5F7;
+  --card-hover: #ECEEF2;
+  --inset: #FAFAFB;
+  --ink: #0D0D12;
+  --ink-2: #2B2D36;
+  --muted: #666D80;
+  --line: rgba(13, 13, 18, .07);
+  --line-strong: rgba(13, 13, 18, .13);
+  --accent: #335CFF;
+  --accent-h: #2447D9;
+  --accent-soft: #EEF2FF;
+  --accent-text: #335CFF;
+  --cta-bg: #0D0D12;
+  --cta-ink: #FFFFFF;
+  --success: #16A34A;
+  --danger: #DC2626;
+  --warn-text: #A15C00;
+  --shadow-lift: 0 20px 40px -12px rgba(13, 13, 18, .14);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  /* src/site.css, dark theme (in sync with the apps) */
+  --bg: #121214;
+  --card: #1A1A1E;
+  --card-hover: #24242A;
+  --inset: #16161A;
+  --ink: #F4F4F6;
+  --ink-2: #D2D3D8;
+  --muted: #93949B;
+  --line: rgba(255, 255, 255, .08);
+  --line-strong: rgba(255, 255, 255, .15);
+  --accent: #4F75FF;
+  --accent-h: #6B8BFF;
+  --accent-soft: rgba(79, 117, 255, .15);
+  --accent-text: #7092FF;
+  --cta-bg: #FFFFFF;
+  --cta-ink: #121214;
+  --success: #22C55E;
+  --danger: #EF4444;
+  --warn-text: #F5B04C;
+  --shadow-lift: 0 20px 40px -12px rgba(0, 0, 0, .55);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --cta-bg: #FFFFFF;
+    --cta-ink: #121214;
+  }
+}
+
+:root {
+  /* Workspace accent as specified, independent of the theme */
+  --ide-primary: #335CFF;
+
+  /* Tool accents (src/site.css: --app-*) */
+  --wordcraft: #3B82F6;
+  --gridcraft: #10B981;
+  --deckcraft: #F97316;
+  --pdfcraft: #14B8A6;
+
+  /* Aliases for the workspace modules */
+  --bg-elev: var(--bg);
+  --bg-card: var(--card);
+  --bg-card-hover: var(--card-hover);
+  --bg-inset: var(--inset);
+  --paper: var(--bg);
+  --text-primary: var(--ink);
+  --text-subtitle: var(--muted);
+  --border: var(--line);
+  --border-strong: var(--line-strong);
+  --error: var(--danger);
+  --shadow-hover: var(--shadow-lift);
+
+  /* Font (src/site.css) */
+  --font: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-display: var(--font);
+  --font-body: var(--font);
+  --font-mono: var(--mono);
+
+  /* Concentric radii: inner = outer minus padding (14 - 6 = 8, 16 - 6 = 10) */
+  --r-frame: 14px;
+  --p-frame: 6px;
+  --r-well: calc(var(--r-frame) - var(--p-frame));
+  --r-card: 16px;
+  --r-inner: 10px;
+  --r-input: 10px;
+  --r-tile: 8px;
+  --r-pill: 999px;
+
+  /* Bewegung (src/site.css) */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --t-color: .15s ease;
+  --t-move: .35s var(--ease-out);
+
+  /* Workspace sizes */
+  --topbar-h: 48px;
+  --rail-w: 48px;
+  --sidebar-w: 248px;
+  --ai-w: 340px;
+  --status-h: 26px;
+  --panel-head-h: 38px;
+  --touch: 44px;
+  --ctl: 30px;
+
+  /* Hit area of the dividers (6 px stay visible) */
+  --gutter-hit: 10px;
+}
+
+/* iPadOS and touch (Apple Human Interface Guidelines: at least 44 × 44 pt).
+   Also applies with Magic Keyboard and trackpad, because the finger stays an input device. */
+@media (pointer: coarse), (any-pointer: coarse) {
+  :root { --ctl: 44px; --panel-head-h: 50px; --gutter-hit: 16px; --status-h: 30px; }
+}
+:root.is-ipad, :root.is-touch { --ctl: 44px; --panel-head-h: 50px; --gutter-hit: 16px; --status-h: 30px; }

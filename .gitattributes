@@ -1,0 +1,8 @@
+# Text files are stored with LF in the repository on every machine (a checkout on Windows may still show CRLF).
+* text=auto
+*.sh text eol=lf
+
+# The four web apps in versions/ are loaded with Subresource Integrity (sha384) checks.
+# Git must keep them byte for byte, otherwise Windows (core.autocrlf=true) turns LF into
+# CRLF on checkout, the checksums stop matching and the browser blocks the app scripts.
+/versions/** -text

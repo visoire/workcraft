@@ -1,0 +1,3 @@
+interface:
+  display_name: "SoundCraft"
+  short_description: "Pro Tools-style DAW: record, edit, mix, bounce .scraft sessions — CLI, MCP"

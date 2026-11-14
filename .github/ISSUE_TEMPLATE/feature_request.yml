@@ -1,0 +1,55 @@
+name: Feature request
+description: Suggest an improvement or a new capability.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        WorkCraft grows one usable step at a time. A clear problem helps more than a finished design.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do, and what gets in the way today?
+      placeholder: "I keep exporting slides to PDF by hand before I can sign them in PdfCraft."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How could WorkCraft solve it? Mention the panel, the chat command or the MCP tool you have in mind.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - WordCraft panel
+        - GridCraft panel
+        - DeckCraft panel
+        - PdfCraft panel
+        - Code editor, terminal or Git
+        - AI chat, providers or Team Mode
+        - MCP tools
+        - Projects, files, search or history
+        - iPadOS, touch or Apple Pencil
+        - Accessibility
+        - Performance
+        - Website
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+  - type: checkboxes
+    id: local
+    attributes:
+      label: Local first
+      options:
+        - label: The idea works without sending documents to a server the user did not choose.

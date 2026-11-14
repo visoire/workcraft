@@ -1,0 +1,331 @@
+{
+  "_comment": "Written by scripts/fetch-apps.mjs (npm run apps:fetch or apps:import). The folders under versions/web-builds/ are not tracked; a fresh clone runs one of the commands once.",
+  "builds": [
+    {
+      "app": "align",
+      "version": "0.1.0",
+      "dir": "align-web-0.1.0",
+      "bytes": 3057370,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "anicraft",
+      "version": "0.2.1",
+      "dir": "anicraft-web-0.2.1",
+      "bytes": 10769977,
+      "source": "local: versions/artcraft",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "cadcraft",
+      "version": "0.20.1",
+      "dir": "cadcraft-web-0.20.1",
+      "bytes": 31131700,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "clothcraft",
+      "version": "0.1.0",
+      "dir": "clothcraft-web-0.1.0",
+      "bytes": 11984626,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "craft-anything",
+      "version": "0.6.1",
+      "dir": "craft-anything-web-0.6.1",
+      "bytes": 6336864,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "designcraft",
+      "version": "0.20.1",
+      "dir": "designcraft-web-0.20.1",
+      "bytes": 66453020,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "earthcraft",
+      "version": "0.1.0",
+      "dir": "earthcraft-web-0.1.0",
+      "bytes": 16058247,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "effectcraft",
+      "version": "0.24.1",
+      "dir": "effectcraft-web-0.24.1",
+      "bytes": 76128561,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "figcraft",
+      "version": "0.18.1",
+      "dir": "figcraft-web-0.18.1",
+      "bytes": 25885813,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "filmcraft",
+      "version": "0.20.1",
+      "dir": "filmcraft-web-0.20.1",
+      "bytes": 50316937,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "firecraft",
+      "version": "0.2.5",
+      "dir": "firecraft-web-0.2.5",
+      "bytes": 7174826,
+      "source": "https://github.com/aliasfoxkde/FireCraft/releases/tag/v0.2.5",
+      "fetched": "2026-11-12",
+      "fixes": [
+        "relative-paths"
+      ]
+    },
+    {
+      "app": "honeydew",
+      "version": "0.5.3",
+      "dir": "honeydew-web-0.5.3",
+      "bytes": 15921103,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "humanmotioncraft",
+      "version": "0.1.0",
+      "dir": "humanmotioncraft-web-0.1.0",
+      "bytes": 62164933,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "lemon-studio",
+      "version": "0.0.1-web.26",
+      "dir": "lemon-studio-web-0.0.1-web.26",
+      "bytes": 10464868,
+      "source": "https://github.com/daijro/Lemon-Studio-web/releases/tag/v0.0.1-web.26",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "lightcraft",
+      "version": "0.21.1",
+      "dir": "lightcraft-web-0.21.1",
+      "bytes": 53309612,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "lightcraft-classic",
+      "version": "26.46.3",
+      "dir": "lightcraft-classic-web-26.46.3",
+      "bytes": 110311532,
+      "source": "https://github.com/emmertex/chromaforge/releases/tag/v26.46.3",
+      "fetched": "2026-11-14"
+    },
+    {
+      "app": "mailcraft",
+      "version": "0.11.1",
+      "dir": "mailcraft-web-0.11.1",
+      "bytes": 30061750,
+      "source": "release v0.11.1 of UCS-Care-Group/mailcraft (sha256 checked). Newer is 0.12.0, whose web build panics at start on std::time and cannot be patched",
+      "fetched": "2026-11-13"
+    },
+    {
+      "app": "matcraft",
+      "version": "0.1.0",
+      "dir": "matcraft-web-0.1.0",
+      "bytes": 12479403,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "materialcraft",
+      "version": "0.4.1",
+      "dir": "materialcraft-web-0.4.1",
+      "bytes": 14452891,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "mixstudio",
+      "version": "0.1.0",
+      "dir": "mixstudio-web-0.1.0",
+      "bytes": 6304521,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "notecraft",
+      "version": "0.1.0",
+      "dir": "notecraft-web-0.1.0",
+      "bytes": 37980861,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "oxiguitar",
+      "version": "0.1.0",
+      "dir": "oxiguitar-web-0.1.0",
+      "bytes": 25170646,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "oxybrush",
+      "version": "0.1.0",
+      "dir": "oxybrush-web-0.1.0",
+      "bytes": 11357617,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "paintcraft",
+      "version": "0.1.0",
+      "dir": "paintcraft-web-0.1.0",
+      "bytes": 33978331,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "paintrs",
+      "version": "0.7.3",
+      "dir": "paintrs-web-0.7.3",
+      "bytes": 116565737,
+      "source": "https://github.com/daijro/paint.rs/releases/tag/v0.7.3",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "photocraft",
+      "version": "0.23.1",
+      "dir": "photocraft-web-0.23.1",
+      "bytes": 16372476,
+      "source": "local: versions",
+      "fetched": "2026-11-12",
+      "fixes": [
+        "app-snippets"
+      ]
+    },
+    {
+      "app": "picasso-suite",
+      "version": "0.1.0",
+      "dir": "picasso-suite-web-0.1.0",
+      "bytes": 9320010,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "pixelcraft",
+      "version": "0.1.0",
+      "dir": "pixelcraft-web-0.1.0",
+      "bytes": 6623216,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "procraft",
+      "version": "0.1.0",
+      "dir": "procraft-web-0.1.0",
+      "bytes": 27472850,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "prowave",
+      "version": "0.1.0",
+      "dir": "prowave-web-0.1.0",
+      "bytes": 15154207,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "retake",
+      "version": "0.1.0",
+      "dir": "retake-web-0.1.0",
+      "bytes": 7413419,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "solidcraft",
+      "version": "0.41.0",
+      "dir": "solidcraft-web-0.41.0",
+      "bytes": 56796909,
+      "source": "https://github.com/tangency-labs/solidcraft/releases/tag/v0.41.0",
+      "fetched": "2026-11-14"
+    },
+    {
+      "app": "soundcraft",
+      "version": "0.20.1",
+      "dir": "soundcraft-web-0.20.1",
+      "bytes": 19355097,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "subcraft",
+      "version": "0.3.6",
+      "dir": "subcraft-web-0.3.6",
+      "bytes": 29282872,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "suhina",
+      "version": "0.1.0",
+      "dir": "suhina-web-0.1.0",
+      "bytes": 31340885,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "textcraft",
+      "version": "0.1.0",
+      "dir": "textcraft-web-0.1.0",
+      "bytes": 6391110,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "texturecraft",
+      "version": "0.6.1",
+      "dir": "texturecraft-web-0.6.1",
+      "bytes": 20744041,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "tracedraw",
+      "version": "0.44.2",
+      "dir": "tracedraw-web-0.44.2",
+      "bytes": 32942197,
+      "source": "https://tracedraw.github.io/tracedraw/",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "transit",
+      "version": "0.1.0",
+      "dir": "transit-web-0.1.0",
+      "bytes": 21671951,
+      "source": "local: versions/independent",
+      "fetched": "2026-11-12"
+    },
+    {
+      "app": "vectorcraft",
+      "version": "0.24.1",
+      "dir": "vectorcraft-web-0.24.1",
+      "bytes": 104369846,
+      "source": "local: versions",
+      "fetched": "2026-11-12"
+    }
+  ]
+}

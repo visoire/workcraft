@@ -1,0 +1,60 @@
+name: Engineering task
+description: A refactoring, maintenance or AI agent task with a clear definition of done.
+title: "[Task]: "
+labels: ["task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for work that is already understood: refactorings, upgrades, test coverage, or a brief for an AI coding agent.
+        Agents: read AGENTS.md first. It has the directory map, the state rules and the test commands.
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One or two sentences on what should be true when this is done.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Files and areas
+      description: The folders and files this touches, and anything that must stay unchanged.
+      placeholder: |
+        - src/mcp/schemas.ts (new tool definition)
+        - src/server/tools.ts (implementation)
+        - tests/server/features.test.ts (coverage)
+        - do not change the order of existing tools (prompt cache)
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of done
+      value: |
+        - [ ] npm run typecheck passes
+        - [ ] npm test passes
+        - [ ] npm run test:e2e passes (or the reason it cannot run is noted)
+        - [ ] npm run check:clean passes
+        - [ ] npm run build passes
+        - [ ] README, AGENTS.md or the docs updated where behavior changed
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Refactoring
+        - Dependency or engine upgrade
+        - Tests
+        - Performance
+        - Documentation
+        - AI agent task
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes, risks, links

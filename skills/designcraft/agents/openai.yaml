@@ -1,0 +1,3 @@
+interface:
+  display_name: "DesignCraft"
+  short_description: "InDesign-style page layout: .idml/.designcraft, threaded text, print/PDF, CLI/MCP"

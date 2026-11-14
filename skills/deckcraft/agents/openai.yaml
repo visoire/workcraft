@@ -1,0 +1,3 @@
+interface:
+  display_name: "DeckCraft"
+  short_description: "PowerPoint-style presentations: .pptx read/write, PDF/PNG export, CLI + MCP automation"

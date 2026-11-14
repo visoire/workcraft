@@ -1,0 +1,94 @@
+# Labels for the repository. scripts/publish.ps1 labels (or publish.sh labels) creates or updates these with `gh label create --force`.
+- name: bug
+  color: d73a4a
+  description: Something does not work as it should
+- name: triage
+  color: fbca04
+  description: Waiting for a first look
+- name: enhancement
+  color: a2eeef
+  description: New feature or improvement
+- name: task
+  color: c2e0c6
+  description: A concrete piece of work
+- name: alpha
+  color: e99695
+  description: Related to the alpha phase (breaking changes, rough edges)
+- name: good first issue
+  color: 7057ff
+  description: A good place to start
+- name: help wanted
+  color: 008672
+  description: Extra attention or a contributor is welcome
+- name: ipados
+  color: 1d76db
+  description: iPad, Safari, Apple Pencil, touch
+- name: ai-assistant
+  color: 5319e7
+  description: The assistant, Team Mode, providers, Ollama
+- name: mcp
+  color: 6f42c1
+  description: MCP server, tools and external servers
+- name: craft-apps
+  color: 0052cc
+  description: The Craft apps in the workspace
+- name: workspace
+  color: bfd4f2
+  description: Panels, layout, projects, storage
+- name: browser-mode
+  color: 0e8a16
+  description: The browser version without a backend (workcraft.cc/app, self-hosted)
+- name: needs-info
+  color: fef2c0
+  description: Waiting for more information from the reporter
+- name: performance
+  color: fbca04
+  description: Speed or memory
+- name: accessibility
+  color: 1d76db
+  description: Keyboard, screen reader, contrast, touch targets
+- name: refactor
+  color: c2e0c6
+  description: Cleaning up code without changing behavior
+- name: dependencies
+  color: 0366d6
+  description: Updates to packages and GitHub Actions
+- name: breaking
+  color: b60205
+  description: Changes how existing projects, settings or tools behave
+- name: voice
+  color: f9d0c4
+  description: Voice input
+- name: cloud
+  color: c5def5
+  description: Google Drive and folder sync
+- name: i18n
+  color: d4c5f9
+  description: Translations (German interface)
+- name: docs
+  color: 0075ca
+  description: Documentation
+- name: windows
+  color: 0078d6
+  description: Specific to Windows
+- name: macos
+  color: 999999
+  description: Specific to macOS
+- name: linux
+  color: f29513
+  description: Specific to Linux
+- name: security
+  color: b60205
+  description: Security related (report vulnerabilities privately instead)
+- name: question
+  color: d876e3
+  description: A question rather than a bug
+- name: duplicate
+  color: cfd3d7
+  description: Already reported
+- name: wontfix
+  color: ffffff
+  description: Will not be worked on
+- name: invalid
+  color: e4e669
+  description: Not a valid report

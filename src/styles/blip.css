@@ -1,0 +1,1157 @@
+/* ==========================================================================
+   WorkCraft · Blip Mascot Stylesheet (blip.css)
+   A razor-sharp 18×15 pixel critter built out of crisp SVG/HTML rectangles.
+   Default palette: WorkCraft Blue (#2C84FC).
+   ========================================================================== */
+
+:root,
+.blip,
+.blip-svg {
+  /* Core 8-color palette (WorkCraft Blue default) */
+  --blip-body: #2C84FC;
+  --blip-top: #2C84FC;
+  --blip-shade: #1E64D0;
+  --blip-foot: #164DA8;
+  --blip-ink: #081C38;
+  --blip-shine: #FFFFFF;
+  --blip-tip: #FFBF35;
+  --blip-blush: #FE947F;
+  --blip-alert: #FF6458;
+  --blip-shadow: rgba(8, 28, 56, 0.14);
+
+  /* Sizing */
+  --blip-size: 72px;
+}
+
+:root[data-theme="dark"] .blip,
+.blip[data-surface="dark"] {
+  --blip-shadow: rgba(0, 0, 0, 0.42);
+}
+
+/* --------------------------------------------------------------------------
+   Color Theme Presets
+   -------------------------------------------------------------------------- */
+.blip[data-theme="blue"],
+.blip--blue {
+  --blip-body: #2C84FC;
+  --blip-top: #2C84FC;
+  --blip-shade: #1E64D0;
+  --blip-foot: #164DA8;
+  --blip-ink: #081C38;
+  --blip-tip: #FFBF35;
+  --blip-blush: #FE947F;
+  --blip-alert: #FF6458;
+}
+
+.blip[data-theme="indigo"],
+.blip--indigo {
+  --blip-body: #335CFF;
+  --blip-top: #4B70FF;
+  --blip-shade: #2447D9;
+  --blip-foot: #1934A8;
+  --blip-ink: #0A1438;
+  --blip-tip: #FFBF35;
+  --blip-blush: #FF9488;
+  --blip-alert: #FF5C5C;
+}
+
+.blip[data-theme="ice"],
+.blip--ice {
+  --blip-body: #2C84FC;
+  --blip-top: #4799FF;
+  --blip-shade: #1E64D0;
+  --blip-foot: #164DA8;
+  --blip-ink: #081C38;
+  --blip-tip: #67E8F9;
+  --blip-blush: #93C5FD;
+  --blip-alert: #38BDF8;
+}
+
+.blip[data-theme="teal"],
+.blip--teal {
+  --blip-body: #21CEB2;
+  --blip-top: #1FCCAF;
+  --blip-shade: #0E9A82;
+  --blip-foot: #088573;
+  --blip-ink: #042B2C;
+  --blip-tip: #FFBF35;
+  --blip-blush: #FE947F;
+  --blip-alert: #FF6458;
+}
+
+.blip[data-theme="amber"],
+.blip--amber {
+  --blip-body: #F59E0B;
+  --blip-top: #FBBF24;
+  --blip-shade: #D97706;
+  --blip-foot: #B45309;
+  --blip-ink: #291502;
+  --blip-tip: #38BDF8;
+  --blip-blush: #FDA4AF;
+  --blip-alert: #EF4444;
+}
+
+.blip[data-theme="coral"],
+.blip--coral {
+  --blip-body: #F43F5E;
+  --blip-top: #FB7185;
+  --blip-shade: #E11D48;
+  --blip-foot: #BE123C;
+  --blip-ink: #2A0610;
+  --blip-tip: #FFBF35;
+  --blip-blush: #FBCFE8;
+  --blip-alert: #FBBF24;
+}
+
+.blip[data-theme="emerald"],
+.blip--emerald {
+  --blip-body: #10B981;
+  --blip-top: #34D399;
+  --blip-shade: #059669;
+  --blip-foot: #047857;
+  --blip-ink: #04261C;
+  --blip-tip: #FFBF35;
+  --blip-blush: #FE947F;
+  --blip-alert: #FF6458;
+}
+
+.blip[data-theme="mono"],
+.blip--mono {
+  --blip-body: #4B5563;
+  --blip-top: #6B7280;
+  --blip-shade: #374151;
+  --blip-foot: #1F2937;
+  --blip-ink: #090D16;
+  --blip-tip: #E5E7EB;
+  --blip-blush: #9CA3AF;
+  --blip-alert: #F87171;
+}
+
+/* --------------------------------------------------------------------------
+   Container & Stage
+   -------------------------------------------------------------------------- */
+.blip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--blip-size);
+  height: calc(var(--blip-size) * 0.85);
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.blip--interactive {
+  cursor: pointer;
+}
+
+.blip-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: crispEdges;
+  display: block;
+}
+
+/* Smooth transforms on groups while keeping crisp pixel edges */
+.blip-rig,
+.blip-actor,
+.blip-head-group,
+.blip-face,
+.blip-eyes,
+.blip-eye-dizzy-l,
+.blip-eye-dizzy-r,
+.blip-arm-l,
+.blip-arm-r,
+.blip-foot-l,
+.blip-foot-r,
+.blip-antenna-l,
+.blip-antenna-r,
+.blip-ground-shadow,
+.blip-alert-mark,
+.blip-sparkles,
+.blip-thought-dots,
+.blip-sleep-z,
+.blip-code-sparks,
+.blip-spawn-cloud {
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+
+.blip-actor {
+  transform-origin: 50% 92%;
+}
+
+/* Hide state-specific overlays by default */
+.blip-face--blink,
+.blip-face--squint,
+.blip-face--shock,
+.blip-face--dizzy,
+.blip-face--happy,
+.blip-face--sleep,
+.blip-back-stripe,
+.blip-alert-mark,
+.blip-sparkles,
+.blip-thought-dots,
+.blip-sleep-z,
+.blip-code-sparks,
+.blip-spawn-sparks,
+.blip-spawn-cloud,
+.blip-acc {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.blip-face--normal {
+  opacity: 1;
+}
+
+/* Accessories toggle via data-accessory */
+.blip[data-accessory="glasses"] .blip-acc--glasses,
+.blip[data-accessory="headset"] .blip-acc--headset,
+.blip[data-accessory="crown"] .blip-acc--crown,
+.blip[data-accessory="coffee"] .blip-acc--coffee,
+.blip[data-accessory="hardhat"] .blip-acc--hardhat {
+  opacity: 1;
+}
+
+/* Speech bubble */
+.blip-bubble {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px) scale(0.95);
+  background: var(--blip-ink, #081C38);
+  color: #FFFFFF;
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  padding: 5px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(8, 28, 56, 0.22);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+}
+
+.blip-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--blip-ink, #081C38);
+}
+
+.blip-bubble.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* ==========================================================================
+   STATE 1: IDLE (01-blip-base)
+   Idles, breathes gently, glances right and left, and blinks.
+   ========================================================================== */
+.blip[data-state="idle"] .blip-actor,
+.blip--idle .blip-actor {
+  animation: blip-idle-breathe 4s steps(2, end) infinite;
+}
+
+.blip[data-state="idle"] .blip-ground-shadow,
+.blip--idle .blip-ground-shadow {
+  animation: blip-idle-shadow 4s steps(2, end) infinite;
+}
+
+.blip[data-state="idle"] .blip-eyes-normal,
+.blip--idle .blip-eyes-normal {
+  animation: blip-idle-glance 8s steps(1, end) infinite;
+}
+
+.blip[data-state="idle"] .blip-shine-l,
+.blip[data-state="idle"] .blip-shine-r,
+.blip--idle .blip-shine-l,
+.blip--idle .blip-shine-r {
+  animation: blip-idle-shine 8s steps(1, end) infinite;
+}
+
+.blip[data-state="idle"] .blip-face--normal,
+.blip--idle .blip-face--normal {
+  animation: blip-idle-face-vis 8s steps(1, end) infinite;
+}
+
+.blip[data-state="idle"] .blip-face--blink,
+.blip--idle .blip-face--blink {
+  animation: blip-idle-blink-vis 8s steps(1, end) infinite;
+}
+
+.blip[data-state="idle"] .blip-antenna-l,
+.blip--idle .blip-antenna-l {
+  animation: blip-antenna-bob 4s steps(2, end) infinite;
+}
+
+.blip[data-state="idle"] .blip-antenna-r,
+.blip--idle .blip-antenna-r {
+  animation: blip-antenna-bob 4s steps(2, end) 0.5s infinite;
+}
+
+@keyframes blip-idle-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.2%); }
+}
+
+@keyframes blip-idle-shadow {
+  0%, 100% { transform: scaleX(1); opacity: 1; }
+  50% { transform: scaleX(0.92); opacity: 0.8; }
+}
+
+/* Whole pixels only: the eyes step one unit to the side, the shine goes with them (a fraction of a unit
+   snapped to 0 or 1 px at random and the shine slipped out of the eye) */
+@keyframes blip-idle-glance {
+  0%, 14% { transform: translateX(0); }
+  15%, 30% { transform: translateX(1px); }
+  31%, 38% { transform: translateX(0); }
+  39%, 45% { transform: translateX(-1px); }
+  46%, 100% { transform: translateX(0); }
+}
+
+@keyframes blip-idle-shine {
+  0%, 100% { transform: none; }
+}
+
+@keyframes blip-idle-face-vis {
+  0%, 46%, 50%, 91%, 94%, 100% { opacity: 1; }
+  47%, 49%, 92%, 93% { opacity: 0; }
+}
+
+@keyframes blip-idle-blink-vis {
+  0%, 46%, 50%, 91%, 94%, 100% { opacity: 0; }
+  47%, 49%, 92%, 93% { opacity: 1; }
+}
+
+@keyframes blip-antenna-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8%); }
+}
+
+/* ==========================================================================
+   STATE 2: WALK / PACING (02-blip-walk)
+   Paces left and right with alternating pixel footsteps and a brief squint.
+   ========================================================================== */
+.blip[data-state="walk"] .blip-rig,
+.blip--walk .blip-rig {
+  animation: blip-walk-pace 6s ease-in-out infinite;
+}
+
+.blip[data-state="walk"] .blip-actor,
+.blip--walk .blip-actor {
+  animation: blip-walk-bob 0.45s steps(2, end) infinite;
+}
+
+.blip[data-state="walk"] .blip-foot-l,
+.blip--walk .blip-foot-l {
+  animation: blip-walk-foot-l 0.45s steps(1, end) infinite;
+}
+
+.blip[data-state="walk"] .blip-foot-r,
+.blip--walk .blip-foot-r {
+  animation: blip-walk-foot-r 0.45s steps(1, end) infinite;
+}
+
+.blip[data-state="walk"] .blip-arm-l,
+.blip--walk .blip-arm-l {
+  animation: blip-walk-arm 0.45s steps(2, end) infinite;
+}
+
+.blip[data-state="walk"] .blip-arm-r,
+.blip--walk .blip-arm-r {
+  animation: blip-walk-arm 0.45s steps(2, end) 0.225s infinite;
+}
+
+.blip[data-state="walk"] .blip-face--normal,
+.blip--walk .blip-face--normal {
+  animation: blip-walk-face-normal 6s steps(1, end) infinite;
+}
+
+.blip[data-state="walk"] .blip-face--squint,
+.blip--walk .blip-face--squint {
+  animation: blip-walk-face-squint 6s steps(1, end) infinite;
+}
+
+@keyframes blip-walk-pace {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(10%); }
+  50% { transform: translateX(0); }
+  75% { transform: translateX(-10%); }
+}
+
+@keyframes blip-walk-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4.5%); }
+}
+
+@keyframes blip-walk-foot-l {
+  0%, 49% { transform: scaleY(0.5); transform-origin: top center; }
+  50%, 100% { transform: scaleY(1); transform-origin: top center; }
+}
+
+@keyframes blip-walk-foot-r {
+  0%, 49% { transform: scaleY(1); transform-origin: top center; }
+  50%, 100% { transform: scaleY(0.5); transform-origin: top center; }
+}
+
+@keyframes blip-walk-arm {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-25%); }
+}
+
+@keyframes blip-walk-face-normal {
+  0%, 58%, 67%, 100% { opacity: 1; }
+  59%, 66% { opacity: 0; }
+}
+
+@keyframes blip-walk-face-squint {
+  0%, 58%, 67%, 100% { opacity: 0; }
+  59%, 66% { opacity: 1; }
+}
+
+/* ==========================================================================
+   STATE 3: STARTLED / SURPRISED HOP / ERROR (03-blip-surprised-hop)
+   Freezes with wide eyes, hops with '!', goes spiral/diamond-eyed & wobbles,
+   squashes to blink, then acts like it meant to do that.
+   ========================================================================== */
+.blip[data-state="startled"] .blip-actor,
+.blip[data-state="error"] .blip-actor,
+.blip--startled .blip-actor {
+  animation: blip-startled-body 5.5s ease-in-out infinite;
+}
+
+.blip[data-state="startled"] .blip-ground-shadow,
+.blip[data-state="error"] .blip-ground-shadow,
+.blip--startled .blip-ground-shadow {
+  animation: blip-startled-shadow 5.5s ease-in-out infinite;
+}
+
+.blip[data-state="startled"] .blip-alert-mark,
+.blip[data-state="error"] .blip-alert-mark,
+.blip--startled .blip-alert-mark {
+  animation: blip-startled-alert 5.5s steps(1, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-face--normal,
+.blip[data-state="error"] .blip-face--normal,
+.blip--startled .blip-face--normal {
+  animation: blip-startled-f-norm 5.5s steps(1, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-face--shock,
+.blip[data-state="error"] .blip-face--shock,
+.blip--startled .blip-face--shock {
+  animation: blip-startled-f-shock 5.5s steps(1, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-face--dizzy,
+.blip[data-state="error"] .blip-face--dizzy,
+.blip--startled .blip-face--dizzy {
+  animation: blip-startled-f-dizzy 5.5s steps(1, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-face--blink,
+.blip[data-state="error"] .blip-face--blink,
+.blip--startled .blip-face--blink {
+  animation: blip-startled-f-blink 5.5s steps(1, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-eye-dizzy-l,
+.blip[data-state="error"] .blip-eye-dizzy-l,
+.blip--startled .blip-eye-dizzy-l {
+  animation: blip-dizzy-spin-l 0.6s steps(2, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-eye-dizzy-r,
+.blip[data-state="error"] .blip-eye-dizzy-r,
+.blip--startled .blip-eye-dizzy-r {
+  animation: blip-dizzy-spin-r 0.6s steps(2, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-foot-l,
+.blip[data-state="error"] .blip-foot-l,
+.blip--startled .blip-foot-l {
+  animation: blip-startled-foot-l 5.5s steps(1, end) infinite;
+}
+
+.blip[data-state="startled"] .blip-foot-r,
+.blip[data-state="error"] .blip-foot-r,
+.blip--startled .blip-foot-r {
+  animation: blip-startled-foot-r 5.5s steps(1, end) infinite;
+}
+
+@keyframes blip-startled-body {
+  0%, 14% { transform: translateY(0) rotate(0deg) scale(1, 1); }
+  16% { transform: translateY(2%) scale(1.04, 0.94); }
+  21% { transform: translateY(-14%) rotate(0deg) scale(0.96, 1.05); }
+  26% { transform: translateY(-4%) rotate(0deg); }
+  31% { transform: translateY(0) rotate(8deg); }
+  37% { transform: translateY(-2%) rotate(-8deg); }
+  43% { transform: translateY(0) rotate(5deg); }
+  49% { transform: translateY(0) rotate(-6deg); }
+  55% { transform: translateY(0) rotate(4deg); }
+  61% { transform: translateY(0) rotate(0deg); }
+  65%, 69% { transform: translateY(6%) scale(1.08, 0.86); }
+  72%, 100% { transform: translateY(0) rotate(0deg) scale(1, 1); }
+}
+
+@keyframes blip-startled-shadow {
+  0%, 16%, 61%, 100% { transform: scaleX(1); opacity: 1; }
+  21% { transform: scaleX(0.72); opacity: 0.55; }
+  65%, 69% { transform: scaleX(1.12); opacity: 1; }
+}
+
+@keyframes blip-startled-alert {
+  0%, 18%, 64%, 100% { opacity: 0; transform: translateY(4px) scale(0.8); }
+  19%, 63% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes blip-startled-f-norm {
+  0%, 14%, 71%, 100% { opacity: 1; }
+  15%, 70% { opacity: 0; }
+}
+
+@keyframes blip-startled-f-shock {
+  0%, 14%, 26%, 100% { opacity: 0; }
+  15%, 25% { opacity: 1; }
+}
+
+@keyframes blip-startled-f-dizzy {
+  0%, 25%, 64%, 100% { opacity: 0; }
+  26%, 63% { opacity: 1; }
+}
+
+@keyframes blip-startled-f-blink {
+  0%, 63%, 71%, 100% { opacity: 0; }
+  64%, 70% { opacity: 1; }
+}
+
+@keyframes blip-dizzy-spin-l {
+  0%, 100% { transform: rotate(45deg); }
+  50% { transform: rotate(0deg); }
+}
+
+@keyframes blip-dizzy-spin-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(45deg); }
+}
+
+@keyframes blip-startled-foot-l {
+  0%, 25%, 64%, 100% { transform: scaleY(1); transform-origin: top center; }
+  26%, 40% { transform: scaleY(0.55); transform-origin: top center; }
+  41%, 63% { transform: scaleY(1); transform-origin: top center; }
+}
+
+@keyframes blip-startled-foot-r {
+  0%, 40%, 100% { transform: scaleY(1); transform-origin: top center; }
+  41%, 63% { transform: scaleY(0.55); transform-origin: top center; }
+}
+
+/* ==========================================================================
+   STATE 4: HAPPY SPIN / SUCCESS (04-blip-happy-spin)
+   Beams with '^ ^' eyes and pink tongue, does a 360° spin showing its back
+   dorsal stripe, and lands with floating '+' pixel sparkles!
+   ========================================================================== */
+.blip[data-state="happy"] .blip-actor,
+.blip[data-state="spin"] .blip-actor,
+.blip[data-state="success"] .blip-actor,
+.blip--happy .blip-actor {
+  animation: blip-happy-spin 4.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.blip[data-state="happy"] .blip-ground-shadow,
+.blip[data-state="spin"] .blip-ground-shadow,
+.blip[data-state="success"] .blip-ground-shadow,
+.blip--happy .blip-ground-shadow {
+  animation: blip-happy-shadow 4.2s ease-in-out infinite;
+}
+
+.blip[data-state="happy"] .blip-face--normal,
+.blip[data-state="spin"] .blip-face--normal,
+.blip[data-state="success"] .blip-face--normal,
+.blip--happy .blip-face--normal {
+  animation: blip-happy-f-norm 4.2s steps(1, end) infinite;
+}
+
+.blip[data-state="happy"] .blip-face--happy,
+.blip[data-state="spin"] .blip-face--happy,
+.blip[data-state="success"] .blip-face--happy,
+.blip--happy .blip-face--happy {
+  animation: blip-happy-f-joy 4.2s steps(1, end) infinite;
+}
+
+.blip[data-state="happy"] .blip-back-stripe,
+.blip[data-state="spin"] .blip-back-stripe,
+.blip[data-state="success"] .blip-back-stripe,
+.blip--happy .blip-back-stripe {
+  animation: blip-happy-back 4.2s steps(1, end) infinite;
+}
+
+.blip[data-state="happy"] .blip-sparkles,
+.blip[data-state="spin"] .blip-sparkles,
+.blip[data-state="success"] .blip-sparkles,
+.blip--happy .blip-sparkles {
+  animation: blip-happy-sparkles 4.2s ease-out infinite;
+}
+
+@keyframes blip-happy-spin {
+  0%, 18% { transform: translateY(0) scaleX(1); }
+  22% { transform: translateY(3%) scaleX(1.05) scaleY(0.94); }
+  28% { transform: translateY(-10%) scaleX(0.06); }
+  34% { transform: translateY(-16%) scaleX(-1); }
+  41% { transform: translateY(-16%) scaleX(-1); }
+  47% { transform: translateY(-8%) scaleX(0.06); }
+  53% { transform: translateY(3%) scaleX(1.05) scaleY(0.95); }
+  58%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
+}
+
+@keyframes blip-happy-shadow {
+  0%, 22%, 53%, 100% { transform: scaleX(1); opacity: 1; }
+  34%, 41% { transform: scaleX(0.68); opacity: 0.5; }
+}
+
+@keyframes blip-happy-f-norm {
+  0%, 17%, 68%, 100% { opacity: 1; }
+  18%, 67% { opacity: 0; }
+}
+
+@keyframes blip-happy-f-joy {
+  0%, 17%, 28%, 46%, 68%, 100% { opacity: 0; }
+  18%, 27%, 47%, 67% { opacity: 1; }
+}
+
+@keyframes blip-happy-back {
+  0%, 28%, 47%, 100% { opacity: 0; }
+  29%, 46% { opacity: 1; }
+}
+
+@keyframes blip-happy-sparkles {
+  0%, 17%, 68%, 100% { opacity: 0; transform: scale(0.7); }
+  20%, 62% { opacity: 1; transform: scale(1); }
+  67% { opacity: 0; transform: scale(1.12); }
+}
+
+/* ==========================================================================
+   STATE 5: SPAWN / ASSEMBLE (05-blip-spawn)
+   Assembles out of loose pixels, flashes bright white-blue, opens eyes, and
+   does a proud "ta-da!" hop with antenna tip sparks.
+   ========================================================================== */
+.blip[data-state="spawn"] .blip-spawn-cloud,
+.blip--spawn .blip-spawn-cloud {
+  animation: blip-spawn-cloud-anim 4.8s ease-out infinite;
+}
+
+.blip[data-state="spawn"] .blip-actor,
+.blip--spawn .blip-actor {
+  animation: blip-spawn-actor-anim 4.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.blip[data-state="spawn"] .blip-face--normal,
+.blip--spawn .blip-face--normal {
+  animation: blip-spawn-f-norm 4.8s steps(1, end) infinite;
+}
+
+.blip[data-state="spawn"] .blip-face--blink,
+.blip--spawn .blip-face--blink {
+  animation: blip-spawn-f-blink 4.8s steps(1, end) infinite;
+}
+
+.blip[data-state="spawn"] .blip-spawn-sparks,
+.blip--spawn .blip-spawn-sparks {
+  animation: blip-spawn-sparks-anim 4.8s ease-out infinite;
+}
+
+@keyframes blip-spawn-cloud-anim {
+  0% { opacity: 0; transform: translateY(-25%) scale(1.55); }
+  8% { opacity: 1; transform: translateY(-15%) scale(1.35); }
+  26% { opacity: 1; transform: translateY(0) scale(0.95); }
+  30%, 100% { opacity: 0; transform: translateY(0) scale(0.85); }
+}
+
+@keyframes blip-spawn-actor-anim {
+  0%, 15% { opacity: 0; transform: translateY(8%) scale(0.85); filter: brightness(1); }
+  28% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
+  35%, 39% { opacity: 1; transform: translateY(0) scale(1.02); filter: brightness(1.85) contrast(0.85); }
+  44% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
+  58% { transform: translateY(3%) scale(1.04, 0.94); }
+  64% { transform: translateY(-12%) scale(0.97, 1.04); }
+  71%, 100% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
+}
+
+@keyframes blip-spawn-f-norm {
+  0%, 54% { opacity: 0; }
+  55%, 100% { opacity: 1; }
+}
+
+@keyframes blip-spawn-f-blink {
+  0%, 42%, 55%, 100% { opacity: 0; }
+  43%, 54% { opacity: 1; }
+}
+
+@keyframes blip-spawn-sparks-anim {
+  0%, 60%, 82%, 100% { opacity: 0; transform: translateY(4px) scale(0.6); }
+  63%, 76% { opacity: 1; transform: translateY(-4px) scale(1); }
+}
+
+/* ==========================================================================
+   STATE 6: THINKING / LOADING (Chat AI Pending State)
+   Looks upward while floating pixel dots pulse and antennae transmit.
+   ========================================================================== */
+.blip[data-state="thinking"] .blip-actor,
+.blip[data-state="loading"] .blip-actor,
+.blip--thinking .blip-actor {
+  animation: blip-think-float 1.6s ease-in-out infinite;
+}
+
+.blip[data-state="thinking"] .blip-eyes-normal,
+.blip[data-state="loading"] .blip-eyes-normal,
+.blip--thinking .blip-eyes-normal {
+  transform: translateY(-1px);
+}
+
+.blip[data-state="thinking"] .blip-thought-dots,
+.blip[data-state="loading"] .blip-thought-dots,
+.blip--thinking .blip-thought-dots {
+  opacity: 1;
+}
+
+.blip[data-state="thinking"] .blip-dot-1,
+.blip[data-state="loading"] .blip-dot-1,
+.blip--thinking .blip-dot-1 {
+  animation: blip-dot-pulse 1.2s ease-in-out 0s infinite;
+}
+
+.blip[data-state="thinking"] .blip-dot-2,
+.blip[data-state="loading"] .blip-dot-2,
+.blip--thinking .blip-dot-2 {
+  animation: blip-dot-pulse 1.2s ease-in-out 0.2s infinite;
+}
+
+.blip[data-state="thinking"] .blip-dot-3,
+.blip[data-state="loading"] .blip-dot-3,
+.blip--thinking .blip-dot-3 {
+  animation: blip-dot-pulse 1.2s ease-in-out 0.4s infinite;
+}
+
+.blip[data-state="thinking"] .blip-tip-l,
+.blip[data-state="loading"] .blip-tip-l,
+.blip--thinking .blip-tip-l {
+  animation: blip-tip-glow 0.8s ease-in-out 0s infinite;
+}
+
+.blip[data-state="thinking"] .blip-tip-r,
+.blip[data-state="loading"] .blip-tip-r,
+.blip--thinking .blip-tip-r {
+  animation: blip-tip-glow 0.8s ease-in-out 0.4s infinite;
+}
+
+@keyframes blip-think-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5%); }
+}
+
+@keyframes blip-dot-pulse {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+
+@keyframes blip-tip-glow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.45); }
+}
+
+/* ==========================================================================
+   STATE 7: CODING / WORKING (Active Tool Execution State)
+   Focused squint eyes, rapid typing arms, and pixel code sparks.
+   ========================================================================== */
+.blip[data-state="coding"] .blip-face--normal,
+.blip[data-state="working"] .blip-face--normal,
+.blip--coding .blip-face--normal {
+  opacity: 0;
+}
+
+.blip[data-state="coding"] .blip-face--squint,
+.blip[data-state="working"] .blip-face--squint,
+.blip--coding .blip-face--squint {
+  opacity: 1;
+}
+
+.blip[data-state="coding"] .blip-arm-l,
+.blip[data-state="working"] .blip-arm-l,
+.blip--coding .blip-arm-l {
+  animation: blip-type-arm 0.18s steps(2, end) infinite;
+}
+
+.blip[data-state="coding"] .blip-arm-r,
+.blip[data-state="working"] .blip-arm-r,
+.blip--coding .blip-arm-r {
+  animation: blip-type-arm 0.18s steps(2, end) 0.09s infinite;
+}
+
+.blip[data-state="coding"] .blip-actor,
+.blip[data-state="working"] .blip-actor,
+.blip--coding .blip-actor {
+  animation: blip-coding-bounce 0.36s steps(2, end) infinite;
+}
+
+.blip[data-state="coding"] .blip-code-sparks,
+.blip[data-state="working"] .blip-code-sparks,
+.blip--coding .blip-code-sparks {
+  opacity: 1;
+  animation: blip-code-float 0.8s steps(3, end) infinite;
+}
+
+@keyframes blip-type-arm {
+  0%, 100% { transform: translateY(-35%); }
+  50% { transform: translateY(25%); }
+}
+
+@keyframes blip-coding-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2%); }
+}
+
+@keyframes blip-code-float {
+  0% { transform: translateY(2px); opacity: 0.4; }
+  50% { transform: translateY(-2px); opacity: 1; }
+  100% { transform: translateY(-5px); opacity: 0; }
+}
+
+/* ==========================================================================
+   STATE 8: WAVE / GREETING (Welcome / Empty Chat State)
+   Waves right arm cheerfully with happy bounce.
+   ========================================================================== */
+.blip[data-state="wave"] .blip-arm-r,
+.blip[data-state="greeting"] .blip-arm-r,
+.blip--wave .blip-arm-r {
+  transform-origin: left bottom;
+  animation: blip-wave-arm 0.7s ease-in-out infinite;
+}
+
+.blip[data-state="wave"] .blip-actor,
+.blip[data-state="greeting"] .blip-actor,
+.blip--wave .blip-actor {
+  animation: blip-idle-breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes blip-wave-arm {
+  0%, 100% { transform: translateY(-45%) rotate(-18deg); }
+  50% { transform: translateY(-10%) rotate(12deg); }
+}
+
+/* ==========================================================================
+   STATE 9: SLEEP / OFFLINE
+   Feet tucked in, eyes closed, slow breathing with floating pixel 'Z's.
+   ========================================================================== */
+.blip[data-state="sleep"] .blip-face--normal,
+.blip[data-state="offline"] .blip-face--normal,
+.blip--sleep .blip-face--normal {
+  opacity: 0;
+}
+
+.blip[data-state="sleep"] .blip-face--sleep,
+.blip[data-state="offline"] .blip-face--sleep,
+.blip--sleep .blip-face--sleep {
+  opacity: 1;
+}
+
+.blip[data-state="sleep"] .blip-actor,
+.blip[data-state="offline"] .blip-actor,
+.blip--sleep .blip-actor {
+  animation: blip-sleep-breathe 3.6s ease-in-out infinite;
+}
+
+.blip[data-state="sleep"] .blip-foot-l,
+.blip[data-state="sleep"] .blip-foot-r,
+.blip[data-state="offline"] .blip-foot-l,
+.blip[data-state="offline"] .blip-foot-r,
+.blip--sleep .blip-foot-l,
+.blip--sleep .blip-foot-r {
+  transform: scaleY(0.45);
+  transform-origin: top center;
+}
+
+.blip[data-state="sleep"] .blip-sleep-z,
+.blip[data-state="offline"] .blip-sleep-z,
+.blip--sleep .blip-sleep-z {
+  opacity: 1;
+  animation: blip-sleep-z-float 2.8s ease-in-out infinite;
+}
+
+@keyframes blip-sleep-breathe {
+  0%, 100% { transform: translateY(5%) scale(1.02, 0.96); }
+  50% { transform: translateY(3%) scale(0.99, 1.01); }
+}
+
+@keyframes blip-sleep-z-float {
+  0% { opacity: 0; transform: translate(0, 4px) scale(0.75); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translate(5px, -6px) scale(1.05); }
+}
+
+/* ==========================================================================
+   STATE 10: LISTENING (voice input)
+   Ears up: wide eyes, a headset, sound arcs that pulse outwards, antennae that blink in turn.
+   ========================================================================== */
+.blip-face--listen,
+.blip-listen-waves {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.blip[data-state="listening"] .blip-face--normal { opacity: 0; }
+.blip[data-state="listening"] .blip-face--listen { opacity: 1; }
+.blip[data-state="listening"] .blip-acc--headset { opacity: 1; }
+.blip[data-state="listening"] .blip-listen-waves { opacity: 1; }
+.blip[data-state="listening"] .blip-actor { animation: blip-listen-sway 1.8s steps(2, end) infinite; }
+.blip[data-state="listening"] .blip-wave-1 { animation: blip-wave 1s steps(2, end) infinite; }
+.blip[data-state="listening"] .blip-wave-2 { animation: blip-wave 1s steps(2, end) 0.5s infinite; }
+.blip[data-state="listening"] .blip-tip-l { animation: blip-tip-glow 0.9s ease-in-out infinite; }
+.blip[data-state="listening"] .blip-tip-r { animation: blip-tip-glow 0.9s ease-in-out 0.45s infinite; }
+
+@keyframes blip-listen-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-1px) rotate(1.5deg); }
+}
+
+@keyframes blip-wave {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   Accent by state: the antenna tips and the alert color carry the mood, the body keeps the chosen theme.
+   Error: tips turn to the alert color. Success: tips go bright. Working: tips pulse in the tool color.
+   -------------------------------------------------------------------------- */
+.blip[data-state="error"] .blip-tip-l,
+.blip[data-state="error"] .blip-tip-r,
+.blip[data-state="startled"] .blip-tip-l,
+.blip[data-state="startled"] .blip-tip-r { fill: var(--blip-alert); }
+.blip[data-state="success"] .blip-tip-l,
+.blip[data-state="success"] .blip-tip-r { fill: #FFE27A; }
+.blip[data-state="coding"] .blip-tip-l,
+.blip[data-state="coding"] .blip-tip-r,
+.blip[data-state="working"] .blip-tip-l,
+.blip[data-state="working"] .blip-tip-r { animation: blip-tip-glow 0.5s ease-in-out infinite; }
+/* The offline Blip is greyed out (it sleeps because nothing answers, not because it is tired) */
+.blip[data-state="offline"] .blip-actor { filter: saturate(0.35) brightness(0.9); }
+
+/* ==========================================================================
+   PURE SINGLE-ELEMENT CSS PIXEL ART (Zero child nodes: <i class="blip-pixel"></i>)
+   Draws the entire 18×15 Blue Blip using crisp CSS box-shadow units!
+   Scale with --blip-px (default 2px -> 36×30px icon).
+   ========================================================================== */
+.blip-pixel {
+  --px: var(--blip-px, 2px);
+  display: inline-block;
+  position: relative;
+  width: calc(18 * var(--px));
+  height: calc(15 * var(--px));
+  vertical-align: middle;
+}
+
+.blip-pixel::before {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--px));
+  left: calc(-1 * var(--px));
+  width: var(--px);
+  height: var(--px);
+  background: transparent;
+  box-shadow:
+    /* Row 0: Left Antenna Tip (x=4, y=0) */
+    calc(5 * var(--px)) calc(1 * var(--px)) 0 var(--blip-tip, #FFBF35),
+    /* Row 1: Left Antenna Stem (x=4, y=1) & Right Antenna Tip (x=13, y=1) */
+    calc(5 * var(--px)) calc(2 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(14 * var(--px)) calc(2 * var(--px)) 0 var(--blip-tip, #FFBF35),
+    /* Row 2: Antenna Stems (x=4,13, y=2) */
+    calc(5 * var(--px)) calc(3 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(14 * var(--px)) calc(3 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    /* Row 3: Top Bevel (x=3..14, y=3) */
+    calc(4 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(5 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(6 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(7 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(8 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(9 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(10 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(11 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(12 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(13 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(14 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    calc(15 * var(--px)) calc(4 * var(--px)) 0 var(--blip-top, #3B8EFF),
+    /* Row 4: Body (x=2..15, y=4) */
+    calc(3 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(5 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(6 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(7 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(8 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(9 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(10 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(11 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(12 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(13 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(14 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(15 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(16 * var(--px)) calc(5 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 5: Body (x=2..15, y=5) */
+    calc(3 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(5 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(6 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(7 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(8 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(9 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(10 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(11 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(12 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(13 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(14 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(15 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(16 * var(--px)) calc(6 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 6: Eyes top (x=5 shine, x=6 ink, x=11 shine, x=12 ink) */
+    calc(3 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(5 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(6 * var(--px)) calc(7 * var(--px)) 0 var(--blip-shine, #FFFFFF),
+    calc(7 * var(--px)) calc(7 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(8 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(9 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(10 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(11 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(12 * var(--px)) calc(7 * var(--px)) 0 var(--blip-shine, #FFFFFF),
+    calc(13 * var(--px)) calc(7 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(14 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(15 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(16 * var(--px)) calc(7 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 7: Eyes mid (x=5..6 ink, x=11..12 ink) */
+    calc(3 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(5 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(6 * var(--px)) calc(8 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(7 * var(--px)) calc(8 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(8 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(9 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(10 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(11 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(12 * var(--px)) calc(8 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(13 * var(--px)) calc(8 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(14 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(15 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(16 * var(--px)) calc(8 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 8: Arms top + Eyes bottom (x=0..17) */
+    calc(1 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(2 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(3 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(5 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(6 * var(--px)) calc(9 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(7 * var(--px)) calc(9 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(8 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(9 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(10 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(11 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(12 * var(--px)) calc(9 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(13 * var(--px)) calc(9 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(14 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(15 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(16 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(17 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(18 * var(--px)) calc(9 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 9: Arms bottom + Cheeks (x=3..4, 13..14) + Smile corners (x=7, 10) */
+    calc(1 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(2 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(3 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(10 * var(--px)) 0 var(--blip-blush, #FE947F),
+    calc(5 * var(--px)) calc(10 * var(--px)) 0 var(--blip-blush, #FE947F),
+    calc(6 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(7 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(8 * var(--px)) calc(10 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(9 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(10 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(11 * var(--px)) calc(10 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(12 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(13 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(14 * var(--px)) calc(10 * var(--px)) 0 var(--blip-blush, #FE947F),
+    calc(15 * var(--px)) calc(10 * var(--px)) 0 var(--blip-blush, #FE947F),
+    calc(16 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(17 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(18 * var(--px)) calc(10 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 10: Smile center (x=8..9) */
+    calc(3 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(5 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(6 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(7 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(8 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(9 * var(--px)) calc(11 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(10 * var(--px)) calc(11 * var(--px)) 0 var(--blip-ink, #081C38),
+    calc(11 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(12 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(13 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(14 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(15 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(16 * var(--px)) calc(11 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 11: Body bottom (x=2..15) */
+    calc(3 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(4 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(5 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(6 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(7 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(8 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(9 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(10 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(11 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(12 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(13 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(14 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(15 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    calc(16 * var(--px)) calc(12 * var(--px)) 0 var(--blip-body, #2C84FC),
+    /* Row 12: Belly Shade Bevel (x=3..14) */
+    calc(4 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(5 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(6 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(7 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(8 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(9 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(10 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(11 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(12 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(13 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(14 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    calc(15 * var(--px)) calc(13 * var(--px)) 0 var(--blip-shade, #1E64D0),
+    /* Row 13: Feet top (x=4..6, 11..13) */
+    calc(5 * var(--px)) calc(14 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(6 * var(--px)) calc(14 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(7 * var(--px)) calc(14 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(12 * var(--px)) calc(14 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(13 * var(--px)) calc(14 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(14 * var(--px)) calc(14 * var(--px)) 0 var(--blip-foot, #164DA8),
+    /* Row 14: Feet bottom (x=4..6, 11..13) */
+    calc(5 * var(--px)) calc(15 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(6 * var(--px)) calc(15 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(7 * var(--px)) calc(15 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(12 * var(--px)) calc(15 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(13 * var(--px)) calc(15 * var(--px)) 0 var(--blip-foot, #164DA8),
+    calc(14 * var(--px)) calc(15 * var(--px)) 0 var(--blip-foot, #164DA8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blip *,
+  .blip-svg * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

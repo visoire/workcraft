@@ -1,0 +1,56 @@
+name: Documentation problem
+description: Something in the README, the guides or the in-app documentation is wrong, missing or unclear.
+title: "[Docs]: "
+labels: ["docs", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Documentation is where new contributors start, so every fix here helps. A pull request is even better: all guides are Markdown files in `docs/`, and the in-app documentation is `src/docs/content.md`.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where is the problem?
+      options:
+        - README
+        - A guide in docs/
+        - The in-app documentation (the Documentation page)
+        - CONTRIBUTING, SECURITY or another community file
+        - A comment or message inside the app
+        - Somewhere else
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Link or file name
+      description: The page, file or heading.
+      placeholder: "docs/SELF-HOSTING.md, section 'Host the browser version'"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong?
+      options:
+        - It is wrong or out of date
+        - A step does not work as written
+        - It is missing
+        - It is unclear
+        - A link is broken
+        - A typo
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: What did you expect to find? What did you do and what happened? If you know the right text, write it here.
+    validations:
+      required: true
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Help
+      options:
+        - label: I would like to send a pull request for this.

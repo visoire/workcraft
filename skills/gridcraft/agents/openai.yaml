@@ -1,0 +1,3 @@
+interface:
+  display_name: "GridCraft"
+  short_description: "Excel-style XLSX spreadsheets: formulas, pivots, charts, scriptable via CLI/MCP"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "FilmCraft"
+  short_description: "Premiere-style video editing: multicam, colour, titles, export via CLI/MCP"

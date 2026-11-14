@@ -1,0 +1,124 @@
+name: Bug report
+description: Something in WorkCraft does not work as expected.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. Please check the [open issues](https://github.com/visoire/workcraft/issues) first.
+        Never paste API keys, tokens or private documents. WorkCraft's logs can contain file paths, so look through them before you share them.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+      placeholder: "When I ask the chat to update /sheets/finances.xlsx, GridCraft shows the old values until I reload the panel."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The shortest way to make it happen again, starting from a fresh project if you can.
+      placeholder: |
+        1. npm run dev, open http://localhost:5175/
+        2. Open GridCraft with /sheets/finances.xlsx
+        3. In the chat: "add a forecast in column G"
+        4. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: app
+    attributes:
+      label: Active Craft app
+      description: Which panel was in front when it happened?
+      multiple: true
+      options:
+        - WordCraft
+        - GridCraft
+        - DeckCraft
+        - PdfCraft
+        - Code editor
+        - Terminal
+        - Git
+        - AI chat or Full Chat Mode
+        - Team Mode
+        - Settings
+        - Website page
+        - Not app specific
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: How are you running WorkCraft?
+      options:
+        - In the browser at workcraft.cc/app
+        - On my computer (npm run dev or npm start)
+        - On my own web server (the browser version, self-hosted)
+        - On an iPad paired with my computer
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: WorkCraft version or commit
+      description: Settings, Status shows the version. For a checkout, the output of git rev-parse --short HEAD.
+      placeholder: "0.1.0-alpha.1 (a1b2c3d)"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS
+        - Linux
+        - iPadOS
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version (or iPadOS version)
+      placeholder: "Edge 142, Chrome 142, Safari on iPadOS 26.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: renderer
+    attributes:
+      label: Graphics of the apps
+      description: Settings, Appearance and layout, Graphics of the apps.
+      options:
+        - WebGPU, otherwise WebGL2 (default)
+        - Always WebGL2
+        - Not sure
+  - type: input
+    id: provider
+    attributes:
+      label: AI provider and model (if the chat is involved)
+      placeholder: "Claude, DeepSeek, Ollama with qwen3, custom endpoint"
+  - type: textarea
+    id: mcp
+    attributes:
+      label: MCP logs and tool calls
+      description: Settings, Logs and metrics, or the tool call card in the chat (Parameters and Result). Paste the relevant part.
+      render: text
+  - type: textarea
+    id: console
+    attributes:
+      label: Browser console or server output
+      description: Errors from the developer tools console or the terminal running npm run dev.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I removed API keys, tokens and private content from everything above.
+          required: true
+        - label: I can reproduce this on the latest main branch.

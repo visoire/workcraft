@@ -1,0 +1,59 @@
+{
+  "_comment": "Single source of truth for the four app releases. Read by scripts/releases.mjs (build, dev server, homepage placeholders), public/go.php (redirects), src/workspace/registry.ts (workspace) and tests/server/releases.test.ts. When a new version lands: put the web build in versions/<app>-web-<ver>/ and its zip in versions/zip/ (the layout the ArtCraft releases come in), run `npm run versions` to see what is newer, update this file, then npm run build. Windows sizes are the exact asset sizes of the GitHub release (since 2026-11 x64 and ARM64 only; a missing arch is simply not listed); webZipBytes is the size of the zip the downloads link serves (versions/zip-web/ wins over versions/zip/ when a repacked zip with a one-click launcher exists). An app may run an older browser build than its release: then web and webVersion name that build and webNote says why. patches lists startup fixes that scripts/patch-apps.mjs applies to a web build (it checks the bytes first).",
+  "set": "versions",
+  "appsCache": "workcraft-apps-v5",
+  "apps": [
+    {
+      "app": "wordcraft",
+      "name": "WordCraft",
+      "version": "0.18.1",
+      "tag": "v0.18.1",
+      "date": "2026-11-12",
+      "web": "wordcraft-web-0.18.1",
+      "webZipBytes": 22536015,
+      "windows": {
+        "x64": { "file": "wordcraft-0.18.1-windows-x64-portable.zip", "bytes": 117973734 },
+        "arm64": { "file": "wordcraft-0.18.1-windows-arm64-portable.zip", "bytes": 114464794 }
+      }
+    },
+    {
+      "app": "gridcraft",
+      "name": "GridCraft",
+      "version": "0.19.1",
+      "tag": "v0.19.1",
+      "date": "2026-11-12",
+      "web": "gridcraft-web-0.19.1",
+      "webZipBytes": 9679862,
+      "windows": {
+        "x64": { "file": "gridcraft-0.19.1-windows-x64-portable.zip", "bytes": 52149109 },
+        "arm64": { "file": "gridcraft-0.19.1-windows-arm64-portable.zip", "bytes": 50125599 }
+      }
+    },
+    {
+      "app": "deckcraft",
+      "name": "DeckCraft",
+      "version": "0.18.1",
+      "tag": "v0.18.1",
+      "date": "2026-11-12",
+      "web": "deckcraft-web-0.18.1",
+      "webZipBytes": 11910503,
+      "windows": {
+        "x64": { "file": "deckcraft-0.18.1-windows-x64-portable.zip", "bytes": 104449748 },
+        "arm64": { "file": "deckcraft-0.18.1-windows-arm64-portable.zip", "bytes": 101361385 }
+      }
+    },
+    {
+      "app": "pdfcraft",
+      "name": "PdfCraft",
+      "version": "0.21.1",
+      "tag": "v0.21.1",
+      "date": "2026-11-12",
+      "web": "pdfcraft-web-0.21.1",
+      "webZipBytes": 34367297,
+      "windows": {
+        "x64": { "file": "pdfcraft-0.21.1-windows-x64-portable.zip", "bytes": 123073914 },
+        "arm64": { "file": "pdfcraft-0.21.1-windows-arm64-portable.zip", "bytes": 117779362 }
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2023"
+    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": [
+      "node"
+    ],
+    "rootDir": "src",
+    "outDir": "dist-server",
+    "sourceMap": true
+  },
+  "include": [
+    "src/server",
+    "src/chat/providers.ts",
+    "src/chat/types.ts",
+    "src/mcp/schemas.ts",
+    "src/core"
+  ]
+}

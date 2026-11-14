@@ -1,0 +1,293 @@
+/* =========================================================
+   WorkCraft · Chat polish
+   Header, messages, tool cards, reasoning card, code blocks, Team Mode and the companion (Blip).
+   Loaded after tools.css and only adds to it. Colors come from the tokens in tokens.css, so light and dark
+   both follow; no gradients, one accent. Touch targets are 44 px on iPad (html.is-touch / html.is-ipad).
+   ========================================================= */
+
+/* ---------- Header: one calm row, the rest lives in the More menu when narrow ---------- */
+.chat-head { container-type: inline-size; }
+.chat-badges { align-items: center; gap: 6px; padding: 2px 8px 8px; }
+@container (max-width: 440px) {
+  .chat-bar [data-action='usage'],
+  .chat-bar [data-action='export'],
+  .chat-bar [data-action='clear'],
+  .chat-badge[data-kind='latency'] { display: none; }
+}
+.chat-bar { gap: 2px; padding: 6px 8px; }
+.chat-bar .icon-btn { border-radius: 9px; color: var(--muted); }
+.chat-bar .icon-btn:hover, .chat-bar .icon-btn:focus-visible { background: var(--card); color: var(--ink); outline: none; }
+.chat-select-btn { border-color: transparent; background: transparent; }
+/* No persona chosen: the button is just the icon, so the header keeps room for the model */
+.chat-persona-btn:not(.has-persona) .chat-select-name { display: none; }
+.chat-select-btn:hover { background: var(--card); border-color: var(--line); }
+.chat-badge { background: transparent; }
+.chat-status.chat-badge { border-color: var(--line); }
+
+/* Companion */
+.chat-pet { position: relative; flex: none; display: grid; place-items: center; }
+.chat-badges .chat-pet { width: 32px; height: 28px; margin-left: -2px; }
+.chat.no-pet .chat-badges .chat-pet { display: none; }
+.chat-hero { display: grid; place-items: center; padding: 6px 0 2px; }
+.chat.no-pet .chat-hero { display: none; }
+.chat-hero .chat-pet { width: 96px; height: 80px; }
+.chat-pet .blip { --blip-size: inherit; }
+.chat-badges .chat-pet .blip { --blip-size: 30px; }
+@media (prefers-reduced-motion: reduce) {
+  .chat-pet .blip, .chat-pet .blip * { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Messages ---------- */
+.chat-list { gap: 18px; padding: 14px 12px 8px; }
+.msg { gap: 8px; }
+.msg-who { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--muted); }
+.msg-avatar { display: grid; place-items: center; width: 24px; height: 24px; flex: none; border-radius: 50%; background: var(--card); border: 1px solid var(--line); color: var(--ink-2); }
+.msg-avatar .pmark { display: block; }
+.msg-avatar .tool-logo { border-radius: 50%; }
+.msg-who-name { font-size: 11.5px; letter-spacing: .01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.msg[data-role='user'] .msg-body { border-radius: 16px 16px 5px 16px; padding: 10px 14px; border: 1px solid var(--line); }
+.msg[data-role='assistant'] .msg-body { color: var(--ink); }
+.msg[data-role='assistant'] .msg-body.md { padding-left: 0; }
+
+/* Actions under a message: copy, edit and send again, answer again. Hover or focus on desktop, always on touch. */
+.msg-actions { display: flex; gap: 2px; min-height: 0; opacity: 0; transition: opacity var(--t-color); }
+.msg-actions:empty { display: none; }
+.msg[data-role='user'] .msg-actions { justify-content: flex-end; }
+.msg:hover .msg-actions, .msg:focus-within .msg-actions, html.is-touch .msg-actions, html.is-ipad .msg-actions { opacity: 1; }
+.msg-act { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--muted); cursor: pointer; touch-action: manipulation; transition: background-color var(--t-color), color var(--t-color); }
+.msg-act:hover, .msg-act:focus-visible { background: var(--card); color: var(--ink); outline: none; }
+.msg-act[data-done='1'] { color: var(--success); }
+html.is-touch .msg-act, html.is-ipad .msg-act { width: 44px; height: 44px; }
+
+/* Streaming: the caret and a quiet pulse instead of a spinner */
+.chat-pending { display: inline-flex; align-items: center; gap: 8px; padding: 4px 2px; color: var(--muted); font-size: 12.5px; }
+.pending-dots { display: inline-flex; gap: 3px; }
+.pending-dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); animation: chat-dot 1.1s ease-in-out infinite; }
+.pending-dots i:nth-child(2) { animation-delay: .15s; }
+.pending-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes chat-dot { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) { .pending-dots i { animation: none; opacity: .6; } }
+.msg { animation: chat-in .22s var(--ease-out) both; }
+@keyframes chat-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .msg { animation: none; } }
+
+/* ---------- Code blocks: a header with the language and the copy button ---------- */
+.md pre { border-radius: 12px; padding: 12px 14px; }
+.md pre[data-lang] { padding-top: 38px; }
+.md pre[data-lang]::before {
+  content: attr(data-lang);
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+  border-radius: 12px 12px 0 0;
+  background: var(--card);
+  color: var(--muted);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .03em;
+  text-transform: lowercase;
+}
+.md pre[data-lang] .code-copy { top: 2px; right: 4px; border-color: transparent; background: transparent; opacity: 1; }
+.md pre[data-lang] .code-copy:hover { background: var(--bg); color: var(--ink); }
+.md code { border: 1px solid var(--line); }
+.md pre code { border: 0; }
+
+/* ---------- Tool cards ---------- */
+.msg-steps { gap: 6px; }
+.step.frame.sm, .thought.frame.sm { --r: 12px; --p: 2px; }
+.step-head { min-height: 34px; gap: 8px; padding: 0 10px; }
+.step-mark { width: 20px; height: 20px; flex: none; border-radius: 6px; background: color-mix(in srgb, var(--tool, var(--ink)) 10%, transparent); color: var(--tool, var(--ink-2)); }
+.step-mark .tool-logo { opacity: 1; }
+.step-state { display: inline-flex; align-items: center; gap: 6px; }
+.step-state::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex: none; }
+.step[data-status='running'] .step-state::before, .step[data-status='pending'] .step-state::before { background: var(--accent); animation: pulse 1s ease-in-out infinite; }
+.step[data-status='done'] .step-state::before { background: var(--success); }
+.step[data-status='error'] .step-state::before { background: var(--danger); }
+.step[data-status='waiting'] .step-state::before { background: var(--warn-text); }
+.step[data-status='running'] { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.step[data-status='error'] { border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.step[data-status='waiting'] { border-color: color-mix(in srgb, var(--warn-text) 45%, var(--line)); }
+.step-head::after { content: ''; width: 14px; height: 14px; flex: none; background: var(--muted); opacity: .7; -webkit-mask: var(--ic-chevron) center / contain no-repeat; mask: var(--ic-chevron) center / contain no-repeat; transition: transform .18s var(--ease-out); }
+details[open] > .step-head::after { transform: rotate(90deg); }
+html.is-touch .step-head, html.is-ipad .step-head { min-height: 44px; }
+
+/* ---------- Reasoning card (Thought process) ---------- */
+.thought-head { min-height: 32px; gap: 8px; }
+.thought[data-state='thinking'] .thought-dot { animation: pulse 1s ease-in-out infinite; }
+.thought[data-state='thinking'] { border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+.thought-body { max-height: 240px; overflow: auto; font-size: 12px; line-height: 1.6; color: var(--ink-2); }
+html.is-touch .thought-head, html.is-ipad .thought-head { min-height: 44px; }
+
+/* ---------- Composer ---------- */
+.chat-composer { margin: 6px 10px 8px; }
+.chat-composer-well { border-radius: 14px; }
+.chat-composer:focus-within { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent); border-radius: var(--r-frame); }
+.chat-input::placeholder { color: var(--muted); }
+.chat-model-chip, .chat-mode-chip { background: transparent; border-color: var(--line); }
+@container (max-width: 330px) {
+  .chat-model-chip .chip-sep, .chat-model-chip .chip-effort { display: none; }
+}
+
+/* ---------- Voice input: the microphone next to Send, and the listening strip ---------- */
+.chat-mic {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-right: 2px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink-2);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color var(--t-color), color var(--t-color), border-color var(--t-color);
+}
+.chat-mic:hover, .chat-mic:focus-visible { border-color: var(--line-strong); color: var(--ink); outline: none; }
+html.is-touch .chat-mic, html.is-ipad .chat-mic { width: 44px; height: 44px; }
+.chat-mic[data-state='listening'] { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 55%, var(--line)); background: color-mix(in srgb, var(--danger) 10%, var(--card)); }
+.chat-mic[data-state='listening']::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--danger); opacity: 0; animation: mic-ring 1.4s ease-out infinite; }
+.chat-mic[data-state='processing'] { color: var(--muted); }
+.chat-mic[data-state='processing']::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--ink); animation: mic-spin .8s linear infinite; }
+.chat-mic[data-state='error'] { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, var(--line)); }
+@keyframes mic-ring { 0% { transform: scale(.85); opacity: .7; } 100% { transform: scale(1.25); opacity: 0; } }
+@keyframes mic-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .chat-mic[data-state='listening']::before { animation: none; opacity: .5; inset: -3px; }
+  .chat-mic[data-state='processing']::after { animation-duration: 2s; }
+}
+
+.chat-voice { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 4px 6px 4px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink-2); font-size: 12.5px; }
+.chat-voice[hidden] { display: none; }
+.chat-voice-bars { display: flex; align-items: center; gap: 2px; height: 24px; flex: none; }
+.chat-voice-bars i { display: block; width: 3px; height: calc(4px + var(--l, 0) * 18px); border-radius: 2px; background: var(--danger); opacity: .85; transition: height .08s linear; }
+.chat-voice[data-state='processing'] .chat-voice-bars i { height: 4px; background: var(--muted); animation: mic-dots 1s ease-in-out infinite; }
+.chat-voice[data-state='processing'] .chat-voice-bars i:nth-child(3n) { animation-delay: .2s; }
+.chat-voice[data-state='processing'] .chat-voice-bars i:nth-child(3n + 1) { animation-delay: .4s; }
+.chat-voice.is-pulse .chat-voice-bars i { height: 6px; animation: mic-dots 1.1s ease-in-out infinite; }
+.chat-voice.is-pulse .chat-voice-bars i:nth-child(even) { animation-delay: .35s; }
+@keyframes mic-dots { 0%, 100% { opacity: .3; transform: scaleY(.6); } 50% { opacity: 1; transform: scaleY(2.4); } }
+.chat-voice-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-voice-engine { margin-left: 8px; color: var(--muted); font-size: 11px; }
+@container (max-width: 330px) { .chat-voice-engine { display: none; } }
+.chat-voice-time { flex: none; color: var(--muted); font-size: 11.5px; }
+.chat-voice-cancel { display: grid; place-items: center; width: 28px; height: 28px; flex: none; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--muted); cursor: pointer; }
+.chat-voice-cancel:hover, .chat-voice-cancel:focus-visible { background: var(--bg); color: var(--ink); outline: none; }
+html.is-touch .chat-voice-cancel, html.is-ipad .chat-voice-cancel { width: 44px; height: 44px; }
+.chat-voice[data-state='error'] { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); white-space: normal; }
+.chat-voice[data-state='error'] .chat-voice-bars, .chat-voice[data-state='error'] .chat-voice-time { display: none; }
+.chat-voice[data-state='error'] .chat-voice-text { white-space: normal; padding: 4px 0; }
+@media (prefers-reduced-motion: reduce) { .chat-voice-bars i, .chat-voice.is-pulse .chat-voice-bars i { animation: none; } }
+
+/* ---------- Welcome (empty state) ---------- */
+.chat-welcome { padding: 10px 6px 6px; gap: 10px; text-align: left; }
+.chat-hero + .eyebrow { text-align: center; }
+.welcome-card { transition: transform .18s var(--ease-out), box-shadow .18s var(--ease-out); }
+.welcome-card:hover { transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { .welcome-card { transition: none; } .welcome-card:hover { transform: none; } }
+
+/* On-screen keyboard open: the screen is short, the hero and the companion row step aside */
+html.kb-open .chat-hero { display: none; }
+
+/* ---------- Icons-only chat on iPad: header stays on one line ---------- */
+html.icons-only .chat-model-chip .chip-provider { max-width: 12ch; }
+html.icons-only .chat-mode-chip span { display: none; }
+html.icons-only .chat-mode-chip { padding: 0 9px; }
+
+/* ---------- Team Mode: the agents above the input ---------- */
+.chat-team-bar { display: flex; flex-wrap: wrap; gap: 4px; }
+.chat-team-bar[hidden] { display: none; }
+.team-chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px 0 6px; border: 1px solid color-mix(in srgb, var(--agent, var(--ink)) 30%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--agent, var(--ink)) 7%, var(--bg)); color: var(--ink-2); font: 500 12px/1 var(--font); cursor: pointer; touch-action: manipulation; transition: background-color var(--t-color), border-color var(--t-color); }
+.team-chip i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: var(--agent, var(--ink)); background: color-mix(in srgb, var(--agent, var(--ink)) 14%, transparent); font-style: normal; }
+.team-chip:hover, .team-chip:focus-visible { background: color-mix(in srgb, var(--agent, var(--ink)) 14%, var(--bg)); color: var(--ink); outline: none; }
+.team-chip.is-edit { --agent: var(--muted); padding: 0 8px; }
+html.is-touch .team-chip, html.is-ipad .team-chip { height: 40px; padding: 0 14px 0 8px; }
+html.icons-only .team-chip:not(.is-edit) span { display: none; }
+html.icons-only .team-chip { padding: 0 6px; }
+html.icons-only.is-touch .team-chip, html.icons-only.is-ipad .team-chip { width: 44px; height: 44px; padding: 0; justify-content: center; }
+
+/* ---------- Team Mode: Mission Control ---------- */
+.team-routed { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); font-size: 12.5px; color: var(--ink-2); }
+.team-routed[hidden] { display: none; }
+.team-routed-ic { display: grid; place-items: center; color: var(--agent); flex: none; }
+.team-routed-text { flex: 1 1 220px; min-width: 0; }
+
+.team-asks:empty, .team-asks[hidden] { display: none; }
+.team-asks { display: grid; gap: 8px; }
+.team-ask { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--warn-text) 45%, var(--line)); border-left: 3px solid var(--agent); border-radius: 12px; background: color-mix(in srgb, var(--warn-text) 7%, var(--bg)); }
+.team-ask-head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 13px; color: var(--ink); }
+.team-ask-text { color: var(--muted); }
+.team-ask-tool { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 6px; background: var(--card); border: 1px solid var(--line); font-size: 12px; }
+.team-ask-args { margin: 0; font-size: 12px; color: var(--ink-2); overflow-wrap: anywhere; }
+.team-ask-full summary { cursor: pointer; font-size: 11.5px; color: var(--muted); }
+html.is-touch .team-ask-full summary, html.is-ipad .team-ask-full summary { min-height: 44px; display: flex; align-items: center; }
+.team-approval-note { margin: 0; padding: 4px 10px; font-size: 11.5px; color: var(--warn-text); }
+
+.team-agents { display: flex; flex-wrap: wrap; gap: 6px; }
+.team-agent { position: relative; display: inline-flex; align-items: center; gap: 2px; min-width: 0; max-width: 100%; padding: 3px 4px 3px 3px; border: 1px solid color-mix(in srgb, var(--agent) 28%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--agent) 5%, var(--bg)); }
+.team-agent[data-status='unused'] { opacity: .55; border-style: dashed; }
+.team-agent[data-status='waiting'] { border-color: var(--warn-text); box-shadow: 0 0 0 2px color-mix(in srgb, var(--warn-text) 18%, transparent); }
+.team-agent[data-status='failed'] { border-color: color-mix(in srgb, var(--danger) 50%, var(--line)); }
+.team-agent-main { display: inline-flex; align-items: center; gap: 7px; min-width: 0; padding: 3px 8px 3px 4px; border: 0; border-radius: 9px; background: none; color: var(--ink); cursor: pointer; text-align: left; touch-action: manipulation; }
+.team-agent-main:disabled { cursor: default; }
+.team-agent-main:hover:not(:disabled), .team-agent-main:focus-visible { background: color-mix(in srgb, var(--agent) 12%, transparent); outline: none; }
+.team-agent-text { display: grid; gap: 2px; min-width: 0; line-height: 1.15; }
+.team-agent-text strong { font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.team-agent-status { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--muted); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+.team-agent-status i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex: none; }
+.team-agent[data-status='thinking'] .team-agent-status i, .team-agent[data-status='tool'] .team-agent-status i { background: var(--agent); animation: pulse 1s ease-in-out infinite; }
+.team-agent[data-status='waiting'] .team-agent-status i { background: var(--warn-text); }
+.team-agent[data-status='finished'] .team-agent-status i { background: var(--success); }
+.team-agent[data-status='failed'] .team-agent-status i { background: var(--danger); }
+.team-agent[data-status='waiting'] .team-agent-status { color: var(--warn-text); }
+.team-agent-at { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 7px; background: none; color: var(--muted); font-size: 12px; cursor: pointer; touch-action: manipulation; }
+.team-agent-at:hover, .team-agent-at:focus-visible { background: color-mix(in srgb, var(--agent) 14%, transparent); color: var(--ink); outline: none; }
+.team-agent-model { display: none; max-width: 14ch; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; color: var(--muted); }
+@container (min-width: 520px) { .team-agent-model { display: inline; } }
+html.is-touch .team-agent-main, html.is-ipad .team-agent-main { min-height: 44px; }
+html.is-touch .team-agent-at, html.is-ipad .team-agent-at { width: 44px; height: 44px; }
+@media (prefers-reduced-motion: reduce) { .team-agent[data-status='thinking'] .team-agent-status i, .team-agent[data-status='tool'] .team-agent-status i { animation: none; } }
+
+.team-progress { display: grid; gap: 5px; }
+.team-progress[hidden] { display: none; }
+.team-progress-text { font-size: 11.5px; color: var(--muted); }
+.team-progress-bar { display: block; height: 4px; border-radius: 2px; background: var(--card-hover); overflow: hidden; }
+.team-progress-bar i { display: block; height: 100%; width: 0; border-radius: 2px; background: var(--success); transition: width .4s var(--ease-out); }
+
+.team-memory { border: 1px solid var(--line); border-radius: 10px; background: var(--inset); }
+.team-memory[hidden] { display: none; }
+.team-memory > summary { padding: 7px 10px; cursor: pointer; font-size: 11.5px; color: var(--muted); list-style: none; }
+.team-memory > summary::-webkit-details-marker { display: none; }
+html.is-touch .team-memory > summary, html.is-ipad .team-memory > summary { min-height: 44px; display: flex; align-items: center; }
+.team-memory-list { display: grid; gap: 6px; margin: 0; padding: 0 10px 10px; list-style: none; }
+.team-memory-list li { display: grid; gap: 1px; padding-left: 8px; border-left: 2px solid var(--agent); font-size: 12px; color: var(--ink-2); }
+.team-memory-who { font-size: 11px; color: var(--agent); }
+.team-memory-files { font-size: 11px; color: var(--muted); }
+
+/* ---------- Team Mode: agents get their color on the message, the lane and the avatar ---------- */
+.msg.has-team .msg-who .msg-avatar { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.team-mc { box-shadow: none; }
+.team-lead-badge { box-shadow: none; }
+
+/* ---------- Tool cards: app chip, copy buttons, the hint for an app that stopped answering ---------- */
+.step-app { flex: none; padding: 1px 7px; border: 1px solid var(--line); border-radius: 999px; font-size: 10.5px; color: var(--ink-2); background: color-mix(in srgb, var(--tool, var(--ink)) 8%, transparent); white-space: nowrap; }
+.step-label { display: flex; align-items: center; gap: 6px; }
+.step-copy { min-height: 22px; padding: 0 6px; margin-left: auto; opacity: .7; }
+.step-copy:hover { opacity: 1; }
+.step-hint { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--warn-text) 45%, var(--line)); border-radius: 8px; font-family: var(--font); color: var(--ink-2); }
+.step-hint .btn { min-height: 28px; }
+
+/* ---------- Personas and contexts (Settings) ---------- */
+.persona-groups { flex-wrap: wrap; gap: 6px; }
+.persona-groups .btn[data-group] { min-height: 30px; }
+.persona-edit > summary { cursor: pointer; font-size: 12px; color: var(--ink-2); padding: 4px 0; }
+.persona-edit[open] > summary { margin-bottom: 6px; }
+.persona-edit > * + * { margin-top: 8px; }
+.persona-preview { margin: 0; max-height: 220px; overflow: auto; padding: 10px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); white-space: pre-wrap; word-break: break-word; font-size: 12px; line-height: 1.5; }
+.context-list:empty { display: none; }

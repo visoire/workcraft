@@ -1,0 +1,1872 @@
+{
+  "_comment": "The one list of Craft apps and ecosystems. Read by src/ecosystems/catalog.ts (workspace), scripts/fetch-apps.mjs, scripts/check-versions.mjs and scripts/releases.mjs (builds). Versions are NOT here: they live in public/releases.json (the office apps) and public/web-builds.json (the others, written by npm run apps:fetch or apps:import). To add an app: one entry here (and its id in CRAFT_IDS of catalog.ts, which a test keeps equal), an icon in public/assets/craft/<id>.png, then npm run apps:fetch. origin: artcraft = made by the ArtCraft team, community = a community app the ArtCraft launcher lists, independent = a third-party app of independent developers. license is the SPDX id of the app (a GPL app is fetched on the user's machine, never committed, and its licence is shown). channel: release = the repository publishes a web zip (asset, default -web-*.zip) that apps:fetch installs; pages = the app is deployed on GitHub Pages (pages = its URL) and apps:fetch mirrors that site (scripts/mirror-pages.mjs); source = no web release and no Pages app: only built from source (the upstream collection compiles it with patches): apps:fetch cannot get it, but a build folder <id>-web-<version>/ dropped into versions/ is imported like any other. File types come from workcraft-ai crates/agents/src/craft/spec.rs and the opens/imports lists of independent developers tools.yaml; opens = the formats the app is the natural home for, imports = everything else it reads.",
+  "ecosystems": [
+    {
+      "id": "office",
+      "name": "Office & Documents",
+      "blurb": "Documents, spreadsheets, presentations, PDFs and mail. The same file opens in several apps.",
+      "apps": [
+        "wordcraft",
+        "gridcraft",
+        "deckcraft",
+        "pdfcraft",
+        "mailcraft"
+      ],
+      "accent": "#335CFF"
+    },
+    {
+      "id": "notes",
+      "name": "Notes, Text & Maths",
+      "blurb": "Notebooks, plain text and Markdown, matrices and plots.",
+      "apps": [
+        "notecraft",
+        "textcraft",
+        "wordcraft",
+        "matcraft"
+      ],
+      "accent": "#CA64EA"
+    },
+    {
+      "id": "imaging",
+      "name": "Imaging & Photography",
+      "blurb": "Edit photos, develop RAW files and draw vector art.",
+      "apps": [
+        "photocraft",
+        "lightcraft",
+        "lightcraft-classic",
+        "vectorcraft"
+      ],
+      "accent": "#6366F1"
+    },
+    {
+      "id": "paint",
+      "name": "Paint & Pixel Art",
+      "blurb": "Paint, sketch, edit images and draw sprites.",
+      "apps": [
+        "paintcraft",
+        "paintrs",
+        "pixelcraft",
+        "procraft",
+        "firecraft"
+      ],
+      "accent": "#F07A2E"
+    },
+    {
+      "id": "motion",
+      "name": "Video, Motion & Audio",
+      "blurb": "Cut video, animate and mix sound.",
+      "apps": [
+        "filmcraft",
+        "effectcraft",
+        "soundcraft",
+        "anicraft",
+        "picasso-suite",
+        "align"
+      ],
+      "accent": "#7C3AED"
+    },
+    {
+      "id": "music",
+      "name": "Music Production",
+      "blurb": "Compose, record, arrange and mix; read tablature; plan DJ sets.",
+      "apps": [
+        "soundcraft",
+        "retake",
+        "lemon-studio",
+        "honeydew",
+        "suhina",
+        "prowave",
+        "transit",
+        "oxiguitar",
+        "mixstudio"
+      ],
+      "accent": "#84CC16"
+    },
+    {
+      "id": "design",
+      "name": "Design, UI & Publishing",
+      "blurb": "Page layout, interface design and vector illustration.",
+      "apps": [
+        "designcraft",
+        "figcraft",
+        "vectorcraft",
+        "tracedraw"
+      ],
+      "accent": "#EF4444"
+    },
+    {
+      "id": "cad",
+      "name": "3D, CAD & Materials",
+      "blurb": "Drafting, solid modeling, textures and procedural materials.",
+      "apps": [
+        "cadcraft",
+        "texturecraft",
+        "materialcraft",
+        "solidcraft",
+        "subcraft"
+      ],
+      "accent": "#06B6D4"
+    },
+    {
+      "id": "sculpt",
+      "name": "3D Sculpt & Characters",
+      "blurb": "Sculpt, dress and pose 3D characters, then paint their textures.",
+      "apps": [
+        "oxybrush",
+        "clothcraft",
+        "humanmotioncraft",
+        "subcraft",
+        "texturecraft"
+      ],
+      "accent": "#E07A4F"
+    },
+    {
+      "id": "explore",
+      "name": "Explore & Build",
+      "blurb": "Fly around the globe, or study how software works and rebuild it.",
+      "apps": [
+        "earthcraft",
+        "craft-anything"
+      ],
+      "accent": "#11E8C8"
+    }
+  ],
+  "apps": [
+    {
+      "id": "wordcraft",
+      "name": "WordCraft",
+      "kind": "Documents",
+      "accent": "#3B82F6",
+      "repo": "storytold/wordcraft",
+      "folder": "/documents",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Documents in .docx, .odt and .md",
+      "opens": [
+        "docx",
+        "doc",
+        "odt",
+        "rtf",
+        "md",
+        "markdown",
+        "txt",
+        "html",
+        "htm",
+        "tex",
+        "wcraft"
+      ],
+      "imports": [],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "switch",
+        "evidence": "Interface theme in Options; the script sets \"Use system setting\" once"
+      }
+    },
+    {
+      "id": "gridcraft",
+      "name": "GridCraft",
+      "kind": "Spreadsheets",
+      "accent": "#10B981",
+      "repo": "storytold/gridcraft",
+      "folder": "/sheets",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Spreadsheets in .xlsx, .csv with dynamic arrays",
+      "opens": [
+        "xlsx",
+        "xls",
+        "xlsb",
+        "ods",
+        "csv",
+        "tsv",
+        "gcraft"
+      ],
+      "imports": [],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "egui follows prefers-color-scheme"
+      }
+    },
+    {
+      "id": "deckcraft",
+      "name": "DeckCraft",
+      "kind": "Presentations",
+      "accent": "#F97316",
+      "repo": "storytold/deckcraft",
+      "folder": "/presentations",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Presentations in .pptx with vector morphing",
+      "opens": [
+        "pptx",
+        "odp",
+        "deckcraft",
+        "dcraft"
+      ],
+      "imports": [
+        "png",
+        "jpg",
+        "jpeg",
+        "svg"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "switch",
+        "evidence": "own switch in the title bar; the script presses it"
+      }
+    },
+    {
+      "id": "pdfcraft",
+      "name": "PdfCraft",
+      "kind": "PDF",
+      "accent": "#14B8A6",
+      "repo": "storytold/pdfcraft",
+      "folder": "/pdf",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "PDF with deep zoom, local signing and redaction",
+      "opens": [
+        "pdf"
+      ],
+      "imports": [
+        "png",
+        "jpg",
+        "jpeg",
+        "tif",
+        "tiff"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "theme pinned to System by public/craft-theme.js"
+      }
+    },
+    {
+      "id": "photocraft",
+      "name": "PhotoCraft",
+      "kind": "Photos",
+      "accent": "#6366F1",
+      "repo": "storytold/photocraft",
+      "folder": "/images",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Layers, masks, adjustments, brushes and PSD files",
+      "opens": [
+        "pcraft",
+        "psd",
+        "psb",
+        "psdt",
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "gif",
+        "bmp",
+        "tif",
+        "tiff",
+        "tga",
+        "ico",
+        "qoi",
+        "exr",
+        "hdr",
+        "heic",
+        "heif",
+        "avif"
+      ],
+      "imports": [
+        "svg",
+        "svgz",
+        "pbm",
+        "pgm",
+        "ppm",
+        "pam",
+        "pfm",
+        "abr",
+        "grd",
+        "aco",
+        "ase"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "switch",
+        "evidence": "its theme button (top right) cycles Dark, Auto, Light and starts on Dark; the script presses it until it says Auto (the app mirrors the choice into localStorage), then it follows the workspace switch. Measured: dark, auto, light, dark, auto"
+      }
+    },
+    {
+      "id": "lightcraft",
+      "name": "LightCraft",
+      "kind": "RAW photos",
+      "accent": "#0EA5E9",
+      "repo": "storytold/lightcraft",
+      "folder": "/images",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Photo library and RAW development",
+      "opens": [
+        "dng",
+        "cr2",
+        "cr3",
+        "nef",
+        "nrw",
+        "arw",
+        "pef",
+        "orf",
+        "rw2",
+        "raf",
+        "rwl",
+        "raw",
+        "iiq",
+        "crw",
+        "mrw",
+        "x3f",
+        "kdc",
+        "mos",
+        "erf"
+      ],
+      "imports": [
+        "jpg",
+        "jpeg",
+        "png",
+        "tif",
+        "tiff",
+        "webp",
+        "psd",
+        "jxl",
+        "gif",
+        "bmp",
+        "heic",
+        "avif"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "Settings, Appearance: Sync with System, Dark Mode, Light Mode (default Dark)"
+      }
+    },
+    {
+      "id": "vectorcraft",
+      "name": "VectorCraft",
+      "kind": "Vector art",
+      "accent": "#F59E0B",
+      "repo": "storytold/vectorcraft",
+      "folder": "/vectors",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Vector paths, type and artboards",
+      "opens": [
+        "vcraft",
+        "vectorcraft",
+        "drawcraft",
+        "ai",
+        "ait",
+        "eps",
+        "svg",
+        "svgz",
+        "emf",
+        "wmf"
+      ],
+      "imports": [
+        "pdf",
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "tif",
+        "tiff",
+        "bmp",
+        "dxf",
+        "txt",
+        "gpl",
+        "ase"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "named themes with a dark flag; default dark"
+      }
+    },
+    {
+      "id": "filmcraft",
+      "name": "FilmCraft",
+      "kind": "Video",
+      "accent": "#7C3AED",
+      "repo": "storytold/filmcraft",
+      "folder": "/video",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Video editing, color and sound",
+      "opens": [
+        "fcproj",
+        "mp4",
+        "m4v",
+        "mov",
+        "mkv",
+        "webm",
+        "avi",
+        "mxf",
+        "mts",
+        "m2ts",
+        "mpg",
+        "mpeg",
+        "3gp"
+      ],
+      "imports": [
+        "wav",
+        "aif",
+        "aiff",
+        "mp3",
+        "m4a",
+        "aac",
+        "flac",
+        "ogg",
+        "opus",
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "tif",
+        "tiff",
+        "bmp",
+        "srt",
+        "vtt"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true,
+        "keys": "video"
+      },
+      "theme": {
+        "modes": "both",
+        "via": "switch",
+        "evidence": "a moon button in the top bar cycles Dark, Auto, Light and the app starts on Dark every time; the script presses it once to Auto, then it follows the workspace switch. Measured in a panel: light workspace, light app; dark workspace, dark app"
+      }
+    },
+    {
+      "id": "effectcraft",
+      "name": "EffectCraft",
+      "kind": "Motion",
+      "accent": "#EC4899",
+      "repo": "storytold/effectcraft",
+      "folder": "/motion",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Compositions, keyframes, effects and expressions",
+      "opens": [
+        "ecproj"
+      ],
+      "imports": [
+        "mp4",
+        "mov",
+        "m4v",
+        "mkv",
+        "webm",
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "tif",
+        "tiff",
+        "bmp",
+        "exr",
+        "wav",
+        "aif",
+        "aiff",
+        "mp3",
+        "flac",
+        "ogg",
+        "opus",
+        "svg",
+        "pdf",
+        "ai",
+        "eps",
+        "psd",
+        "psb",
+        "gltf",
+        "glb",
+        "obj",
+        "csv",
+        "tsv"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "switch",
+        "evidence": "a moon button in the top bar cycles Dark, Auto, Light and the app starts on Dark every time; the script presses it once to Auto, then it follows the workspace switch. Measured in a panel: light workspace, light app; dark workspace, dark app"
+      }
+    },
+    {
+      "id": "soundcraft",
+      "name": "SoundCraft",
+      "kind": "Audio",
+      "accent": "#84CC16",
+      "repo": "storytold/soundcraft",
+      "folder": "/audio",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Recording, editing and mixing audio",
+      "opens": [
+        "scraft",
+        "wav",
+        "flac",
+        "mp3",
+        "ogg",
+        "aac",
+        "mid",
+        "midi"
+      ],
+      "imports": [
+        "aif",
+        "aiff",
+        "m4a",
+        "opus"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "named themes with a light flag; default dark"
+      }
+    },
+    {
+      "id": "designcraft",
+      "name": "DesignCraft",
+      "kind": "Layout",
+      "accent": "#EF4444",
+      "repo": "storytold/designcraft",
+      "folder": "/layouts",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Page layout and publishing",
+      "opens": [
+        "dscraft",
+        "designcraft",
+        "idml"
+      ],
+      "imports": [
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "tif",
+        "tiff",
+        "bmp",
+        "psd",
+        "svg",
+        "pdf",
+        "ai",
+        "txt",
+        "docx",
+        "rtf",
+        "md",
+        "xlsx",
+        "ase"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "named themes with a dark flag; default dark"
+      }
+    },
+    {
+      "id": "figcraft",
+      "name": "FigCraft",
+      "kind": "Interface design",
+      "accent": "#D946EF",
+      "repo": "storytold/figcraft",
+      "folder": "/interfaces",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Interface design, components and prototypes",
+      "opens": [
+        "fcraft",
+        "fig"
+      ],
+      "imports": [
+        "svg",
+        "png",
+        "jpg",
+        "jpeg"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "measured: follows"
+      }
+    },
+    {
+      "id": "cadcraft",
+      "name": "CADCraft",
+      "kind": "CAD",
+      "accent": "#06B6D4",
+      "repo": "storytold/cadcraft",
+      "folder": "/drawings",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Computer-aided design and drafting",
+      "opens": [
+        "dxf",
+        "dwg"
+      ],
+      "imports": [
+        "svg"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": false
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "Interface theme: system, light or dark; ships on dark"
+      }
+    },
+    {
+      "id": "texturecraft",
+      "name": "TextureCraft",
+      "kind": "3D textures",
+      "accent": "#B45309",
+      "repo": "storytold/texturecraft",
+      "folder": "/textures",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Paint PBR materials on 3D models, bake maps, export textures",
+      "opens": [
+        "tcraft",
+        "tcmat"
+      ],
+      "imports": [
+        "glb",
+        "gltf",
+        "fbx",
+        "obj",
+        "stl",
+        "ply",
+        "usd",
+        "usda",
+        "usdc",
+        "usdz",
+        "mcmat",
+        "mcraft",
+        "png",
+        "jpg",
+        "exr",
+        "hdr"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": false
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "named themes with a dark flag; default dark"
+      }
+    },
+    {
+      "id": "materialcraft",
+      "name": "MaterialCraft",
+      "kind": "Materials",
+      "accent": "#65A30D",
+      "repo": "storytold/materialcraft",
+      "folder": "/materials",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Tileable procedural materials from nodes",
+      "opens": [
+        "mcraft",
+        "mcmat",
+        "sbs"
+      ],
+      "imports": [
+        "png",
+        "jpg",
+        "tga",
+        "tif",
+        "exr",
+        "hdr"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": false
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "named themes with a dark flag; default dark"
+      }
+    },
+    {
+      "id": "solidcraft",
+      "name": "SolidCraft",
+      "kind": "3D CAD",
+      "accent": "#EAB308",
+      "repo": "tangency-labs/solidcraft",
+      "folder": "/models",
+      "origin": "community",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Parametric 3D modeling with sketches, constraints and solids",
+      "opens": [
+        "sc",
+        "solidcraft",
+        "solvecraft",
+        "step",
+        "stp",
+        "iges",
+        "igs",
+        "stl",
+        "3mf",
+        "obj"
+      ],
+      "imports": [],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "theme crate with light and dark; measured in a panel: dark (the standalone page was still loading and looked light)"
+      }
+    },
+    {
+      "id": "mailcraft",
+      "name": "MailCraft",
+      "kind": "Mail",
+      "accent": "#28A8EA",
+      "repo": "UCS-Care-Group/mailcraft",
+      "folder": "/mail",
+      "origin": "community",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Mail, calendar, contacts and tasks",
+      "opens": [
+        "mailcraft",
+        "eml",
+        "mbox",
+        "ics",
+        "vcf"
+      ],
+      "imports": [
+        "pst"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "measured: follows"
+      }
+    },
+    {
+      "id": "anicraft",
+      "name": "AniCraft",
+      "kind": "2D animation",
+      "accent": "#2E66F0",
+      "repo": "storytold/anicraft",
+      "folder": "/animation",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "2D vector animation with a timeline, layers, keyframes and tweens",
+      "opens": [
+        "anicraft",
+        "fla",
+        "xfl"
+      ],
+      "imports": [
+        "svg",
+        "png",
+        "jpg",
+        "jpeg"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "Visuals::dark only"
+      }
+    },
+    {
+      "id": "craft-anything",
+      "name": "Craft Anything",
+      "kind": "Reverse engineering",
+      "accent": "#3B6FE0",
+      "repo": "storytold/craft-anything",
+      "folder": "/studies",
+      "origin": "artcraft",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Study how a program, website or file works, then rebuild it",
+      "opens": [
+        "cany"
+      ],
+      "imports": [
+        "wasm",
+        "apk",
+        "asar",
+        "dex",
+        "jar",
+        "exe",
+        "dll",
+        "so",
+        "dylib"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": false
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "viewer sets ThemePreference::Dark"
+      }
+    },
+    {
+      "id": "tracedraw",
+      "name": "TraceDraw",
+      "kind": "Vector drawing",
+      "accent": "#5AC8FF",
+      "repo": "tracedraw/tracedraw",
+      "folder": "/drawings-vector",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "pages",
+      "pages": "https://tracedraw.github.io/tracedraw/",
+      "blurb": "Vector illustration with a classic desktop workflow, opening and saving .cdr files",
+      "opens": [
+        "cdr",
+        "cdt",
+        "cdrt",
+        "cmx",
+        "tdraw"
+      ],
+      "imports": [
+        "svg",
+        "svgz",
+        "pdf",
+        "ai",
+        "eps",
+        "ps",
+        "prn",
+        "dxf",
+        "emf",
+        "wmf",
+        "plt",
+        "hpgl",
+        "hgl",
+        "psd",
+        "psb",
+        "txt",
+        "rtf",
+        "docx",
+        "png",
+        "jpg",
+        "jpeg",
+        "bmp",
+        "gif",
+        "webp",
+        "tif",
+        "tiff"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "light",
+        "evidence": "theme module with Light and Dark; ships on light"
+      }
+    },
+    {
+      "id": "lightcraft-classic",
+      "name": "LightCraft Classic",
+      "kind": "RAW catalog",
+      "accent": "#31A8FF",
+      "repo": "emmertex/chromaforge",
+      "folder": "/images",
+      "origin": "independent",
+      "license": "MIT",
+      "channel": "release",
+      "asset": "^chromaforge-web-.*\\.zip$",
+      "blurb": "Catalog, Develop, Map, Book, Slideshow, Print and Web modules",
+      "opens": [
+        "dng",
+        "cr2",
+        "cr3",
+        "nef",
+        "nrw",
+        "arw",
+        "pef",
+        "orf",
+        "rw2",
+        "raf",
+        "rwl",
+        "raw",
+        "iiq",
+        "crw",
+        "mrw",
+        "x3f",
+        "kdc",
+        "mos",
+        "erf"
+      ],
+      "imports": [
+        "jpg",
+        "jpeg",
+        "png",
+        "tif",
+        "tiff",
+        "webp",
+        "psd",
+        "jxl",
+        "gif",
+        "bmp",
+        "heic",
+        "avif"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "light and dark themes in the source; default dark; the build panics at startup in the panel (std::process::id), so the look was not measured"
+      }
+    },
+    {
+      "id": "firecraft",
+      "name": "FireCraft",
+      "kind": "Screen graphics",
+      "accent": "#E3D21E",
+      "repo": "aliasfoxkde/FireCraft",
+      "folder": "/screens",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "release",
+      "blurb": "Vector and bitmap screen graphics, symbols, slices and real Fireworks PNGs",
+      "opens": [
+        "png"
+      ],
+      "imports": [
+        "svg",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured in a panel: dark only; no dark or light switch in the source (the standalone page was still loading)"
+      }
+    },
+    {
+      "id": "paintcraft",
+      "name": "PaintCraft",
+      "kind": "Simple paint",
+      "accent": "#1E90F5",
+      "repo": "replicraft/PaintCraft",
+      "folder": "/paint",
+      "origin": "independent",
+      "license": "MIT",
+      "channel": "source",
+      "blurb": "Pencil, brushes, fills, shapes, text, selections and layers, in the classic Paint look",
+      "opens": [
+        "pcnd",
+        "png",
+        "bmp",
+        "jpg",
+        "jpeg"
+      ],
+      "imports": [],
+      "traits": {
+        "weight": "light",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "settings theme preference (system, light, dark); ships on dark; did not finish starting within 60 s in the panel, so the look was not measured"
+      }
+    },
+    {
+      "id": "paintrs",
+      "name": "Paint.RS",
+      "kind": "Image editing",
+      "accent": "#F74C00",
+      "repo": "daijro/paint.rs",
+      "folder": "/images",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "release",
+      "blurb": "Layers, adjustments, effects and plugins",
+      "opens": [
+        "png",
+        "jpg",
+        "jpeg",
+        "bmp",
+        "gif",
+        "webp",
+        "tif",
+        "tiff"
+      ],
+      "imports": [],
+      "traits": {
+        "weight": "medium",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "measured: follows"
+      }
+    },
+    {
+      "id": "procraft",
+      "name": "ProCraft",
+      "kind": "Digital painting",
+      "accent": "#F07A2E",
+      "repo": "artcraft-android/procraft",
+      "folder": "/paintings",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "source",
+      "blurb": "Pressure brushes, layers with blend modes, adjustments, selections, transforms and animation",
+      "opens": [
+        "procraft",
+        "procreate",
+        "psd",
+        "psb",
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "gif",
+        "bmp",
+        "tif",
+        "tiff"
+      ],
+      "imports": [
+        "brush",
+        "brushset",
+        "abr",
+        "gbr",
+        "gih",
+        "vbr",
+        "kpp",
+        "bundle",
+        "sut",
+        "swatches",
+        "ase",
+        "aco",
+        "icc"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true,
+        "keys": "paint"
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured on a real GPU (WebGPU) in a panel: starts in about 10 s, dark only; no light theme in the source"
+      }
+    },
+    {
+      "id": "pixelcraft",
+      "name": "PixelCraft",
+      "kind": "Pixel art",
+      "accent": "#56C9B8",
+      "repo": "asad-albadi/PixelCraft",
+      "folder": "/pixel",
+      "origin": "independent",
+      "license": "MIT",
+      "channel": "source",
+      "blurb": "Pixel art, sprites and animation, with frames, layers and tiles",
+      "opens": [
+        "pixel",
+        "aseprite",
+        "ase",
+        "png",
+        "apng",
+        "gif",
+        "bmp"
+      ],
+      "imports": [
+        "ora",
+        "tmj",
+        "tsj",
+        "json"
+      ],
+      "traits": {
+        "weight": "light",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "measured: follows"
+      }
+    },
+    {
+      "id": "notecraft",
+      "name": "NoteCraft",
+      "kind": "Notebooks",
+      "accent": "#CA64EA",
+      "repo": "AlienTechSoftware/notecraft",
+      "folder": "/notes",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "source",
+      "blurb": "Notebooks, sections and pages for notes, kept as plain folders of HTML and Markdown pages",
+      "opens": [],
+      "imports": [
+        "html",
+        "md"
+      ],
+      "traits": {
+        "weight": "light",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "measured: follows"
+      }
+    },
+    {
+      "id": "textcraft",
+      "name": "TextCraft",
+      "kind": "Text",
+      "accent": "#4CC2FF",
+      "repo": "cmspeedau/NoteCraft",
+      "folder": "/text",
+      "origin": "independent",
+      "license": "MIT",
+      "channel": "source",
+      "blurb": "A fast, modern text and Markdown editor with tabs",
+      "opens": [
+        "txt",
+        "md",
+        "markdown",
+        "log"
+      ],
+      "imports": [
+        "ini",
+        "cfg",
+        "conf",
+        "json",
+        "xml",
+        "yaml",
+        "yml",
+        "toml",
+        "csv",
+        "tsv",
+        "html",
+        "htm",
+        "css",
+        "js"
+      ],
+      "traits": {
+        "weight": "light",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "palette with a dark flag; default dark"
+      }
+    },
+    {
+      "id": "matcraft",
+      "name": "MatCraft",
+      "kind": "Maths",
+      "accent": "#E16737",
+      "repo": "NibrasAz7/matcraft",
+      "folder": "/maths",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "source",
+      "blurb": "Matrices, .m scripts, a command window and 2D and 3D plots",
+      "opens": [
+        "m"
+      ],
+      "imports": [
+        "csv",
+        "tsv",
+        "txt"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": false
+      },
+      "theme": {
+        "modes": "light",
+        "via": "fixed",
+        "evidence": "measured: light only"
+      }
+    },
+    {
+      "id": "picasso-suite",
+      "name": "Picasso Suite",
+      "kind": "Video editing",
+      "accent": "#E8452C",
+      "repo": "fabox-os/Picasso-Suite",
+      "folder": "/video",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "source",
+      "blurb": "Cut and edit video on a multi-track timeline, with linked picture and sound",
+      "opens": [
+        "pcsp"
+      ],
+      "imports": [
+        "mp4",
+        "m4v",
+        "mov",
+        "webm",
+        "mkv",
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "bmp",
+        "wav",
+        "mp3",
+        "m4a",
+        "aac",
+        "flac",
+        "ogg",
+        "opus"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "light and dark visuals in the source; the web build stops at startup (std::time), so only the source was read; the build panics at startup in the panel too"
+      }
+    },
+    {
+      "id": "align",
+      "name": "Align",
+      "kind": "Audio sync",
+      "accent": "#7C6CF7",
+      "repo": "FedyaLight/align",
+      "folder": "/sync",
+      "origin": "independent",
+      "license": "GPL-3.0-only",
+      "channel": "source",
+      "blurb": "Sync camera footage and separately recorded audio by sound and timecode, then export for your editor",
+      "opens": [],
+      "imports": [
+        "mov",
+        "mp4",
+        "m4v",
+        "wav",
+        "wave",
+        "bwf",
+        "aif",
+        "aiff",
+        "aifc",
+        "mp3",
+        "m4a",
+        "aac",
+        "flac"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "css",
+        "evidence": "CSS @media (prefers-color-scheme): followed the OS until the CSS bridge"
+      }
+    },
+    {
+      "id": "subcraft",
+      "name": "SubCraft",
+      "kind": "3D painting",
+      "accent": "#FF7A1A",
+      "repo": "Aalzard/subcraft",
+      "folder": "/sub",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "pages",
+      "pages": "https://aalzard.github.io/subcraft/",
+      "blurb": "Paint 3D models with layered materials, masks and textures",
+      "opens": [],
+      "imports": [],
+      "traits": {
+        "weight": "heavy",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": false
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only; no light theme in the source"
+      }
+    },
+    {
+      "id": "clothcraft",
+      "name": "ClothCraft",
+      "kind": "Cloth",
+      "accent": "#039299",
+      "repo": "erythrofr/ClothCraft",
+      "folder": "/cloth",
+      "origin": "independent",
+      "license": "MIT",
+      "channel": "source",
+      "blurb": "Draw garment patterns, sew them and drape them on an avatar with a cloth simulation",
+      "opens": [],
+      "imports": [
+        "json",
+        "obj",
+        "gltf",
+        "glb",
+        "dxf",
+        "svg"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "light",
+        "evidence": "prefs.theme; default light"
+      }
+    },
+    {
+      "id": "humanmotioncraft",
+      "name": "HumanMotionCraft",
+      "kind": "Character motion",
+      "accent": "#E8743B",
+      "repo": "YalKouassi/HumanMotionCraft",
+      "folder": "/motion-capture",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "source",
+      "blurb": "Keyframe a humanoid rig with IK and physics, and fill between poses with an in-betweener",
+      "opens": [],
+      "imports": [
+        "json"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "Theme enum Dark and Light; default dark"
+      }
+    },
+    {
+      "id": "oxybrush",
+      "name": "OxyBrush",
+      "kind": "Sculpting",
+      "accent": "#E07A4F",
+      "repo": "crisprintsstuff/OxyBrush",
+      "folder": "/sculpts",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "source",
+      "blurb": "Sculpt 3D models like digital clay, with subdivision levels, dynamic detail and ZBrush .ztl import",
+      "opens": [
+        "oxb",
+        "ztl",
+        "zpr"
+      ],
+      "imports": [
+        "obj",
+        "stl"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "pressure",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "own",
+        "look": "dark",
+        "evidence": "Visuals light and dark in the settings; default dark; not measurable in the headless test browser (no WebGPU adapter); the panel offers Load with WebGL2"
+      }
+    },
+    {
+      "id": "retake",
+      "name": "Retake",
+      "kind": "Audio editing",
+      "accent": "#35D0AE",
+      "repo": "geekcastradio/altered-audio-editor",
+      "folder": "/recordings",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "source",
+      "blurb": "Multitrack and waveform audio editing for podcasts and voiceover",
+      "opens": [
+        "altaudio",
+        "sesx"
+      ],
+      "imports": [
+        "wav",
+        "wave",
+        "aif",
+        "aiff",
+        "aifc",
+        "flac",
+        "mp3",
+        "m4a",
+        "aac",
+        "alac",
+        "ogg",
+        "oga",
+        "opus",
+        "zip"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only; no light theme in the source"
+      }
+    },
+    {
+      "id": "lemon-studio",
+      "name": "Lemon Studio",
+      "kind": "Music production",
+      "accent": "#F8D84A",
+      "repo": "daijro/Lemon-Studio-web",
+      "folder": "/songs",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "release",
+      "asset": "^lemon-studio-web\\.zip$",
+      "isolated": true,
+      "blurb": "Compose and arrange music with a piano roll, mixer and built-in instruments",
+      "opens": [],
+      "imports": [],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": false
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only; not measurable in the headless test browser (needs cross-origin isolation; the panel offers Enable and reload)"
+      }
+    },
+    {
+      "id": "honeydew",
+      "name": "Honeydew",
+      "kind": "Music sketching",
+      "accent": "#CDE397",
+      "repo": "daijro/honeydew",
+      "folder": "/songs",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "release",
+      "blurb": "Compose, sequence and mix music with built-in instruments",
+      "opens": [
+        "flm",
+        "mid",
+        "midi"
+      ],
+      "imports": [
+        "flp",
+        "zip"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only; no light theme in the source"
+      }
+    },
+    {
+      "id": "suhina",
+      "name": "Suhina",
+      "kind": "Live music",
+      "accent": "#FFD97D",
+      "repo": "suhina-daw/suhina-daw",
+      "folder": "/sessions",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "source",
+      "blurb": "Launch clips, arrange and mix music with built-in instruments and effects",
+      "opens": [
+        "suhina",
+        "als"
+      ],
+      "imports": [
+        "wav",
+        "aif",
+        "aiff",
+        "flac",
+        "mp3",
+        "ogg",
+        "mid",
+        "midi"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only"
+      }
+    },
+    {
+      "id": "prowave",
+      "name": "Pro Wave",
+      "kind": "Music arranging",
+      "accent": "#4FB0F6",
+      "repo": "fabox-os/Pro-Wave",
+      "folder": "/sessions",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "source",
+      "blurb": "Arrange, edit and mix music with software instruments, a piano roll and a mixer",
+      "opens": [
+        "prowave"
+      ],
+      "imports": [
+        "wav",
+        "wave",
+        "aif",
+        "aiff",
+        "aifc",
+        "flac"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only; no light theme in the source"
+      }
+    },
+    {
+      "id": "oxiguitar",
+      "name": "OxiGuitar",
+      "kind": "Tablature",
+      "accent": "#3F9D65",
+      "repo": "mateusrdp/oxiguitar",
+      "folder": "/tabs",
+      "origin": "independent",
+      "license": "GPL-3.0-or-later",
+      "channel": "source",
+      "blurb": "Read, write and play guitar tablature and scores",
+      "opens": [
+        "gp",
+        "gpx",
+        "gp5",
+        "gp4",
+        "gp3"
+      ],
+      "imports": [],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "measured: follows"
+      }
+    },
+    {
+      "id": "transit",
+      "name": "Transit",
+      "kind": "Music production",
+      "accent": "#4CB1F0",
+      "repo": "transit-audio/transit",
+      "folder": "/songs",
+      "origin": "independent",
+      "license": "MIT OR Apache-2.0",
+      "channel": "source",
+      "blurb": "Arrange, record and mix music with a piano roll, mixer and built-in instruments",
+      "opens": [
+        "transit",
+        "transitz"
+      ],
+      "imports": [
+        "wav",
+        "wave",
+        "aif",
+        "aiff",
+        "flac",
+        "mp3",
+        "ogg",
+        "m4a",
+        "mid",
+        "midi"
+      ],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "both",
+        "via": "media",
+        "evidence": "measured: follows"
+      }
+    },
+    {
+      "id": "mixstudio",
+      "name": "MixStudio",
+      "kind": "DJ mixes",
+      "accent": "#E8E000",
+      "repo": "soulspin/MixStudio",
+      "folder": "/mixes",
+      "origin": "independent",
+      "license": "MIT",
+      "channel": "source",
+      "blurb": "Plan DJ mixes on a timeline, with beatmatched transitions, key lock and effects",
+      "opens": [],
+      "imports": [
+        "json",
+        "mp3",
+        "wav",
+        "wave",
+        "flac",
+        "ogg",
+        "oga",
+        "m4a",
+        "mp4",
+        "aac",
+        "alac",
+        "aif",
+        "aiff",
+        "aifc"
+      ],
+      "traits": {
+        "weight": "medium",
+        "pen": "precise",
+        "audio": true,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only; no light theme in the source"
+      }
+    },
+    {
+      "id": "earthcraft",
+      "name": "EarthCraft",
+      "kind": "Globe",
+      "accent": "#11E8C8",
+      "repo": "therichronicles/EarthCraft",
+      "folder": "/places",
+      "origin": "independent",
+      "license": "MIT",
+      "channel": "source",
+      "blurb": "Fly around a 3D globe of satellite imagery, with live weather, ships, satellites and your own places",
+      "opens": [
+        "kml",
+        "kmz",
+        "earthplanet"
+      ],
+      "imports": [],
+      "traits": {
+        "weight": "heavy",
+        "pen": "precise",
+        "audio": false,
+        "needsFiles": true
+      },
+      "theme": {
+        "modes": "dark",
+        "via": "fixed",
+        "evidence": "measured: dark only; no light theme in the source; the build panics at startup in the panel and its map data needs the internet, which the workspace blocks"
+      }
+    }
+  ]
+}

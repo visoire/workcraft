@@ -1,0 +1,3 @@
+interface:
+  display_name: "CADCraft"
+  short_description: "AutoCAD-style CAD and drafting app: DXF/DWG, layers, dimensions, MCP/CLI automation"

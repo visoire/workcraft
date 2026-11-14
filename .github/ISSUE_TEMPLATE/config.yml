@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Try WorkCraft in the browser
+    url: https://workcraft.cc/app/
+    about: Nothing to install. Check there first whether a problem is in the browser version or only in your local setup.
+  - name: Documentation
+    url: https://github.com/visoire/workcraft/blob/main/docs/README.md
+    about: Where to start, by role (user, contributor, maintainer), plus the Quick start in the README.
+  - name: Questions and ideas (Discussions)
+    url: https://github.com/visoire/workcraft/discussions
+    about: Ask a question or share an idea before you open an issue.
+  - name: Security vulnerability
+    url: https://github.com/visoire/workcraft/security/advisories/new
+    about: Please report security problems privately, never in a public issue.
+  - name: A bug inside WordCraft, GridCraft, DeckCraft or PdfCraft
+    url: https://github.com/storytold
+    about: Problems in the apps themselves belong to their own repositories under storytold.

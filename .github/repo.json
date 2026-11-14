@@ -1,0 +1,15 @@
+{
+  "_comment": "Read by scripts/publish.ps1 and publish.sh (meta). Edit here, then run: scripts/publish.ps1 meta -Execute",
+  "repo": "visoire/workcraft",
+  "visibility": "public",
+  "default_branch": "main",
+  "description": "Alpha: a unified local-first workspace for documents, spreadsheets, presentations and PDFs with a private AI assistant (Ollama or your own keys, MCP). Browser and iPadOS. MIT OR Apache-2.0.",
+  "homepage": "https://workcraft.cc/",
+  "topics": [
+    "workcraft", "workspace", "local-first", "privacy", "ollama", "ai-assistant", "mcp", "model-context-protocol", "webassembly",
+    "webgpu", "documents", "spreadsheets", "presentations", "pdf", "typescript", "ipados", "open-source", "alpha"
+  ],
+  "features": { "issues": true, "discussions": true, "wiki": false, "projects": false },
+  "short_description": "A local-first workspace for documents, spreadsheets, slides and PDFs with a private AI assistant.",
+  "long_description": "WorkCraft is a unified, local-first workspace in the browser: WordCraft, GridCraft, DeckCraft and PdfCraft side by side next to a code editor, a terminal and an AI assistant that works across every file through MCP. Run models locally with Ollama or bring your own API keys. Team Mode, 16 Craft apps in ready-made workspaces, iPadOS and Apple Pencil support. No account, no telemetry. Alpha, MIT OR Apache-2.0."
+}

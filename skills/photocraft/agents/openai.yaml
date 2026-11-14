@@ -1,0 +1,3 @@
+interface:
+  display_name: "PhotoCraft"
+  short_description: "Drive PhotoCraft, the Photoshop-style Rust image editor with real PSD read/write"
