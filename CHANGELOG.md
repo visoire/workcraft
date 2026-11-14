@@ -4,9 +4,23 @@ All notable changes to WorkCraft. The format follows [Keep a Changelog](https://
 numbers follow [Semantic Versioning](https://semver.org/).
 
 **Alpha phase.** WorkCraft is in its alpha phase. Versions look like `0.1.0-alpha.N`. There is no stable release yet, and settings,
-data formats and tools may change between alphas. Every change goes under `## [Unreleased]
+data formats and tools may change between alphas. Every change goes under `## [Unreleased]` first; the maintainer turns it into a
+numbered entry when a release is cut ([docs/PUBLISHING.md](docs/PUBLISHING.md)).
 
-Nothing yet. Add a line here with every change that a user could notice.
+**Why the numbering starts at `0.1.0-alpha.1`.** This is the first public release, and the numbers start fresh. A `1.0` would promise
+a stable surface the project does not have yet, and the old internal history of this repository used `1.0.0-alpha.N` numbers and carries a
+`v1.0.0` tag, which `1.0.0-alpha.1` would sort below. `0.1.0-alpha.1` is a clean start; `1.0.0` is for the day the maintainer calls the project
+stable. The long internal changelog from before the first public release is not part of this repository.
+
+## [Unreleased]
+
+### Changed
+
+- **Documentation brought up to date for the 44 apps.** The README, the in-app documentation, ARCHITECTURE, the iPad guides, SECURITY, SOURCES and the repository description no longer
+  speak of four apps only; they explain that the repository holds the four office apps, that all 44 apps open in the browser at [workcraft.cc/app](https://workcraft.cc/app/) and that
+  `npm run apps:fetch` installs the other 40 on your own computer. The in-app documentation says "WorkCraft 0.1 (alpha)" instead of "1.0".
+- **Legal notice.** [docs/LEGAL.md](docs/LEGAL.md) covers all 44 apps: their separation from the workspace, where each is distributed from, the hosted browser version, and Appendix A with the
+  author, licence and source repository of every app (ten are GPL-3.0). Date: November 14, 2026.
 
 ## [0.1.0-alpha.1] - 2026-11-14
 

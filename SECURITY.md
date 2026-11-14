@@ -39,5 +39,5 @@ fast as one person can.
   kept in memory until you reload (storing it in the browser is an opt-in behind a warning).
 
 In scope: WorkCraft frontend (also the hosted browser version), the Node server, the MCP server and tools, home network pairing.
-Out of scope: the four engines themselves (report to their repositories under
-[github.com/storytold](https://github.com/storytold)) and models or providers you connect.
+Out of scope: the apps themselves, such as WordCraft or PhotoCraft (report to their own repositories: the ArtCraft apps under
+[github.com/storytold](https://github.com/storytold), the others as listed in [docs/LEGAL.md](docs/LEGAL.md), Appendix A) and models or providers you connect.

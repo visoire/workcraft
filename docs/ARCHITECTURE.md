@@ -9,7 +9,7 @@ WorkCraft has two parts that always run on the same machine (or on your home net
 
 | Part | Runs in | Built with | Does |
 | :--- | :--- | :--- | :--- |
-| **Frontend** | your browser | strict TypeScript, Vite | the workspace, the four apps as WebAssembly panels, the code editor, the chat, the MCP orchestrator |
+| **Frontend** | your browser | strict TypeScript, Vite | the workspace, the apps (44 in the catalog) as WebAssembly panels, the code editor, the chat, the MCP orchestrator |
 | **Backend** | Node.js 22+ on your computer | TypeScript, Hono | files and projects, the terminal, the AI router, the MCP server and the MCP client (your servers, plugins and the Craft apps), skills, cloud sync, search, memory, snapshots, the audit log |
 
 The apps (44 in the catalog: WordCraft, GridCraft, DeckCraft and PdfCraft ship with the repository, the others are added with `npm run apps:import` or
@@ -117,7 +117,7 @@ None of this is ever part of the repository.
 
 When `/api/health` does not answer, `src/app/offline.ts` serves the same `/api` paths from IndexedDB:
 projects, files, chats, layout and settings. Files of 128 KB and more go to the Origin Private File System
-through a worker (`src/ipados/opfs.ts`); IndexedDB keeps the metadata and a blob id. The four apps, the
+through a worker (`src/ipados/opfs.ts`); IndexedDB keeps the metadata and a blob id. The apps, the
 chat (with your own key), file import and export and the Apple Pencil in PdfCraft keep working. The
 terminal and the office tools of the AI need the desktop. The Status page shows **Browser mode**, and a
 notice offers to switch back as soon as the desktop is reachable.
@@ -186,7 +186,7 @@ Every byte WorkCraft loads comes from your own computer:
 
 - fonts (Inter and DM Mono) are bundled from npm (`@fontsource`);
 - icons are inline SVGs from `src/app/icons.js`;
-- the four apps, their workers and their WebAssembly modules are served from `versions/v9-10/web/`;
+- the apps, their workers and their WebAssembly modules are served from `versions/` (the four office apps) and `versions/web-builds/` (the installed others), copied to `dist/apps/<app>/` by the build;
 - the DeepSeek tokenizer data is `public/assets/tokenizers/deepseek-v4.bin`;
 - the service worker (`public/sw.js`) caches WorkCraft and the apps for offline use.
 

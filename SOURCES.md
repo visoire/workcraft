@@ -17,7 +17,7 @@ Links were checked on 2026-11-05. A repository marked *private* or *not publishe
 
 ## The Craft apps (engines and apps WorkCraft embeds or connects)
 
-The four office engines run as WebAssembly panels (builds in `versions/`, release data in `public/releases.json`).
+The four office engines run as WebAssembly panels (builds in `versions/`, release data in `public/releases.json`); the other 40 apps of the catalog are listed with author and licence in [docs/LEGAL.md](docs/LEGAL.md), Appendix A, and below.
 All 44 apps are grouped into ecosystems (`src/ecosystems/catalog.json`): all 40 non-office web builds are installed in `versions/web-builds/` and registered in `public/web-builds.json` alongside their source trees (`versions/{artcraft,community,openplayground}/`) and archives (`versions/zip/{artcraft,community,openplayground}/`) via `npm run apps:fetch` and `npm run apps:import`, and the installed desktop apps are found on the computer and connected as MCP servers (`src/server/craft.ts`). See [docs/ECOSYSTEMS.md](docs/ECOSYSTEMS.md).
 
 | Repository | App |

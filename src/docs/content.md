@@ -1,6 +1,6 @@
 <!-- page: introduction | Get started | Introduction | WorkCraft is a unified local-first workspace for documents, spreadsheets, presentations and PDFs, with a private AI assistant that works across every file. -->
 
-WorkCraft is a unified local-first workspace for real work. Documents, spreadsheets, presentations and PDFs open side by side in one window, next to a project tree, a code editor, a terminal and an AI assistant works across all of them through the Model Context Protocol (MCP). The four office panels are the open-source engines **WordCraft**, **GridCraft**, **DeckCraft** and **PdfCraft**. Everything runs on your computer: a small Node.js backend on `127.0.0.1` keeps your projects, your keys and your history.
+WorkCraft is a unified local-first workspace for real work. Documents, spreadsheets, presentations and PDFs open side by side in one window, next to a project tree, a code editor, a terminal and an AI assistant works across all of them through the Model Context Protocol (MCP). The four office panels are the open-source apps **WordCraft**, **GridCraft**, **DeckCraft** and **PdfCraft**, and 40 more apps (44 in all: imaging, paint, video and audio, music, design, 3D and CAD and more) run in ready-made [workspaces](#workspaces). You can use WorkCraft in two ways. In the **browser**, at [workcraft.cc/app](https://workcraft.cc/app/), with nothing to install: your projects stay in your browser. Or **on your computer**, where a small Node.js backend on `127.0.0.1` keeps your projects, your keys and your history, and adds the terminal, local models and the desktop apps.
 
 :::cards
 - [Quickstart](#quickstart) Install, start and open WorkCraft in two minutes.
@@ -17,7 +17,7 @@ WorkCraft is a unified local-first workspace for real work. Documents, spreadshe
 :::
 
 > [!NOTE]
-> This guide describes WorkCraft 1.0 (alpha; the current version is on the Status page). Every feature on these pages works without an account and without the cloud. Cloud models are optional and you can switch them off completely.
+> This guide describes WorkCraft 0.1 (alpha; the current version is on the Status page). Every feature on these pages works without an account and without the cloud. Cloud models are optional and you can switch them off completely.
 
 ## What makes WorkCraft different
 
@@ -29,12 +29,15 @@ WorkCraft is a unified local-first workspace for real work. Documents, spreadshe
 
 <!-- page: quickstart | Get started | Quickstart | Install WorkCraft, start the backend and open the workspace. -->
 
+Do you only want to try it? Open [workcraft.cc/app](https://workcraft.cc/app/): all 44 apps and every workspace are there, nothing is installed, and your files stay in your browser (no terminal and no local models there). To run it on your computer:
+
 :::steps
 1. **Install Node.js 22 or newer and Git.** On Windows, macOS and Linux.
 2. **Install the dependencies.** Run `npm install` in the project folder.
 3. **Start WorkCraft.** `npm run dev` for development or `npm run build` and `npm start` for production.
 4. **Open WorkCraft.** Go to `http://localhost:5175/`. Your own empty project opens. Import your files, or press **Load sample data** to open a separate sample project with a document, a spreadsheet, slides and a PDF.
 5. **Pick a model.** Settings, AI models: add an API key, your own endpoint, or start Ollama for fully local work.
+6. **Install the other apps (optional).** The repository holds the four office apps. `npm run apps:fetch` lists the other 40 and `npm run apps:fetch -- --yes` installs their official web builds (about 1.5 GB; they come from their own repositories under their own licences). Until then their panels say "No web build here yet".
 :::
 
 ```sh
@@ -100,7 +103,7 @@ The interface is a strict TypeScript app (Vite). The backend is Hono on Node.js.
 The AI router (`src/chat/providers.ts`) talks to Claude, ChatGPT, Gemini, DeepSeek, Grok, GLM, Mistral, Groq, OpenRouter, Together AI, Ollama, LM Studio and any OpenAI-compatible endpoint. Requests go from the backend to the provider, never straight from the browser. Only browser mode on the iPad, without a desktop, sends requests from the browser.
 
 > [!INFO]
-> The four apps are WebAssembly builds. They expose no command API, so the AI works on the files and the apps show the new state live.
+> The apps are WebAssembly builds. Most expose no command API, so the AI works on the files and the apps show the new state live.
 
 Nothing is loaded from a CDN. Fonts, icons, the apps, the tokenizer data and the service worker all come from your own computer.
 
@@ -177,7 +180,7 @@ WorkCraft runs on iPad mini, Air and Pro in Safari, or as a full-screen app from
 | Mode | When | What works |
 |---|---|---|
 | Home network | the desktop shares WorkCraft on Wi-Fi and the iPad is paired | everything: desktop projects, terminal, Ollama on the desktop, all MCP tools |
-| Browser | no desktop answers | the four apps, projects stored on the iPad (large files in the Origin Private File System, the rest in IndexedDB), the chat with your own key, file import and export, the Apple Pencil in PdfCraft |
+| Browser | no desktop answers | all the apps, projects stored on the iPad (large files in the Origin Private File System, the rest in IndexedDB), the chat with your own key, file import and export, the Apple Pencil in PdfCraft |
 
 ## Pair the iPad with your desktop
 

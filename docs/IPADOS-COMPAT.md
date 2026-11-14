@@ -1,6 +1,6 @@
 # iPadOS compatibility layer
 
-How WorkCraft keeps its four engines (WordCraft, GridCraft, DeckCraft, PdfCraft) and every later engine working on
+How WorkCraft keeps its engines (the apps of the catalog, first of all WordCraft, GridCraft, DeckCraft and PdfCraft) and every later engine working on
 iPadOS, without editing the engines and without tying any fix to a version number. Read the [iPadOS guide](IPADOS-GUIDE.md)
 first for what a user sees. This page is for people who change the layer or drop in a new engine release.
 
@@ -183,7 +183,7 @@ whether persistence was granted.
 
 ### Cross-origin isolation
 
-The four engines use no shared memory (checked: no `SharedArrayBuffer`, no `shared: true` memory, no workers in their
+The four office engines use no shared memory (checked: no `SharedArrayBuffer`, no `shared: true` memory, no workers in their
 glue code), so WorkCraft does **not** isolate by default. Isolation has a cost: cross-origin images and frames without a
 `Cross-Origin-Resource-Policy` stop loading and pop-ups lose their opener. When an engine asks, a notice offers "Enable
 and reload"; WorkCraft saves open documents first, the choice is remembered (`workcraft.coi` in `localStorage`, a flag

@@ -48,7 +48,7 @@ Version **0.1.0-alpha.1** (the first public alpha), licensed **MIT OR Apache-2.0
 
 | Project | What it is | Status |
 | :--- | :--- | :--- |
-| **WorkCraft workspace** (this repository, `visoire/workcraft`) | The main project: the open-source workspace with the AI assistant, Team mode, MCP, the four apps and cloud storage | Open source (MIT OR Apache-2.0), alpha |
+| **WorkCraft workspace** (this repository, `visoire/workcraft`) | The main project: the open-source workspace with the AI assistant, Team mode, MCP, a catalog of 44 apps and cloud storage | Open source (MIT OR Apache-2.0), alpha |
 | **WorkCraft home** (`visoire/workcraft-home`) | The website [workcraft.cc](https://workcraft.cc/): homepage, changelog page, portal, dashboard and website assistant. It also serves the browser version of this workspace at [workcraft.cc/app](https://workcraft.cc/app/) | Private, not open source |
 | **[WorkCraft AI](https://github.com/visoire/workcraft-ai)** (`visoire/workcraft-ai`) | The AI chat and multi-agent app for the desktop only, in Rust (egui), with a CLI and an MCP server | Open source (MIT OR Apache-2.0), alpha |
 
@@ -76,7 +76,7 @@ WorkCraft puts those pieces in one place:
 | **Files, search and history** | one tree for the whole project, snapshots, undo | any |
 | **Code and terminal** | for the moments you need them: scripts and data prep | any |
 
-The four office panels are the open-source engines WordCraft, GridCraft, DeckCraft and PdfCraft, running as WebAssembly (WebGPU, with WebGL2 as a fallback).
+The four office panels are the open-source apps WordCraft, GridCraft, DeckCraft and PdfCraft, running as WebAssembly (WebGPU, with WebGL2 as a fallback). The other 40 apps of the catalog run the same way (see [Workspaces for every kind of work](#workspaces-for-every-kind-of-work)).
 
 ## Workspaces for every kind of work
 
@@ -168,7 +168,7 @@ On Windows, PowerShell and Command Prompt both work, and the terminal panel lets
 | `npm run dev` | Backend (Hono, port 5176) and Vite (port 5175) with hot reload. The workspace is at `http://localhost:5175/`. It also shares WorkCraft on your home network: the output prints the pairing address for the iPad (`http://192.168.x.x:5175/pair?token=...`). `npm run dev:local` listens on this computer only. |
 | `npm run dev:lan` | The same as `npm run dev`. Add `-- --https` for HTTPS. |
 | `npm run lan:cert` | Makes the HTTPS certificate for the home network with [mkcert](https://github.com/FiloSottile/mkcert), see the iPadOS guide. |
-| `npm run build` | Frontend, the four apps, the service worker list and the server into `dist/` and `dist-server/`. |
+| `npm run build` | Frontend, every installed app (the four office apps, plus the others you installed with `npm run apps:fetch`), the service worker list and the server into `dist/` and `dist-server/`. |
 | `npm start` | Production server from the build on `http://localhost:5175/` (opens the browser), shared on your home network like `npm run dev`. `npm run start:local` listens on this computer only. |
 | `npm run start:lan` | The same as `npm start`. `-- --https` serves the mkcert certificate: WebGPU, offline cache and OPFS on the iPad. |
 | `npm run typecheck` | Strict TypeScript for frontend and backend. |
@@ -197,7 +197,7 @@ Coming from an earlier version under the former name? WorkCraft renames an exist
 
 ### Updates
 
-WorkCraft can tell you when it, or one of the four apps, is older than its newest GitHub release. The check is off until you switch it on under Settings, Updates. It uses the release logic of apicraft built into the workspace and asks GitHub directly, so there is no extra server or key; an optional GitHub token lifts the 60 requests per hour limit. Only repository names and version numbers are sent.
+WorkCraft can tell you when it, or one of its apps, is older than its newest GitHub release. The check is off until you switch it on under Settings, Updates. It uses the release logic of apicraft built into the workspace and asks GitHub directly, so there is no extra server or key; an optional GitHub token lifts the 60 requests per hour limit. Only repository names and version numbers are sent.
 
 The user documentation opens from the WorkCraft menu, or at `http://localhost:5175/docs/`.
 
@@ -419,4 +419,4 @@ WorkCraft maintains a strict architectural and organizational separation between
 
 ## License
 
-WorkCraft is licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE) at your option (see [LICENSE](LICENSE)). The four engines in `versions/` keep their own MIT or Apache-2.0 license files in each app folder. WordCraft, GridCraft, DeckCraft and PdfCraft are Crafting Apps by the ArtCraft team; the ArtCraft name and logos are trademarks of their owners and are not part of this repository. WorkCraft is an independent community project and is not affiliated with Microsoft or Adobe; Word, Excel, PowerPoint and Acrobat are trademarks of their owners.
+WorkCraft is licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE) at your option (see [LICENSE](LICENSE)). The four apps in `versions/` keep their own MIT or Apache-2.0 license files in each app folder. The other 40 apps of the catalog are not part of this repository: each has its own author and licence (ten are GPL-3.0), listed in [docs/LEGAL.md](docs/LEGAL.md), Appendix A. WordCraft, GridCraft, DeckCraft and PdfCraft are Crafting Apps by the ArtCraft team; the ArtCraft name and logos are trademarks of their owners and are not part of this repository. WorkCraft is an independent community project and is not affiliated with Microsoft or Adobe; Word, Excel, PowerPoint and Acrobat are trademarks of their owners.

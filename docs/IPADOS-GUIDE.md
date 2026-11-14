@@ -11,7 +11,7 @@ WorkCraft picks the mode on its own, and the Status page (Settings, Status) show
 | Mode | When | What works |
 | :--- | :--- | :--- |
 | **Home network (Wi-Fi)** | the desktop shares WorkCraft on Wi-Fi and the iPad is paired | everything: the desktop's projects, the real terminal, Ollama on the desktop, all MCP tools |
-| **Browser (offline)** | no desktop answers: on the road, or the PWA offline | the four apps, projects stored on the iPad in IndexedDB, the chat with your own API key, file import and export, the Apple Pencil in PdfCraft |
+| **Browser (offline)** | no desktop answers: on the road, or the PWA offline | every app, projects stored on the iPad in IndexedDB, the chat with your own API key, file import and export, the Apple Pencil in PdfCraft |
 
 Projects of the two modes are kept apart. Move a project between them with ZIP export and import, or
 use **Sync now** under Settings, Share and sync.
@@ -163,7 +163,7 @@ header and the chat show quick buttons for the command palette, `@` and `/`.
 - **Safari may delete site data after seven days without use** when WorkCraft runs in a Safari tab. An app added to the Home
   Screen is exempt. WorkCraft asks for persistent storage; Settings, Status shows the answer and the note "Add to Home Screen
   keeps your data". Export a project as ZIP (Settings, Share and sync) for a backup either way.
-- **Multithreading.** The four apps do not need it. If a later app does, WorkCraft offers "Enable and reload", which needs HTTPS.
+- **Multithreading.** The office apps do not need it. If a later app does, WorkCraft offers "Enable and reload", which needs HTTPS.
 
 How the pieces fit, and how a new app release is checked, is in [IPADOS-COMPAT.md](IPADOS-COMPAT.md).
 
