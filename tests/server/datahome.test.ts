@@ -55,12 +55,13 @@ test('No source file still names ~/Workspace as the data folder', async () => {
   const { readFileSync, readdirSync, statSync } = await import('node:fs');
   const bad: string[] = [];
   // These three name it on purpose: as the former name that is migrated
-  const former = new Set(['src\\server\\home.ts', 'src\\server\\paths.ts', 'scripts\\data-home.mjs', 'tests\\server\\datahome.test.ts']);
+  const former = new Set(['src/server/home.ts', 'src/server/paths.ts', 'scripts/data-home.mjs', 'tests/server/datahome.test.ts']);
   const walk = (dir: string) => {
     for (const n of readdirSync(dir)) {
       const p = nodePath.join(dir, n);
+      const key = p.split(nodePath.sep).join('/'); // the same name on Windows and Linux
       if (statSync(p).isDirectory()) walk(p);
-      else if (/\.(ts|mjs|js|md)$/.test(n) && !former.has(p) && readFileSync(p, 'utf8').includes('~/Workspace')) bad.push(p);
+      else if (/\.(ts|mjs|js|md)$/.test(n) && !former.has(key) && readFileSync(p, 'utf8').includes('~/Workspace')) bad.push(key);
     }
   };
   for (const d of ['src', 'docs', 'scripts', 'tests']) walk(d);

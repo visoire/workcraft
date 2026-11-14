@@ -5,7 +5,7 @@ WorkCraft has no account and no cloud of its own. You can run it three ways. Pic
 | | 1. Use the hosted workspace | 2. Run it on your computer | 3. Host the browser version yourself |
 | :--- | :--- | :--- | :--- |
 | How | open [workcraft.cc/app](https://workcraft.cc/app/) | `git clone`, `npm install`, `npm run dev` | `npm run build`, put `dist/` on a static host |
-| Needs | a modern browser | Node.js 20 or newer | any HTTPS static web server |
+| Needs | a modern browser | Node.js 22 or newer | any HTTPS static web server |
 | Where your files live | in your browser (IndexedDB and OPFS) | in a folder you own (`~/workcraft`) | in each visitor's browser |
 | Terminal and code runner | no | yes | no |
 | Local models (Ollama) | no | yes | no |

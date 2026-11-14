@@ -14,7 +14,16 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
-Nothing yet. Add a line here with every change that a user could notice.
+### Changed
+
+- **Node.js 22 is the minimum** (`engines`, README, docs, CI matrix 22 and 24; it said 20). Reading a PDF on the server needs the `Iterator` global that Node 20 lacks, so on Node 20 the PDF
+  tools, the search of PDFs and some tests failed. Found by the first CI run on GitHub.
+
+### Fixed
+
+- A test that checks that no source file names the former data folder compared Windows paths (`src\\server\\home.ts`) and failed on Linux; it compares normalized paths now.
+
+Add a line here with every change that a user could notice.
 
 ## [0.1.0-alpha.1] - 2026-11-14
 

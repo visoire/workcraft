@@ -10,7 +10,7 @@ WorkCraft has two parts that always run on the same machine (or on your home net
 | Part | Runs in | Built with | Does |
 | :--- | :--- | :--- | :--- |
 | **Frontend** | your browser | strict TypeScript, Vite | the workspace, the four apps as WebAssembly panels, the code editor, the chat, the MCP orchestrator |
-| **Backend** | Node.js 20+ on your computer | TypeScript, Hono | files and projects, the terminal, the AI router, the MCP server and the MCP client (your servers, plugins and the Craft apps), skills, cloud sync, search, memory, snapshots, the audit log |
+| **Backend** | Node.js 22+ on your computer | TypeScript, Hono | files and projects, the terminal, the AI router, the MCP server and the MCP client (your servers, plugins and the Craft apps), skills, cloud sync, search, memory, snapshots, the audit log |
 
 The apps (44 in the catalog: WordCraft, GridCraft, DeckCraft and PdfCraft ship with the repository, the others are added with `npm run apps:import` or
 `npm run apps:fetch`, the 25 independent apps only when a web build exists) are compiled from Rust to WebAssembly and

@@ -14,7 +14,7 @@ go a long way.
 
 ## Run it locally
 
-You need **Node.js 20 or newer** and Git. Nothing else: no database, no account, no API key (an AI model is optional).
+You need **Node.js 22 or newer** and Git. Nothing else: no database, no account, no API key (an AI model is optional).
 
 ```sh
 git clone https://github.com/visoire/workcraft.git

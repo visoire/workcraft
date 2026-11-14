@@ -30,7 +30,7 @@ WorkCraft is a unified local-first workspace for real work. Documents, spreadshe
 <!-- page: quickstart | Get started | Quickstart | Install WorkCraft, start the backend and open the workspace. -->
 
 :::steps
-1. **Install Node.js 20 or newer and Git.** On Windows, macOS and Linux.
+1. **Install Node.js 22 or newer and Git.** On Windows, macOS and Linux.
 2. **Install the dependencies.** Run `npm install` in the project folder.
 3. **Start WorkCraft.** `npm run dev` for development or `npm run build` and `npm start` for production.
 4. **Open WorkCraft.** Go to `http://localhost:5175/`. Your own empty project opens. Import your files, or press **Load sample data** to open a separate sample project with a document, a spreadsheet, slides and a PDF.

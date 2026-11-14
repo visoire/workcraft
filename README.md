@@ -17,7 +17,7 @@
 
 [![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)](#license)
 [![Status: alpha](https://img.shields.io/badge/status-alpha-orange)](CHANGELOG.md)
-[![Node 20+](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Node 22+](https://img.shields.io/badge/node-22%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![CI](https://github.com/visoire/workcraft/actions/workflows/ci.yml/badge.svg)](https://github.com/visoire/workcraft/actions/workflows/ci.yml)
 
 <p align="center">
@@ -139,7 +139,7 @@ Open [workcraft.cc/app](https://workcraft.cc/app/). **All 44 apps and every work
 
 ### Run it yourself
 
-You need **Node.js 20 or newer**. Git is only needed to clone the repository. `node-pty` is optional: with it the terminal is a full terminal; without it, each line runs as a command in PowerShell, cmd.exe or `/bin/sh`.
+You need **Node.js 22 or newer** (reading PDFs on the server needs the `Iterator` global of Node 22). Git is only needed to clone the repository. `node-pty` is optional: with it the terminal is a full terminal; without it, each line runs as a command in PowerShell, cmd.exe or `/bin/sh`.
 
 ### Windows, macOS and Linux
 

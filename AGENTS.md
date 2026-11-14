@@ -153,7 +153,7 @@ src/mcp/
   locks.ts                 per-file write mutex (Team Mode)
   panel-server.ts, browser-server.ts, lazy.ts   MCP server for the panels inside the browser
 src/project/               manager.ts (projects), fs.ts (file mirror), tree.ts (project tree)
-src/server/                Hono backend (Node 20+)
+src/server/                Hono backend (Node 22+)
   index.ts                 routes, security headers and CSP, static files from dist/, start
   ai.ts                    AI router and SSE streaming
   tools.ts, office/*       server side of the MCP tools (sheets, docs, slides, pdf, formula)
