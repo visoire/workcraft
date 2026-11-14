@@ -21,6 +21,8 @@ stable. The long internal changelog from before the first public release is not 
   `npm run apps:fetch` installs the other 40 on your own computer. The in-app documentation says "WorkCraft 0.1 (alpha)" instead of "1.0".
 - **Legal notice.** [docs/LEGAL.md](docs/LEGAL.md) covers all 44 apps: their separation from the workspace, where each is distributed from, the hosted browser version, and Appendix A with the
   author, licence and source repository of every app (ten are GPL-3.0). Date: November 14, 2026.
+- **Dependencies.** Vite 6 to 8, Hono 4.13.18, docx 9.15, unpdf 2 (PDF text), gpt-tokenizer 4.1 and the GitHub Actions `checkout` and `setup-node` 7. Type check, unit tests, the build and the browser tests
+  pass as before.
 
 ## [0.1.0-alpha.1] - 2026-11-14
 
