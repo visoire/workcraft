@@ -107,6 +107,7 @@ async function ipadContext(viewport, opt = {}) {
     Object.defineProperty(Navigator.prototype, 'platform', { get: () => 'MacIntel' });
     // On-screen keyboard: window.__ocKb shrinks the visible area like on iPadOS
     window.__ocKb = 0;
+    try { localStorage.setItem('workcraft.installTip', JSON.stringify({ until: 'never' })); } catch { /* ignore */ }
     const fake = new EventTarget();
     Object.defineProperties(fake, {
       width: { get: () => innerWidth },
@@ -455,11 +456,14 @@ try {
   // ---------- @ and / in the chat by finger and pencil ----------
   await page.evaluate(() => window.__workcraftWorkspace.show('chat'));
   await page.waitForTimeout(400);
-  // The small @ and / buttons hide in a narrow composer; the + menu always has both entries
+  // On an iPad the composer has no @ and / buttons and the + menu no mention entries: they are typed
   await page.locator('.chat-composer [data-action="plus"]').tap();
-  await page.locator('.ctx-item', { hasText: 'Mention a file or app' }).tap();
+  const plusItems = await page.locator('.ctx-item').allInnerTexts();
+  check('3q: iPad composer: no @ or / button, no mention entries in the + menu', (await page.locator('.chat-composer [data-quick="at"], .chat-composer [data-quick="slash"]').count()) === 0 && !plusItems.some((t) => /Mention a file or app|Use a tool or command/.test(t)), plusItems.join(' | ').replace(/\s+/g, ' '));
+  await page.keyboard.press('Escape');
+  await page.locator('.chat-input').tap();
+  await page.locator('.chat-input').pressSequentially('@financ', { delay: 15 });
   await page.waitForSelector('.mention-pop:not([hidden]) .mention-item');
-  await page.locator('.chat-input').pressSequentially('financ', { delay: 15 });
   await page.waitForTimeout(300);
   const item = await rectOf(page, '.mention-pop:not([hidden]) .mention-item.is-active');
   const popBox = await rectOf(page, '.mention-pop:not([hidden])');
@@ -473,8 +477,7 @@ try {
   const atVal = await page.locator('.chat-input').inputValue();
   check('3j: @ menu opened by finger tap, entry picked with the pencil', /@sheets\/finances\.xlsx /.test(atVal), atVal);
   await page.locator('.chat-input').fill('');
-  await page.locator('.chat-composer [data-action="plus"]').tap();
-  await page.locator('.ctx-item', { hasText: 'Use a tool or command' }).tap();
+  await page.locator('.chat-input').pressSequentially('/', { delay: 15 });
   await page.waitForSelector('.mention-pop:not([hidden]) .mention-item');
   const slash = (await page.locator('.mention-item').allInnerTexts()).join(' ');
   // Magic Keyboard: arrow keys and Enter in the / menu
@@ -790,6 +793,40 @@ try {
       check(`6f: crash recovery, previous session ${clean ? 'clean' : 'not clean'}: ${want ? 'reported' : 'quiet'}`, rec.recovered === want && rec.notice === want, JSON.stringify(rec));
       await rctx.close();
     }
+  }
+
+  // ================================================================ Alpha.4: Add to Home Screen notice and the first-start page on an iPad
+  {
+    const nctx = await ipadContext(PORTRAIT);
+    await nctx.addInitScript(() => {
+      try {
+        localStorage.removeItem('workcraft.installTip');
+      } catch {
+        /* ignore */
+      }
+    });
+    const np = await nctx.newPage();
+    await np.goto(`${BASE}/`);
+    await np.waitForSelector('html.is-ready', { timeout: 40000 });
+    const noteBtn = np.locator('.notes .note [data-act], .notes .note button', { hasText: 'Show me how' }).first();
+    await noteBtn.waitFor({ timeout: 10000 }).catch(() => {});
+    check('7a: an iPad in Safari is offered Add to Home Screen once', (await noteBtn.count()) === 1);
+    if (await noteBtn.count()) {
+      await noteBtn.tap();
+      const steps = await np.waitForSelector('dialog[open] .it-steps li', { timeout: 5000 }).then(() => np.locator('dialog[open] .it-steps li').count()).catch(() => 0);
+      check('7b: the guide shows the four steps (Share, Add to Home Screen, Add, open it)', steps === 4, String(steps));
+      await np.keyboard.press('Escape');
+    }
+    await np.goto(`${BASE}/?onboarding=1`);
+    await np.waitForSelector('.onb', { timeout: 40000 });
+    await np.locator('[data-action="onb-continue"]').tap();
+    await np.waitForTimeout(800);
+    const onb = await np.evaluate(() => {
+      const c = document.querySelector('.onb-card').getBoundingClientRect();
+      return { top: Math.round(c.top), bottom: Math.round(c.bottom), vh: innerHeight, vpTop: Math.round(window.visualViewport?.offsetTop || 0) };
+    });
+    check('7c: first-start page, second step: the card starts at the top like the first and fits the screen', onb.top >= 0 && onb.top <= 24 && onb.bottom <= onb.vh, JSON.stringify(onb));
+    await nctx.close();
   }
 
   // ================================================================ Browser mode (portrait, without the desktop)

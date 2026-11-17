@@ -430,16 +430,17 @@ html.is-touch .chat-model-chip, html.is-ipad .chat-model-chip, html.is-touch .ch
   z-index: 4;
   pointer-events: none;
   border-radius: 50%;
+  /* an empty circle, nothing inside: a thin line in the color of the tool with a hairline of paper around it, so it is seen on dark and on light */
   border: 1.5px solid var(--pen);
-  background: color-mix(in srgb, var(--pen) 16%, transparent);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, .75);
+  background: transparent;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .7), inset 0 0 0 1px rgba(255, 255, 255, .0);
   will-change: transform;
   transition: width .09s ease, height .09s ease;
 }
 .pen-ring[hidden] { display: none; }
 .pen-ring[data-kind='highlight'] { border-radius: 5px; }
 .pen-ring[data-kind='redact'] { border-radius: 3px; --pen: #000000; background: transparent; }
-.pen-ring.is-dashed { border-style: dashed; border-color: var(--ink-2); background: color-mix(in srgb, var(--bg) 55%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--bg) 80%, transparent); }
+.pen-ring.is-dashed { border-style: dashed; border-color: var(--ink-2); background: transparent; box-shadow: 0 0 0 1px color-mix(in srgb, var(--bg) 80%, transparent); }
 /* Tool chip: "Eraser", "Pen" */
 .pen-hud {
   position: fixed;

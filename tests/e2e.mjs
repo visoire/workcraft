@@ -355,7 +355,7 @@ try {
     await page.waitForTimeout(150);
   };
   await fromChip('thinking disabled');
-  check('2h: reasoning bar shows provider and effort', /DeepSeek\s*·\s*Off/.test(await chip.innerText()) && (await chip.getAttribute('data-effort')) === 'off', (await chip.innerText()).replace(/\s+/g, ' '));
+  check('2h: the reasoning chip shows the mark of the provider and the effort that was chosen, not the name', (await chip.getAttribute('data-provider')) === 'deepseek' && /^Off$/.test((await chip.innerText()).trim()) && (await chip.getAttribute('data-effort')) === 'off' && (await chip.locator('svg, img').count()) >= 1, (await chip.innerText()).replace(/\s+/g, ' '));
   await sendChat('Effort off');
   await waitIdle();
   const offCall = mockCalls.at(-1);
@@ -368,7 +368,7 @@ try {
   await sendChat('Hello own endpoint');
   await waitIdle();
   const ownCall = mockCalls.at(-1);
-  check('2j: provider switch from the prompt bar (no effort for an own endpoint)', ownCall?.model === 'mock-1' && ownCall?.auth === 'Bearer sk-custom' && !/·/.test(await chip.innerText()), (await chip.innerText()).replace(/\s+/g, ' '));
+  check('2j: provider switch from the prompt bar (no effort for an own endpoint)', ownCall?.model === 'mock-1' && ownCall?.auth === 'Bearer sk-custom' && (await chip.locator('.chip-effort').count()) === 0 && (await chip.innerText()).trim() === '', (await chip.innerText()).replace(/\s+/g, ' '));
   await shot('03c-reasoning-bar');
   await page.selectOption('select.chat-provider', '');
 
@@ -564,8 +564,8 @@ try {
   await sendChat('Hello in Full Chat');
   await waitIdle();
   const fullCall = mockCalls.at(-1);
-  check('6e2: Full Chat Mode switches provider and effort (DeepSeek, effort low)', fullCall?.model === 'deepseek-flash' && fullCall?.thinking === 'enabled' && fullCall?.effort === 'low' && /DeepSeek\s*·\s*Low/.test(await fullChip.innerText()), JSON.stringify({ model: fullCall?.model, thinking: fullCall?.thinking, effort: fullCall?.effort, chip: (await fullChip.innerText()).replace(/\s+/g, ' ') }));
-  await pickFull('Default');
+  check('6e2: Full Chat Mode switches provider and effort (DeepSeek, effort low)', fullCall?.model === 'deepseek-flash' && fullCall?.thinking === 'enabled' && fullCall?.effort === 'low' && /DeepSeek/.test((await fullChip.getAttribute('title')) || '') && (await fullChip.getAttribute('data-effort')) === 'low', JSON.stringify({ model: fullCall?.model, thinking: fullCall?.thinking, effort: fullCall?.effort, chip: await fullChip.getAttribute('title'), text: (await fullChip.innerText()).trim() }));
+  await pickFull('Automatic');
   await page.locator('.chat-input').fill('draft that must survive');
 
   // Floating GridCraft above Full Chat Mode, dragged, snapped and resized

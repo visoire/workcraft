@@ -179,7 +179,10 @@ src/server/                Hono backend (Node 22+)
 src/core/                  no DOM, no Node: search ranking, three-way sync, Markdown, defaults,
                            JSON repair, BPE tokenizer
 src/project/desktop.ts      the installed desktop Craft apps next to the panels: Open in the desktop app (tree menu, panel menu)
-src/project/add-files.ts   the + menu: Upload files (every device but an iPad) or Scan a document (iPad: the picker sheet that offers Scan Documents); files go to /Uploads or /Scans and open; the pure rules are in add-files-rules.ts (tests/server/add-files.test.ts)
+src/project/add-files.ts   the + menu: Upload files (every device; on an iPad it is Apple's picker sheet) and, on an iPad only, Scan a document (doc-scanner.ts: the camera scanner of WorkCraft, a PDF in /Scans); files go to /Uploads or /Scans and open; the pure rules are in add-files-rules.ts (tests/server/add-files.test.ts)
+src/project/doc-scanner.ts the scanner overlay (getUserMedia, draggable corners, looks, pages, Save as PDF); the maths (Otsu, page finder, homography, enhance, PDF writer) is src/core/scan.ts (tests/server/scan.test.ts)
+src/app/install-tip.ts     Add to Home Screen on an iPad: the notice, the four-step guide and the main menu entry; the pure rules (who is offered it, 14 day snooze, never again) are in install-tip-rules.ts (tests/server/install-tip.test.ts)
+src/workspace/trail.ts     TrailLayer: the smooth Pencil trail over an app (tests/server/trail.test.ts)
 src/styles/                polish.css (loaded last: consistency pass, (i) tips, status chips, window header, Team Mode without glow), tokens.css (colors, fonts, radii), base.css, workspace.css, tools.css, chat-ui.css (chat polish,
                            loaded after tools.css), blip.css (the companion)
 src/docs/                  content.md, main.ts (renderer, search, docs assistant), docs.css

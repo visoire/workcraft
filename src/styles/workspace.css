@@ -821,8 +821,9 @@ html.has-fine-pointer.is-touch .search-pill kbd { display: inline-flex; }
 .focus-fab {
   display: none;
   position: fixed;
-  right: calc(env(safe-area-inset-right) + 12px);
-  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  /* Top right: the bottom right corner belongs to the Apple Pencil bar of the apps, and the two used to sit on top of each other */
+  right: calc(env(safe-area-inset-right) + 8px);
+  top: calc(env(safe-area-inset-top) + 8px);
   z-index: 90;
   width: 40px;
   height: 40px;
@@ -835,7 +836,9 @@ html.has-fine-pointer.is-touch .search-pill kbd { display: inline-flex; }
 }
 .focus-fab:hover, .focus-fab:focus-visible { opacity: 1; }
 .is-focus .focus-fab { display: grid; place-items: center; }
-html.is-touch .focus-fab, html.is-ipad .focus-fab { width: 48px; height: 48px; opacity: .85; }
+html.is-touch .focus-fab, html.is-ipad .focus-fab { width: 44px; height: 44px; opacity: .85; }
+/* the header of a panel that sits under the button keeps its own buttons clear of it (main.ts, clearFocusButton) */
+.panel[data-fab-clear] .panel-head { padding-inline-end: 56px; }
 
 /* Top bar and tool rail hide on their own (menu, Mod + Shift + \ for the top bar). Focus mode hides both.
    A handle at the top edge brings the top bar back; the project tree has its own toggle (Mod + \). */

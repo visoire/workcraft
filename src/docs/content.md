@@ -224,6 +224,10 @@ WorkCraft runs on iPad mini, Air and Pro in Safari, or as a full-screen app from
 | Home network | the desktop shares WorkCraft on Wi-Fi and the iPad is paired | everything: desktop projects, terminal, Ollama on the desktop, all MCP tools |
 | Browser | no desktop answers | all the apps, projects stored on the iPad (large files in the Origin Private File System, the rest in IndexedDB), the chat with your own key, file import and export, the Apple Pencil in PdfCraft |
 
+**Add to Home Screen.** On the first visit in Safari WorkCraft shows a short notice with the steps: tap Share, choose **Add to Home Screen**, tap Add, then open WorkCraft from the new icon. It runs full screen and keeps its storage. The same guide is in the main menu. It shows once per fortnight and goes away by itself; **Do not remind me** in the guide stops it for good.
+
+**Scan a document.** The **+** menu has **Upload files** (the Apple picker: Choose Files, Photo Library, Take Photo, and Scan Documents under the three dots) and **Scan a document**, WorkCraft's own scanner. It finds the page, lets you drag the corners, offers Grey, Black and white or Colour, collects several pages and saves one PDF in `/Scans`. Safari cannot start the Scan Documents of iPadOS directly, so the scanner is built in.
+
 ## Pair the iPad with your desktop
 
 :::steps

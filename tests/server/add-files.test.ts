@@ -2,11 +2,11 @@
 //   npx tsx --test tests/server/add-files.test.ts
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { addKindFor, folderFor, scanName } from '../../src/project/add-files-rules.js';
+import { addEntriesFor, folderFor, scanName } from '../../src/project/add-files-rules.js';
 
-test('An iPad gets the scan, every other device the upload', () => {
-  assert.equal(addKindFor({ ipad: true }), 'scan');
-  assert.equal(addKindFor({ ipad: false }), 'upload');
+test('Every device gets Upload files, an iPad also gets Scan a document', () => {
+  assert.deepEqual(addEntriesFor({ ipad: true }), ['upload', 'scan']);
+  assert.deepEqual(addEntriesFor({ ipad: false }), ['upload']);
 });
 
 test('Scans and uploads go to their own folders', () => {

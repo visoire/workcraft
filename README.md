@@ -21,18 +21,24 @@
 [![CI](https://github.com/visoire/workcraft/actions/workflows/ci.yml/badge.svg)](https://github.com/visoire/workcraft/actions/workflows/ci.yml)
 
 <p align="center">
-  <img src="docs/images/workspace-office-light.png" alt="WorkCraft in light mode: the project tree, WordCraft with a document and GridCraft with a sheet side by side, and the AI assistant" width="860">
+  <img src="docs/images/workspace-office-light.png" alt="WorkCraft in light mode: the project tree, WordCraft with a document, and the AI assistant" width="860">
 </p>
 <p align="center">
-  <img src="docs/images/workspace-office-dark.png" alt="The same workspace in dark mode" width="860">
+  <img src="docs/images/workspace-office-dark.png" alt="The same workspace in dark mode with GridCraft and a sheet" width="860">
 </p>
-<p align="center"><sub>The sample project, the empty AI assistant (no model is set up yet) and two of the four office apps. Screenshots of the real workspace.</sub></p>
+<p align="center">
+  <img src="docs/images/workspace-imaging-light.png" alt="The Imaging and Photography workspace with PhotoCraft" width="860">
+</p>
+<p align="center">
+  <img src="docs/images/workspace-welcome-light.png" alt="The welcome page of a workspace: nothing starts by itself, you choose the app" width="860">
+</p>
+<p align="center"><sub>The sample project and the empty AI assistant (no model is set up yet), one app at a time: WordCraft, GridCraft and PhotoCraft in three workspaces, and the welcome page. Screenshots of the real workspace (0.1.0-alpha.4).</sub></p>
 
-> **Alpha software.** This is an alpha (`0.1.0-alpha.3`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built but not proven on a physical iPad. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
+> **Alpha software.** This is an alpha (`0.1.0-alpha.4`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built and lightly tried on a real iPad (touch and tap and hold work), but not verified widely. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
 
 Developers have long had editors where code, a terminal and the file tree sit side by side in one window. Everyone else still juggles separate heavy applications, loose browser tabs and cloud accounts that keep their files hostage. WorkCraft brings the single-window way of working to every kind of work: documents, spreadsheets, presentations and PDFs, but also photos, vector art, video, audio, music, design, 3D and CAD, in ready-made workspaces with dozens of open-source apps (44 at the time of writing). Your files live in a folder you own, an AI assistant you control works across all of them, and nothing leaves your computer unless you decide it should.
 
-Version **0.1.0-alpha.3** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
+Version **0.1.0-alpha.4** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
 
 | | |
 | :--- | :--- |
@@ -104,7 +110,7 @@ Keep these apps offline) and lets you switch. The files stay in the project, so 
 (Open with in the tree). A link such as `/?ecosystem=imaging` opens a workspace directly. The four office apps ship with the
 repository; all 40 remaining apps have web builds installed and registered in `public/web-builds.json` (44 of 44 total), in `versions/`: the four office web builds at the top (the only ones in this repository), the installed web builds of the other apps in `versions/web-builds/`, Rust source trees in `versions/<origin>/` (`artcraft`, `community`, `independent`) and, in `versions/zip/<origin>/`, only archives that no folder holds (a previous version kept for rollback). Nothing is kept twice; [docs/UPDATING.md](docs/UPDATING.md) has the layout.
 `npm run versions` shows which version of every app is where and, with `--remote`, what GitHub has newer. `npm run apps:import` copies web builds from `versions/` into `public/<app>/`, patches known upstream browser issues (`scripts/patch-apps.mjs`), and writes `public/web-builds.json`.
-MailCraft 0.13.0 (0.12.0's web build panicked in the browser; 0.13.0 does not), SolidCraft 0.44.1, SubCraft 0.4.3, TraceDraw 0.48.0, NoteCraft 0.0.14, Honeydew 0.5.3 and Paint.RS 0.7.3 start cleanly with WorkCraft's runtime shims and WebGPU/WebGL2 fallback. Lemon Studio needs cross-origin isolation. Details, update steps and what is verified: [docs/ECOSYSTEMS.md](docs/ECOSYSTEMS.md).
+MailCraft 0.13.0 (0.12.0's web build panicked in the browser; 0.13.0 does not), SolidCraft 0.44.1, SubCraft 0.4.3, TraceDraw 0.48.0, NoteCraft 0.0.14, OxyBrush 4.0.0-beta.16, Picasso Suite 0.8.0, ProCraft 0.0.6-beta, Honeydew 0.5.3 and Paint.RS 0.7.3 start cleanly with WorkCraft's runtime shims and WebGPU/WebGL2 fallback. Lemon Studio needs cross-origin isolation. Details, update steps and what is verified: [docs/ECOSYSTEMS.md](docs/ECOSYSTEMS.md).
 ## AI, built in
 
 The assistant is a core part of the workspace, not an add-on, and it follows the same rule as everything else: your data stays yours.
@@ -124,7 +130,7 @@ Details: [docs/AI-SUPPORT-REFERENCE.md](docs/AI-SUPPORT-REFERENCE.md) (the worki
 ## Platforms
 
 - **Windows, macOS and Linux.** WorkCraft runs on your computer: the interface in your browser, a small Node.js server on `127.0.0.1`, and your files in a folder you own. The individual apps also ship as portable Windows builds (x64, x86, ARM64); builds for macOS and Linux are on their GitHub pages.
-- **iPadOS.** Touch, Apple Pencil with pressure and tilt, Magic Keyboard shortcuts, Stage Manager, and the apps rendered 1:1 at the iPad's Retina resolution. Pair the iPad with your desktop over Wi-Fi, or use browser mode on the iPad alone. See the [iPadOS guide](docs/IPADOS-GUIDE.md).
+- **iPadOS.** Touch, Apple Pencil with pressure and tilt, Magic Keyboard shortcuts, Stage Manager, and the apps rendered 1:1 at the iPad's Retina resolution. Pair the iPad with your desktop over Wi-Fi, or use browser mode on the iPad alone. Add WorkCraft to the Home Screen (the app offers it and shows the steps) to run it full screen, and scan paper into a PDF with the camera from the + menu. See the [iPadOS guide](docs/IPADOS-GUIDE.md).
 
 ## Roadmap
 

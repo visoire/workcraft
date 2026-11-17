@@ -28,7 +28,8 @@ import { fs } from '../../project/fs.js';
 import { TOOLS, toolMark, type PanelContext, type PanelInstance, type PanelResources, type ToolId } from '../registry.js';
 import { device } from '../../app/device.js';
 import { startTimeoutMs } from '../../ipados/stage.js';
-import { InkLayer, pencilSeen, penTools, type InkStyle, type PenSample } from '../pencil.js';
+import { pencilSeen, penTools, type InkStyle, type PenSample } from '../pencil.js';
+import { TrailLayer } from '../trail.js';
 import { HoverRing, ringKindOf } from '../../ipados/pen-ui.js';
 import { attachEngine, type Attached } from '../../ipados/adapter.js';
 import { ipados } from '../../ipados/index.js';
@@ -246,7 +247,8 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
 
   // ---------- Pencil: trail, hover preview and toolbar ----------
   const trailCanvas = h<'canvas'>('canvas.ca-trail', { 'aria-hidden': 'true' });
-  const trail = new InkLayer(trailCanvas);
+  // One smooth path at one width (src/workspace/trail.ts), not a chain of pieces with the width of each sample's pressure
+  const trail = new TrailLayer(trailCanvas);
   const hoverRing = h('div.ca-hover', { hidden: true, 'aria-hidden': 'true' });
   /** The circle that follows the hovering pencil: real line width, eraser style while the eraser is active (src/ipados/pen-ui.ts) */
   const ring = new HoverRing(root, hoverRing);

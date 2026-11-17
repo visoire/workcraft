@@ -175,9 +175,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       { label: tr('Add a picture'), icon: 'image', run: () => pictureInput.click() },
       ...(touch ? [{ label: tr('Scan a document'), icon: 'camera', run: () => scanInput.click() }] : []),
       { label: tr('Add a link'), icon: 'link', run: () => void addLink() },
-      '-',
-      { label: tr('Mention a file or app'), icon: 'at', hint: '@', run: () => trigger('@') },
-      { label: tr('Use a tool or command'), icon: 'slash', hint: '/', run: () => trigger('/') },
+      ...(onIpad() ? [] : (['-', { label: tr('Mention a file or app'), icon: 'at', hint: '@', run: () => trigger('@') }, { label: tr('Use a tool or command'), icon: 'slash', hint: '/', run: () => trigger('/') }] as Parameters<typeof menu>[0])),
     ];
     menu(items, r.left, r.top, { anchor, above: true });
   }
@@ -208,7 +206,8 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
     paintSend();
     plusBtn.dataset.count = tray.count ? String(tray.count) : '';
   });
-  // Small @ and / in the toolbar (the + menu has them too): for tablets without a hardware keyboard. The visible
+  const onIpad = () => document.documentElement.classList.contains('is-ipad');
+  // Small @ and / in the toolbar (the + menu has them too; not on an iPad): for touch screens without a hardware keyboard. The visible
   // button is small, the touch target around it is 44 px (CSS). Hidden when the composer is narrow.
   const atBtn = h<'button'>('button.chat-mini.mono', { type: 'button', 'data-quick': 'at', title: tr('@ files, folders, projects, apps'), 'aria-label': tr('Open the @ menu'), onclick: () => trigger('@') }, '@');
   const slashBtn = h<'button'>('button.chat-mini.mono', { type: 'button', 'data-quick': 'slash', title: tr('/ tools and commands'), 'aria-label': tr('Open the / menu'), onclick: () => trigger('/') }, '/');
@@ -224,9 +223,9 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
   const voiceStrip = h('div.chat-voice', { hidden: true, 'data-state': 'idle' }, h('span.chat-voice-bars', { 'aria-hidden': 'true' }, voiceBars), voiceText, voiceTime, voiceCancel);
   const kbdBtn = h<'button'>('button.chat-mini.chat-kbd', { type: 'button', 'data-action': 'keyboard', title: tr('Show the keyboard. The Apple Pencil writes here, a finger tap does not open it.'), 'aria-label': tr('Show the keyboard'), html: icon('keyboard', { size: 16 }), onclick: () => openKeyboard(ta) });
   // Reasoning bar in the prompt bar: provider and thinking effort, switched without leaving the chat
-  const modelChip = h<'button'>('button.chat-model-chip.mono', { type: 'button', 'data-action': 'model-chip', 'aria-haspopup': 'menu', onclick: () => void openModelMenu(modelChip) });
+  const modelChip = h<'button'>('button.chat-model-chip.is-icon-only', { type: 'button', 'data-action': 'model-chip', 'aria-haspopup': 'menu', onclick: () => void openModelMenu(modelChip) });
   // Approvals: manual (ask before commands, a failed step waits) or auto approval (full access)
-  const modeChip = h<'button'>('button.chat-mode-chip.mono', { type: 'button', 'data-action': 'mode-chip', 'aria-haspopup': 'menu', onclick: () => openApprovalMenu(modeChip) });
+  const modeChip = h<'button'>('button.chat-mode-chip.is-icon-only', { type: 'button', 'data-action': 'mode-chip', 'aria-pressed': 'false', onclick: () => void setApprovalMode(approval() === 'auto' ? 'manual' : 'auto') });
   const composerWell = h(
     'div.well.chat-composer-well',
     tray.el,
@@ -234,7 +233,8 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
     teamBar,
     h('div.chat-composer-row', ta),
     voiceStrip,
-    h('div.chat-toolbar', plusBtn, atBtn, slashBtn, modelChip, modeChip, h('span.spacer'), kbdBtn, micBtn, sendBtn)
+    // On an iPad there is no @ and no / button (the person types them, like on a keyboard): less in the way, more room for the model and the approval icons
+    h('div.chat-toolbar', plusBtn, ...(onIpad() ? [] : [atBtn, slashBtn]), modelChip, modeChip, h('span.spacer'), kbdBtn, micBtn, sendBtn)
   );
   const composer = h('div.chat-composer.frame.sm', composerWell, fileInput);
 
@@ -532,12 +532,16 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
     const t = targetNow();
     const e = t ? (prefs.get('effort') || {})[t.id] || 'auto' : 'auto';
     const supports = t ? effortChoices(t.family, t.model).length > 0 : false;
-    modelChip.innerHTML = (providerMark(t?.id, 13) || icon(t?.local ? 'cpu' : 'spark', { size: 13 })) + `<span class="chip-provider">${esc(t?.name || tr('Default'))}</span>` + (supports ? `<span class="chip-sep">·</span><span class="chip-effort" data-effort="${e}">${esc(EFFORT_LABEL[e])}</span>` : '') + icon('chevronDown', { size: 11 });
+    // Only the mark of the provider (and the effort, when one was chosen): the name is in the tooltip and in the menu
+    modelChip.innerHTML = (providerMark(t?.id, 16) || icon(t?.local ? 'cpu' : 'spark', { size: 16 })) + (supports && e !== 'auto' ? `<span class="chip-effort" data-effort="${e}">${esc(EFFORT_LABEL[e])}</span>` : '') + icon('chevronDown', { size: 10 });
     modelChip.title = t ? `${t.name} · ${t.model}${supports ? ` · ${tr('Reasoning effort')}: ${EFFORT_LABEL[e]}` : ''}` : tr('AI model for this chat');
     modelChip.dataset.provider = t?.id || '';
     modelChip.dataset.effort = e;
   }
-  /** One menu for the prompt bar: providers, then the effort levels of the chosen one. */
+  /**
+   * One menu for the prompt bar: the models that can answer now, then the effort levels of the chosen one. A provider without a key (or one
+   * that local-only mode blocks) is not listed: a list of names that all say "key missing" helps nobody. "Add a model" opens the settings.
+   */
   async function openModelMenu(anchor: HTMLElement) {
     let st;
     try {
@@ -554,22 +558,27 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       }
       paintModelChip();
     };
-    const items: Parameters<typeof menu>[0] = [
-      { heading: tr('AI Model & Provider') },
-      { label: tr('Default'), ...(providerMark(st.active?.id) ? { html: providerMark(st.active?.id, 16) } : { icon: 'spark' }), checked: chosen === '', hint: st.active ? esc(st.active.name) : '', run: () => pick('') },
-      ...st.providers.map((p) => ({
-        label: esc(p.name),
-        ...(!providerMark(p.id) ? { icon: p.local ? 'cpu' : 'spark' } : { html: providerMark(p.id, 16) }),
-        checked: chosen === p.id,
-        hint: p.blocked ? tr('blocked') : !p.configured && !p.local ? tr('key missing') : p.local ? tr('local') : 'cloud',
-        run: () => {
-          if ((!p.configured && !p.local) || p.blocked) return void toast(p.blocked ? tr('Cloud providers are blocked in local-only mode') : tr('API key missing for {name}', { name: p.name }), 'warning');
-          pick(p.id);
-        },
-      })),
-      '-',
-      ...effortItems(),
-    ];
+    const usable = st.providers.filter((p) => (p.configured || p.local) && !p.blocked);
+    const entry = (p: (typeof usable)[number]) => ({
+      label: esc(p.name),
+      ...(!providerMark(p.id) ? { icon: p.local ? 'cpu' : 'spark' } : { html: providerMark(p.id, 16) }),
+      checked: chosen === p.id,
+      hint: p.local ? tr('on this computer') : '',
+      run: () => pick(p.id),
+    });
+    const local = usable.filter((p) => p.local);
+    const cloud = usable.filter((p) => !p.local);
+    const items: Parameters<typeof menu>[0] = [];
+    if (!usable.length) items.push({ heading: tr('AI model') }, { label: tr('No model is ready yet'), icon: 'alert', run: () => bus.emit('open-settings', 'ai') });
+    else {
+      // "Automatic" only where there is a choice to make
+      if (usable.length > 1) items.push({ heading: tr('AI model') }, { label: tr('Automatic'), ...(providerMark(st.active?.id) ? { html: providerMark(st.active?.id, 16) } : { icon: 'spark' }), checked: chosen === '', hint: st.active ? esc(st.active.name) : '', run: () => pick('') });
+      else items.push({ heading: tr('AI model') });
+      if (local.length) items.push(...(cloud.length ? [{ heading: tr('On this computer') }] : []), ...local.map(entry));
+      if (cloud.length) items.push(...(local.length ? [{ heading: tr('Cloud, with your key') }] : []), ...cloud.map(entry));
+    }
+    const effort = effortItems();
+    if (effort.length) items.push('-', ...effort);
     if (chatTarget(chosen)?.deepseek) {
       const current = aiConfig.config?.ai.deepseek?.preset || 'reasoning';
       items.push('-', { heading: tr('DeepSeek mode') });
@@ -577,7 +586,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
         items.push({ label: tr(p.name), icon: p.thinking ? 'spark' : p.id === 'coding' ? 'code' : 'chat', checked: current === p.id, hint: p.thinking ? (p.effort === 'max' ? 'effort max' : 'effort high') : `t ${p.temperature ?? 1}`, run: () => void setDeepSeekPreset(p.id) });
       }
     }
-    items.push('-', { label: tr('Model settings…'), icon: 'settings', run: () => bus.emit('open-settings', 'ai') });
+    items.push('-', { label: usable.length ? tr('Add or change a model') : tr('Add a model'), icon: 'settings', run: () => bus.emit('open-settings', 'ai') });
     menu(items, r.left, r.top, { anchor, above: true });
   }
 
@@ -588,22 +597,10 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
     const auto = approval() === 'auto';
     modeChip.dataset.approval = approval();
     modeChip.classList.add('is-icon-only');
-    modeChip.innerHTML = icon(auto ? 'bolt' : 'shield', { size: 13 }) + `<span class="chip-label sr-only">${esc(auto ? tr('Auto') : tr('Manual'))}</span>` + icon('chevronDown', { size: 10 });
-    modeChip.title = auto ? tr('Auto approval: full access. The AI runs commands and signs without asking.') : tr('Manual: the AI asks before it runs commands or signs.');
+    modeChip.setAttribute('aria-pressed', String(auto));
+    modeChip.innerHTML = icon(auto ? 'bolt' : 'shield', { size: 16 }) + `<span class="chip-label sr-only">${esc(auto ? tr('Auto') : tr('Manual'))}</span>`;
+    modeChip.title = auto ? tr('Auto approval is on: the AI runs commands and signs without asking. Tap to ask first again.') : tr('The AI asks before it runs commands or signs. Tap for auto approval.');
     modeChip.setAttribute('aria-label', `${tr('Approvals')}: ${auto ? tr('Auto approval') : tr('Manual')}`);
-  }
-  function openApprovalMenu(anchor: HTMLElement) {
-    const r = anchor.getBoundingClientRect();
-    menu(
-      [
-        { heading: tr('Approvals') },
-        { label: tr('Manual'), icon: 'shield', desc: esc(tr('Asks before commands and signing. A failed step waits for you.')), checked: approval() === 'manual', run: () => void setApprovalMode('manual') },
-        { label: tr('Auto approval'), icon: 'bolt', desc: esc(tr('Full access. Commands and signing run without asking, a failed step goes back to the model.')), checked: approval() === 'auto', run: () => void setApprovalMode('auto') },
-      ],
-      r.left,
-      r.top,
-      { anchor, above: true }
-    );
   }
   async function setApprovalMode(next: ApprovalMode) {
     if (next === approval()) return;

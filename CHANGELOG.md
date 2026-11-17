@@ -14,6 +14,30 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
+## [0.1.0-alpha.4] - 2026-11-18
+
+### Added
+
+- **Add to Home Screen, on iPad.** A short notice on the first visit in Safari (and **Add to Home Screen** in the main menu at any time) shows the four steps: Share, Add to Home Screen, Add, open WorkCraft from the icon. It runs full screen, without the Safari bars, and works better. It is shown on an iPad only, never in the installed app, once per fortnight (it leaves by itself after 20 seconds so it does not sit on the chat's Send button), and "Do not remind me" in the guide stops it for good. Pure rules in `src/app/install-tip-rules.ts`, the dialog in `src/app/install-tip.ts` (`tests/server/install-tip.test.ts`).
+- **A real document scanner on iPad.** **Scan a document** in the + menu now opens a camera scanner of its own: it finds the page, you can drag the four corners, straightens it, offers Grey, Black and white or Colour, collects several pages and saves one PDF in `/Scans`. Safari cannot start the Scan Documents of iPadOS directly, so this is WorkCraft's own scanner (`src/core/scan.ts`, `src/project/doc-scanner.ts`; where the camera is not available it takes a photo from the picker instead). **Upload files** is unchanged on every device and, on an iPad, Apple's sheet is still reachable through it (Choose Files, then Scan Documents). Tests: `tests/server/scan.test.ts`. Not verified: the scanner with a real iPad camera.
+- **A tidier pencil trail.** When you swipe with the Apple Pencil in an app, the blue trail is now one smooth line with a soft highlight instead of the beaded snake (`src/workspace/trail.ts`, `tests/server/trail.test.ts`).
+
+### Changed
+
+- **First-start page on iPad.** The second page (choose a workspace) sat lower than the first and its Continue button could be out of reach, because the page was taller than the visible Safari area. It is now as tall as the visible viewport, starts at the top and scrolls inside.
+- **Focus mode button** moved to the top right and the panel title bars make room for it, so it no longer sits on top of the Apple Pencil tools.
+- **Hover circle for the Apple Pencil** is now an empty circle in the colour of the tool.
+- **The side chat is leaner.** The model button shows only the provider mark (and the effort when it is not automatic), the approval choice is one shield or bolt button, the menus list only the providers that are ready (a key saved, or a local model) and are set in the interface font. On an iPad the @ and / buttons and their menu entries are gone (you can still type them).
+
+### Apps
+
+- **Newer web builds installed:** OxyBrush 4.0.0-beta.16, Picasso Suite 0.8.0 and ProCraft 0.0.6-beta (through `npm run apps:import`).
+- **Source trees added, no web build:** OxiGuitar 0.21.1, Retake 0.38.0, Transit 0.7.3 and ProCraft 0.0.7-beta are in `versions/independent/`; they need a build from source before they can run in the browser. Honeydew 0.5.4 (1.36 GB web zip) is still not installed.
+
+### Verified
+
+- The maintainer tried this build on a real iPad: touch and tap and hold work. Everything else on the iPad (scanner camera, Home Screen notice, Pencil tools, memory limits) is built and tested in WebKit at iPad sizes only.
+
 ## [0.1.0-alpha.3] - 2026-11-18
 
 ### Added

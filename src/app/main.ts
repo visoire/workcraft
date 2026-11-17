@@ -20,7 +20,7 @@ import { fs } from '../project/fs.js';
 import { loadRecent, recentFor } from '../storage/recent.js';
 import { projects } from '../project/manager.js';
 import { TOOLS, APP_IDS, CRAFT_APP_IDS, toolMark, type ToolId } from '../workspace/registry.js';
-import { addKindFor, pickFiles } from '../project/add-files.js';
+import { addEntriesFor, pickFiles, scanDocument } from '../project/add-files.js';
 import { isIPadOS } from './device.js';
 import { activeApps, activeEcosystem, initEcosystems, needsChoice, allEcosystems, setEcosystem } from '../ecosystems/ecosystems.js';
 import { enterEcosystem } from '../ecosystems/enter.js';
@@ -131,6 +131,7 @@ function mainMenu(): MenuEntry[] {
     { label: t('Apps, recent files and workspaces'), icon: 'grid', run: () => void import('../ecosystems/ui.js').then((m) => m.openLauncher()) },
     { label: t('Switch workspace'), icon: 'shuffle', run: () => void import('../ecosystems/ui.js').then((m) => m.openEcosystemPicker()) },
     { label: t('Save in the cloud'), icon: 'upload', run: () => void import('./cloud-guide.js').then((m) => m.openCloudGuide()) },
+    ...(isIPadOS() ? [{ label: t('Add to Home Screen'), icon: 'share', run: () => void import('./install-tip.js').then((m) => m.openInstallGuide()) }] : []),
     '-',
     { heading: t('Layout') },
     { label: t('Columns'), icon: 'layoutColumns', run: () => workspace.applyPreset('columns') },
@@ -212,9 +213,10 @@ function buildTopbar(): HTMLElement {
       .slice(0, 5);
     const items: MenuEntry[] = mine.map((id) => ({ label: TOOLS[id].name, html: toolMark(id, 16), run: () => void workspace.openPanel(id) }));
     if (recent.length) items.push('-', { heading: t('Recent') }, ...recent.map((e) => ({ label: basename(e.path), html: toolMark(e.tool as ToolId, 16), run: () => void workspace.openFile(e.path, e.tool as ToolId) })));
-    // Bring a file in from this device: a scan on an iPad (its document scanner), an upload everywhere else. Not every app, only what belongs to the workspace.
-    const kind = addKindFor({ ipad: isIPadOS() });
-    items.push('-', kind === 'scan' ? { label: t('Scan a document'), icon: 'camera', run: () => pickFiles('scan') } : { label: t('Upload files'), icon: 'upload', run: () => pickFiles('upload') });
+    // Bring a file in from this device: Upload files everywhere, and on an iPad also our scanner (camera, corners, PDF). Not every app, only what belongs to the workspace.
+    const entries = addEntriesFor({ ipad: isIPadOS() });
+    items.push('-', { label: t('Upload files'), icon: 'upload', run: () => pickFiles() });
+    if (entries.includes('scan')) items.push({ label: t('Scan a document'), icon: 'camera', run: () => scanDocument() });
     menu(items, r.left, r.bottom + 6, { anchor: add });
   };
   const search = h('button.icon-btn', { type: 'button', 'data-act': 'search', title: t('Search commands, files and tools ({key} K)', { key: modKey }), 'aria-label': t('Open command palette'), html: icon('search', { size: 18 }), onclick: () => openPalette() });
@@ -258,6 +260,19 @@ function buildTopbar(): HTMLElement {
   const fab = h<'button'>('button.icon-btn.focus-fab', { type: 'button', title: t('Menu'), 'aria-label': t('Open menu'), 'aria-haspopup': 'menu', html: icon('menu', { size: 18 }) });
   fab.onclick = () => openMainMenu(fab);
   $('app').append(fab);
+  // In focus mode the button floats over the top right corner: the panel header under it makes room, so its Maximize and X stay reachable
+  const clearFocusButton = () => {
+    const on = document.documentElement.classList.contains('is-focus');
+    const f = fab.getBoundingClientRect();
+    document.querySelectorAll<HTMLElement>('.panel').forEach((p) => {
+      const r = p.getBoundingClientRect();
+      p.toggleAttribute('data-fab-clear', on && r.top < f.bottom && r.right > f.left - 4 && r.left < f.right);
+    });
+  };
+  const soon = () => requestAnimationFrame(clearFocusButton);
+  bus.on('workspace:change', soon);
+  bus.on('settings:change', ({ key }) => key === 'focusMode' && soon());
+  addEventListener('resize', soon);
   // Top bar hidden: a small handle at the top edge brings it back (tap, or pull it down)
   const handle = h<'button'>('button.chrome-handle', { type: 'button', title: t('Show the top bar'), 'aria-label': t('Show the top bar'), html: icon('panelTop', { size: 16 }) });
   let pull: { y: number; id: number } | null = null;
@@ -811,6 +826,8 @@ async function boot() {
   // Browser mode: a project kept in the cloud (Google Drive, a folder of the computer) syncs by itself, like on the desktop
   if (!popout && backend.browser) void Promise.all([import('./cloud-browser.js'), import('./offline.js')]).then(([c, o]) => c.installBrowserCloud(o.browserHelpers())).catch(() => {});
   document.documentElement.classList.add('is-ready');
+  // iPad in a Safari tab: a notice to add WorkCraft to the Home Screen (it runs better there), once, with a short tutorial
+  if (!popout) void import('./install-tip.js').then((m) => m.offerInstallTip()).catch(() => {});
   // A link that chose a workspace (/?ecosystem=imaging) or the onboarding also arranges the stage for it, once
   if (!popout && (started || new URLSearchParams(location.search).get('ecosystem'))) {
     enterEcosystem(activeEcosystem());

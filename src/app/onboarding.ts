@@ -127,6 +127,9 @@ export async function runOnboarding(): Promise<OnboardingResult> {
       // Focus the button of the step, but never a workspace card: it would look chosen
       root.querySelector<HTMLElement>('[data-action="onb-continue"], .onb-choice')?.focus({ preventScroll: true });
       root.querySelector<HTMLElement>('.onb-body')?.scrollTo(0, 0);
+      // Safari on an iPad can pan the visual viewport when a step is replaced: put the page back where the card is
+      root.scrollTo(0, 0);
+      window.scrollTo(0, 0);
     }
     paint();
   });

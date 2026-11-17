@@ -187,12 +187,11 @@
     },
     {
       "app": "oxybrush",
-      "version": "4.0.0-beta.4",
-      "dir": "oxybrush-web-4.0.0-beta.4",
-      "bytes": 11357617,
+      "version": "4.0.0-beta.16",
+      "dir": "oxybrush-web-4.0.0-beta.16",
+      "bytes": 15391697,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12",
-      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
+      "fetched": "2026-11-17"
     },
     {
       "app": "paintcraft",
@@ -224,12 +223,11 @@
     },
     {
       "app": "picasso-suite",
-      "version": "0.7.0",
-      "dir": "picasso-suite-web-0.7.0",
-      "bytes": 9320010,
+      "version": "0.8.0",
+      "dir": "picasso-suite-web-0.8.0",
+      "bytes": 9330655,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12",
-      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
+      "fetched": "2026-11-17"
     },
     {
       "app": "pixelcraft",
@@ -242,12 +240,11 @@
     },
     {
       "app": "procraft",
-      "version": "0.0.1",
-      "dir": "procraft-web-0.0.1",
-      "bytes": 27472850,
+      "version": "0.0.6-beta",
+      "dir": "procraft-web-0.0.6-beta",
+      "bytes": 34532484,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12",
-      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
+      "fetched": "2026-11-17"
     },
     {
       "app": "prowave",

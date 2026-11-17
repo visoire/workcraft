@@ -184,9 +184,13 @@ Besides the office apps, WorkCraft has workspaces for photos and vectors, video,
 - **Offline needs room.** Before it caches the apps, **Keep these apps offline** asks for persistent storage and checks the free space; if the apps do not fit it says how much is needed and how much is free.
 - **Checked in WebKit, not on an iPad:** `npm run test:ipad` runs Playwright WebKit at iPad sizes (portrait, landscape, Split View, Slide Over): layout, the menu in Slide Over, pen and finger rules, palm rejection, the stage, the crash notice,
   the audio hint and that the frame measures reach apps beyond Office. That WebKit is the Windows build, without Web Audio and without a GPU like an iPad.
+- **Tried on a real iPad:** the maintainer used the app on a physical iPad and touch and tap and hold (the panel menu) work.
 - **Not verified on a real iPad yet:** Apple Pencil pressure and tilt in the brush apps, the audio unlock, the memory numbers of the
-  heavy apps, and the offline cache. (The 12 new web builds do start in a desktop browser with WebGPU.) Report what you see
+  heavy apps, the offline cache, the scanner camera and the first-start page after the alpha.4 layout fix. (The 12 new web builds do start in a desktop browser with WebGPU.) Report what you see
   (Settings, Status, engine report).
+- **Add to Home Screen.** On the first visit in Safari WorkCraft offers a short guide (Share, Add to Home Screen, Add, then open it from the icon); the same guide is in the main menu. The installed app runs full screen, keeps its storage and does not show the notice again. It shows once per fortnight and goes away by itself; "Do not remind me" in the guide stops it for good.
+- **Scan a document.** The + menu has **Upload files** (Apple's sheet: Choose Files, Photo Library, Take Photo, and Scan Documents under the three dots of the file picker) and **Scan a document**, WorkCraft's own scanner: camera, page found and straightened (drag the corners), Grey, Black and white or Colour, several pages, one PDF in `/Scans`. Safari cannot call the Scan Documents of iPadOS directly, which is why the scanner is built in.
+- **Pencil trail and hover circle.** The trail behind the Pencil in an app is one smooth line; the hover circle is empty and takes the colour of the tool. The Focus mode button is at the top right, away from the Pencil tools.
 ## Touch keys and exports
 
 FilmCraft (video) and ProCraft (painting) are worked with shortcuts. Without a keyboard, the panel of those two apps shows a bar of buttons: Play, Split, Delete, Undo and the tools in FilmCraft; Undo, Redo, Brush, Eraser, Pick color, Select, Transform, brush size, Layers, Colors and the quick menu in ProCraft. A button sends the key press a keyboard would send (Cmd on the iPad), and it does not take the focus from the app. **Shift** is a latch: tap it, then the next key counts with Shift. The arrow button moves the bar to the top or the bottom, the keyboard button folds it away.

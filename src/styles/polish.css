@@ -204,9 +204,11 @@ html.is-touch .msg-undo, html.is-ipad .msg-undo { height: 40px; }
 
 /* ---------- Onboarding: one calm card, shaped by the device ---------- */
 html.is-onboarding #app { visibility: hidden; }
-.onb { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 24px; background: var(--bg); }
+/* The first-start page: as tall as the area you can SEE (--vvh, the visual viewport; 100dvh before it is measured), pinned to the top, scrolling inside itself.
+   On an iPad in Safari the fixed layer is taller than the visible part (toolbar), so a centred card slid down and its buttons were out of reach. */
+.onb { position: fixed; top: 0; left: 0; right: 0; height: 100vh; height: 100dvh; height: var(--vvh, 100dvh); z-index: 200; display: grid; place-items: start center; padding: 24px; background: var(--bg); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; }
 /* A landscape card on a computer; the body scrolls, the card does not grow */
-.onb-card { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; width: min(960px, 100%); height: min(660px, 100%); box-shadow: var(--shadow-lift); }
+.onb-card { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; width: min(960px, 100%); height: min(660px, 100%); margin-block: auto; box-shadow: var(--shadow-lift); }
 .onb-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 2px 6px 0; }
 .onb-top-l { display: flex; align-items: center; gap: 10px; }
 .onb-mark { display: grid; place-items: center; color: var(--ink); }
@@ -246,7 +248,8 @@ html.is-onboarding #app { visibility: hidden; }
 .onb .eco-icon, .onb .eco-icon .tool-logo { width: 26px; height: 26px; }
 .onb .eco-new .eco-plus { margin-top: auto; }
 /* iPad: a smaller card with 44 px targets, centered in either orientation */
-html.is-ipad .onb-card, html.is-touch .onb-card { width: min(720px, 100%); height: min(740px, 100%); }
+html.is-ipad .onb-card, html.is-touch .onb-card { width: min(720px, 100%); height: min(740px, 100%); margin-block: 0; }
+html.is-ipad .onb, html.is-touch .onb { padding-top: max(16px, env(safe-area-inset-top)); padding-bottom: max(16px, env(safe-area-inset-bottom)); }
 html.is-ipad .onb-body.well, html.is-touch .onb-body.well { padding: 28px; }
 html.is-ipad .onb .btn, html.is-touch .onb .btn { min-height: 44px; }
 html.is-ipad .onb .eco-grid, html.is-touch .onb .eco-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -292,6 +295,15 @@ html.is-ipad .cg-tile, html.is-touch .cg-tile { min-height: 56px; }
 @media (max-width: 560px) { .cg-tiles { grid-template-columns: 1fr 1fr; } }
 .cg-mark img { display: block; width: 24px; height: 24px; }
 
+/* Add to Home Screen tutorial (iPad) */
+.it { display: grid; gap: 14px; }
+.it-steps { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.it-steps li { display: grid; grid-template-columns: 28px 1fr; gap: 4px 12px; align-items: start; }
+.it-n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--card); color: var(--ink); font: 600 13px/1 var(--mono); }
+.it-text { color: var(--ink); line-height: 1.45; }
+.it-pic { grid-column: 2; display: inline-flex; align-items: center; gap: 8px; width: fit-content; padding: 6px 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--bg); color: var(--ink-2); font-size: 13px; }
+.it-note { font-size: 13px; }
+
 /* Model and Base URL: a dropdown, and a text field only when Other is chosen */
 .sp-choice { display: grid; gap: 6px; min-width: 0; }
 .sp-choice select, .sp-choice input { width: 100%; min-width: 0; }
@@ -312,3 +324,44 @@ html.is-ipad .cg-tile, html.is-touch .cg-tile { min-height: 56px; }
 .cg-other { display: grid; gap: 8px; }
 .cg-other .cg-sub { margin-bottom: 0; }
 .cg-other-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Document scanner (iPad): dark on purpose, like a camera; the page is easier to judge against black */
+.scan { position: fixed; top: 0; left: 0; right: 0; height: 100vh; height: 100dvh; height: var(--vvh, 100dvh); z-index: 400; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto auto; background: #0b0b0d; color: #f4f4f6; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); touch-action: none; }
+.scan-top { display: flex; align-items: center; gap: 12px; padding: 8px 12px; }
+.scan-top strong { font-size: 15px; font-weight: 600; }
+.scan-count { margin-left: auto; color: #a6a6ad; font-size: 12px; }
+.scan-close { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 12px; background: rgba(255, 255, 255, .1); color: #fff; cursor: pointer; }
+.scan-stage { position: relative; min-height: 0; overflow: hidden; }
+.scan-video, .scan-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.scan-shot { inset: auto; object-fit: fill; }
+.scan-quad { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.scan-quad polygon { fill: rgba(79, 117, 255, .16); stroke: #6f8cff; stroke-width: 2; stroke-linejoin: round; }
+.scan-handle { position: absolute; left: 0; top: 0; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: grab; touch-action: none; }
+.scan-handle::after { content: ""; position: absolute; inset: 11px; border-radius: 50%; background: #fff; border: 2px solid #6f8cff; box-shadow: 0 1px 6px rgba(0, 0, 0, .5); }
+.scan-hint { margin: 0; padding: 8px 16px; text-align: center; color: #c9c9d0; font-size: 13px; line-height: 1.4; }
+.scan-strip { display: flex; gap: 8px; padding: 0 12px 8px; overflow-x: auto; }
+.scan-strip[hidden] { display: none; }
+.scan-thumb { position: relative; flex: none; height: 56px; }
+.scan-thumb img { height: 56px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, .25); background: #fff; }
+.scan-thumb button { position: absolute; top: -6px; right: -6px; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: #2a2a31; color: #fff; cursor: pointer; }
+.scan-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px 16px; }
+.scan-bottom .btn { min-height: 44px; color: #fff; }
+.scan-bottom .btn.ghost { border-color: rgba(255, 255, 255, .3); background: transparent; }
+.scan-bottom .btn.primary { background: #fff; color: #0b0b0d; border-color: #fff; }
+.scan-btn { display: inline-flex; align-items: center; gap: 8px; }
+.scan-shutter { width: 68px; height: 68px; flex: none; border: 4px solid #fff; border-radius: 50%; background: transparent; cursor: pointer; padding: 0; position: relative; }
+.scan-shutter::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #fff; transition: transform .12s ease; }
+.scan-shutter:active::after { transform: scale(.88); }
+.scan-looks { display: inline-flex; gap: 2px; padding: 2px; border-radius: 999px; background: rgba(255, 255, 255, .1); }
+.scan-looks .seg-btn { min-height: 40px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: #c9c9d0; font-size: 13px; cursor: pointer; }
+.scan-looks .seg-btn[aria-pressed='true'] { background: #fff; color: #0b0b0d; }
+@media (max-width: 560px) { .scan-bottom { flex-wrap: wrap; justify-content: center; } }
+
+/* Chat prompt bar: the interface font (the chips used the mono face), the provider's mark alone, one approval toggle */
+.chat-model-chip, .chat-mode-chip { font-family: var(--font); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+.chat-model-chip.is-icon-only { height: 32px; padding: 0 9px; gap: 5px; }
+.chat-model-chip .chip-effort { font-size: 11.5px; }
+.chat-mode-chip.is-icon-only { width: 32px; height: 32px; padding: 0; justify-content: center; gap: 0; }
+.chat-mode-chip[aria-pressed='true'] { background: color-mix(in srgb, var(--danger) 10%, var(--bg)); }
+html.is-touch .chat-model-chip.is-icon-only, html.is-ipad .chat-model-chip.is-icon-only { height: 40px; padding: 0 12px; }
+html.is-touch .chat-mode-chip.is-icon-only, html.is-ipad .chat-mode-chip.is-icon-only { width: 40px; height: 40px; }

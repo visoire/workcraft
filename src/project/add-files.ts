@@ -1,8 +1,8 @@
 // The "+" menu: bring files into the project from the device.
-//   upload   the file picker (any device except an iPad, where the next one is shown): files go to /Uploads/ and the first one opens in its app
-//   scan     iPad only: the same picker, asked for images and PDFs without a file filter that hides the sheet of iPadOS, so the sheet
-//            offers Scan Documents, Take Photo and the Files app. A scan lands in /Scans/ as it comes (a PDF or a picture) and opens.
-// Pure helpers are exported for the tests (tests/server/add-files.test.ts); the DOM part stays small.
+//   upload   the file picker (every device): files go to /Uploads and the first one opens in its app. On an iPad the sheet of the picker also
+//            offers Take Photo and, under Choose Files, the ... menu with Scan Documents (Apple's scanner).
+//   scan     iPad only: our own scanner (doc-scanner.ts): camera, corners, straight page, PDF in /Scans.
+// The pure rules are in add-files-rules.ts (tests/server/add-files.test.ts).
 
 import { basename, normPath } from '../app/util.js';
 import { folderFor, scanName, type AddKind } from './add-files-rules.js';
@@ -11,10 +11,10 @@ import { t } from '../app/i18n.js';
 import { fs } from './fs.js';
 import { workspace } from '../workspace/layout.js';
 
-export { addKindFor, folderFor, scanName, type AddKind } from './add-files-rules.js';
+export { addEntriesFor, folderFor, scanName, type AddKind } from './add-files-rules.js';
 
 /** Writes the picked files into the project and opens the first one. Returns the paths. */
-export async function takeFiles(files: File[], kind: AddKind, now = new Date()): Promise<string[]> {
+export async function takeFiles(files: File[], kind: AddKind = 'upload', now = new Date()): Promise<string[]> {
   const out: string[] = [];
   try {
     for (const [i, f] of files.entries()) {
@@ -33,20 +33,23 @@ export async function takeFiles(files: File[], kind: AddKind, now = new Date()):
   return out;
 }
 
-/** Opens the picker for a kind and takes what was picked. */
-export function pickFiles(kind: AddKind): void {
+/** Upload files: the picker, no filter, so every sheet offered by the device is there. */
+export function pickFiles(): void {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
   input.hidden = true;
-  // For a scan no "capture" attribute (it would open the camera only) and no strict filter: the sheet of iPadOS then lists Scan Documents
-  if (kind === 'scan') input.accept = 'image/*,application/pdf';
   input.addEventListener('change', () => {
     const files = [...(input.files || [])];
     input.remove();
-    if (files.length) void takeFiles(files, kind);
+    if (files.length) void takeFiles(files, 'upload');
   });
   input.addEventListener('cancel', () => input.remove());
   document.body.append(input);
   input.click();
+}
+
+/** Scan a document: opens the scanner. */
+export function scanDocument(): void {
+  void import('./doc-scanner.js').then((m) => m.openScanner());
 }
