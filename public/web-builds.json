@@ -126,19 +126,19 @@
     },
     {
       "app": "lightcraft-classic",
-      "version": "26.46.3",
-      "dir": "lightcraft-classic-web-26.46.3",
-      "bytes": 110311532,
-      "source": "https://github.com/emmertex/chromaforge/releases/tag/v26.46.3",
-      "fetched": "2026-11-14"
+      "version": "26.47.1",
+      "dir": "lightcraft-classic-web-26.47.1",
+      "bytes": 111004425,
+      "source": "https://github.com/emmertex/chromaforge/releases/tag/v26.47.1",
+      "fetched": "2026-11-17"
     },
     {
       "app": "mailcraft",
-      "version": "0.11.1",
-      "dir": "mailcraft-web-0.11.1",
-      "bytes": 30061750,
-      "source": "release v0.11.1 of UCS-Care-Group/mailcraft (sha256 checked). Newer is 0.12.0, whose web build panics at start on std::time and cannot be patched",
-      "fetched": "2026-11-13"
+      "version": "0.13.0",
+      "dir": "mailcraft-web-0.13.0",
+      "bytes": 12455221,
+      "source": "https://github.com/UCS-Care-Group/mailcraft/releases/tag/v0.13.0",
+      "fetched": "2026-11-17"
     },
     {
       "app": "matcraft",
@@ -257,11 +257,11 @@
     },
     {
       "app": "solidcraft",
-      "version": "0.41.0",
-      "dir": "solidcraft-web-0.41.0",
-      "bytes": 56796909,
-      "source": "https://github.com/tangency-labs/solidcraft/releases/tag/v0.41.0",
-      "fetched": "2026-11-14"
+      "version": "0.43.0",
+      "dir": "solidcraft-web-0.43.0",
+      "bytes": 59946448,
+      "source": "https://github.com/tangency-labs/solidcraft/releases/tag/v0.43.0",
+      "fetched": "2026-11-17"
     },
     {
       "app": "soundcraft",

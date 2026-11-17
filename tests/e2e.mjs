@@ -284,7 +284,7 @@ try {
   await ta.fill('');
 
   // ---------------------------------------------------------------- 2. DeepSeek and own endpoint
-  await ws(() => document.querySelector('[data-tool="settings"]').click());
+  await ws(() => document.querySelector('[data-act="settings"]').click());
   await page.waitForSelector('.sp-card[data-provider="deepseek"]', { timeout: 20000 });
   const ds = page.locator('.sp-card[data-provider="deepseek"]');
   await ds.locator('input[type="password"]').fill('sk-deepseek-test');
@@ -527,7 +527,9 @@ try {
   // A draft survives every view change (same panel, no reload)
   await page.locator('.chat-input').fill('draft that must survive');
   const draftOk = async () => (await page.locator('.chat-input').inputValue()) === 'draft that must survive';
-  await page.locator('[data-act="chat-full"]').click();
+  // Full Chat Mode is in the chat's own menu (the top bar has one AI button)
+  await page.locator('.chat-bar [data-action="more"]').click();
+  await page.locator('[role^="menuitem"]', { hasText: /Full Chat Mode/ }).first().click();
   await page.waitForTimeout(400);
   const full = await ws(() => {
     const z = document.getElementById('zone-right').getBoundingClientRect();
@@ -588,7 +590,9 @@ try {
   await page.waitForTimeout(300);
   const pr2 = await pipInfo();
   check('6h: resized at the corner handle', Math.abs(pr2.w - pr1.w - 120) <= 2 && Math.abs(pr2.h - pr1.h - 60) <= 2, JSON.stringify({ pr1, pr2 }));
-  await page.locator('[data-act="chat-full"]').click();
+  // Full Chat Mode is in the chat's own menu (the top bar has one AI button)
+  await page.locator('.chat-bar [data-action="more"]').click();
+  await page.locator('[role^="menuitem"]', { hasText: /Full Chat Mode/ }).first().click();
   await page.waitForTimeout(300);
   await ws((id) => window.__workcraftWorkspace.togglePip(id, false), grid.id);
   await page.waitForTimeout(600);
@@ -626,9 +630,11 @@ try {
   await p2page.goto(`${BASE}/?mode=chat`);
   await p2page.waitForSelector('html.is-ready', { timeout: 30000 });
   await p2page.locator('.chat-bar [data-action="new"]').click();
-  await p2page.waitForSelector('.welcome-card', { timeout: 10000 });
+  await p2page.waitForSelector('.chat-welcome', { timeout: 10000 });
   const route = await p2page.evaluate(() => ({ full: document.documentElement.classList.contains('is-chat-full'), view: window.__workcraftWorkspace.instance('chat')?.status?.().view, cards: document.querySelectorAll('.welcome-card').length }));
-  check('6l: /?mode=chat opens Full Chat Mode with four suggestion cards', route.full && route.view === 'full' && route.cards === 4, JSON.stringify(route));
+  // The empty chat is a greeting and one quiet line: no cards, no canned tasks
+  const greet = await p2page.evaluate(() => ({ cards: document.querySelectorAll('.welcome-card, .welcome-cards, .chat-example').length, title: document.querySelector('.chat-welcome h2')?.textContent?.trim(), hint: document.querySelector('.chat-welcome .chat-hint')?.textContent?.trim() }));
+  check('6l: /?mode=chat opens Full Chat Mode with a short greeting and no option cards', route.full && route.view === 'full' && greet.cards === 0 && /What are you working on\?/.test(greet.title || '') && !!greet.hint, JSON.stringify({ route, greet }));
   await p2page.close();
 
   // Real terminal in the project folder (node-pty or line mode)
@@ -908,8 +914,8 @@ try {
   check('Errors: a provider without a key is disabled in the chat', fallback !== null);
 
   // ---------------------------------------------------------------- 9. Rail and command palette
-  const rail = await ws(() => { const n = document.getElementById('activity'); const kids = [...n.children]; const s = kids.findIndex((k) => k.dataset.tool === 'settings'); return { chat: n.querySelectorAll('[data-tool="chat"], .act-btn [data-icon="spark"]').length, before: kids[s - 1]?.className || '' }; });
-  check('9d: no AI star button above the settings in the tool rail', rail.chat === 0 && /spacer/.test(rail.before), JSON.stringify(rail));
+  const rail = await ws(() => { const n = document.getElementById('activity'); return { chat: n.querySelectorAll('[data-tool="chat"], .act-btn [data-icon="spark"]').length, settingsInRail: n.querySelectorAll('[data-tool="settings"]').length, settingsTop: document.querySelectorAll('.top-actions [data-act="settings"]').length, last: [...n.children].at(-1)?.dataset.tool || '' }; });
+  check('9d: no AI star button in the tool rail; Settings is in the top bar, the rail ends with the Terminal', rail.chat === 0 && rail.settingsInRail === 0 && rail.settingsTop === 1 && rail.last === 'terminal', JSON.stringify(rail));
   await page.keyboard.press('Escape');
   await ws(() => document.querySelector('[data-act="search"]').click());
   await page.waitForSelector('.pal-list .pal-item');
@@ -960,7 +966,15 @@ try {
     const gid = await ws(() => window.__workcraftWorkspace.panels().find((p) => p.tool === 'gridcraft').id);
     const gpath = await ws(() => window.__workcraftWorkspace.panels().find((p) => p.tool === 'gridcraft').path);
     const menuItems = () => ws(() => [...document.querySelectorAll('.ctx-menu .ctx-item')].map((b) => b.textContent.trim().replace(/\s+/g, ' ')));
-    const closeMenu = async () => { await page.keyboard.press('Escape'); await page.waitForTimeout(150); };
+    // Escape closes the menu; its key listener is registered a moment after the menu appears, so a press that comes too early is repeated
+    const closeMenu = async () => {
+      for (let i = 0; i < 4; i++) {
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(150);
+        if (!(await ws(() => document.querySelector('.ctx-menu')))) return;
+        console.log(`note: menu still open after Escape (try ${i + 1})`);
+      }
+    };
     const wanted = [/^(Maximize|Restore)/, /^(Full screen|Exit full screen)/, /^(Picture in picture|Back into the layout)/, /^Show in the project tree/, /^Copy path/, /^Reload/, /^Unload/, /^Panel info/, /^Close/];
     // a) right click on the panel header (the name, not a button)
     await page.locator(`.panel[data-id="${gid}"] .panel-head .panel-name`).click({ button: 'right' });
@@ -1035,7 +1049,7 @@ try {
   const store = (pg) => pg.evaluate(() => ({ ide: localStorage.getItem('oc-ide-theme'), home: localStorage.getItem('oc-home-theme'), lang: localStorage.getItem('oc-ide-lang') }));
   const htmlTheme = (pg) => pg.evaluate(() => document.documentElement.dataset.theme);
   const appTheme = () => ws(() => [...document.querySelectorAll('iframe.ca-frame')].map((f) => { try { return `${f.contentWindow.CraftTheme?.scope}:${f.contentDocument.documentElement.dataset.theme}`; } catch { return 'gone'; } }));
-  check('8a: IDE renders in English by default', (await ws(() => document.documentElement.lang)) === 'en' && (await store(page)).lang === null && /Settings/.test(await ws(() => document.querySelector('[data-tool="settings"]')?.getAttribute('aria-label') || document.querySelector('[data-tool="settings"]')?.title || '')));
+  check('8a: IDE renders in English by default', (await ws(() => document.documentElement.lang)) === 'en' && (await store(page)).lang === null && /Settings/.test(await ws(() => document.querySelector('[data-act="settings"]')?.getAttribute('aria-label') || document.querySelector('[data-act="settings"]')?.title || '')));
   await ws(() => window.__workcraftWorkspace.show('gridcraft'));
   await waitFor(async () => (await panelOf('gridcraft'))?.status === 'active', 40000);
   const setIde = async (want) => {
@@ -1091,6 +1105,62 @@ try {
   await solo.close();
   await home.close();
   await page.bringToFront();
+  // ---------------------------------------------------------------- 12. Onboarding (first start) and the X of a panel
+  {
+    const octx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const op = await octx.newPage();
+    await op.goto(`${BASE}/?onboarding=1`);
+    await op.waitForSelector('.onb [data-action="onb-continue"]', { timeout: 40000 });
+    const early = await op.evaluate(() => ({ topbar: document.getElementById('topbar').children.length, rail: document.getElementById('activity').children.length, left: document.getElementById('zone-left').children.length, right: document.getElementById('zone-right').children.length, panels: window.__workcraftWorkspace.panels().length }));
+    check('12a: the onboarding comes first: no top bar, rail, project tree, chat or panel exists yet', Object.values(early).every((v) => v === 0), JSON.stringify(early));
+    const support = await op.locator('.onb-support a[href*="buymeacoffee"]').count();
+    check('12b: step 1 is a welcome text with a way to support the project', support === 1 && /Welcome to/.test(await op.locator('.onb h1').innerText()));
+    await op.locator('[data-action="onb-continue"]').click();
+    await op.waitForSelector('.onb .eco-card[data-eco="imaging"]');
+    await op.locator('.onb .eco-card[data-eco="imaging"]').click();
+    await op.waitForSelector('.onb [data-choice="local"]');
+    const choices = await op.locator('.onb [data-choice]').count();
+    check('12c: step 2 chooses the workspace, step 3 asks where the files are saved (this computer or also the cloud)', choices === 2 && (await op.locator('.onb-dots li.is-on').count()) === 1);
+    await op.locator('.onb [data-choice="local"]').click();
+    await op.waitForSelector('html.is-ready', { timeout: 40000 });
+    await op.waitForSelector('.panel[data-tool="tree"]', { state: 'attached', timeout: 40000 });
+    const after = await op.evaluate(() => ({
+      onb: document.querySelectorAll('.onb').length,
+      tools: window.__workcraftWorkspace.panels().map((p) => p.tool).sort().join(','),
+      railApps: [...document.querySelectorAll('#activity [data-tool]')].map((b) => b.dataset.tool).includes('photocraft'),
+      settingsTop: !!document.querySelector('.top-actions [data-act="settings"]'),
+      settingsRail: document.querySelectorAll('#activity [data-tool="settings"]').length,
+      saved: JSON.parse(localStorage.getItem('workcraft.onboarding') || 'null')?.files,
+      eco: JSON.parse(localStorage.getItem('workcraft.prefs') || '{}').ecosystem,
+    }));
+    check('12d: after the last step the project, tree, chat and the rail of the chosen workspace load; Settings is at the top right', after.onb === 0 && /chat/.test(after.tools) && /tree/.test(after.tools) && after.railApps && after.settingsTop && after.settingsRail === 0 && after.eco === 'imaging', JSON.stringify(after));
+    check('12e: the answer is saved in the browser', after.saved === 'local');
+    await op.reload();
+    await op.waitForSelector('html.is-ready', { timeout: 40000 });
+    check('12f: it is not asked again after a reload', (await op.locator('.onb').count()) === 0);
+    // The X of a panel only hides it; closing for good is a red entry in its menu
+    const cid = await op.evaluate(() => window.__workcraftWorkspace.openPanel('code'));
+    await op.waitForSelector(`.panel[data-id="${cid}"] [data-btn="close"]`, { timeout: 20000 });
+    await op.locator(`.panel[data-id="${cid}"] [data-btn="close"]`).click();
+    const hid = await op.evaluate((id) => window.__workcraftWorkspace.panels().find((p) => p.id === id)?.mode, cid);
+    check('12g: X hides the panel, it does not close it', hid === 'hidden', String(hid));
+    await op.evaluate((id) => { window.__workcraftWorkspace.show(id); }, cid);
+    await op.evaluate((id) => window.__workcraftWorkspace.panelMenu(id, 300, 300), cid);
+    await op.waitForSelector('.ctx-menu .ctx-item');
+    const red = await op.evaluate(() => [...document.querySelectorAll('.ctx-menu .ctx-item.danger')].map((b) => b.textContent.trim()));
+    check('12h: the panel menu has a red Close and free memory', red.some((x) => /^Close and free memory/.test(x)), JSON.stringify(red));
+    // The cloud guide: every service as a tile; a service opens three steps and one button (a ZIP is always the way out)
+    await op.evaluate(() => void import('/src/app/cloud-guide.ts').then((m) => m.openCloudGuide()));
+    await op.waitForSelector('.cg .cg-tile', { timeout: 20000 });
+    const tiles = await op.locator('.cg .cg-tile').evaluateAll((els) => els.map((e) => e.getAttribute('data-provider')));
+    check('12i: the cloud guide lists Google Drive, iCloud, OneDrive, Dropbox, MEGA, Proton Drive and another service', ['gdrive', 'icloud', 'onedrive', 'dropbox', 'mega', 'proton', 'other'].every((id) => tiles.includes(id)), tiles.join(','));
+    await op.locator('.cg .cg-tile[data-provider="dropbox"]').click();
+    await op.waitForSelector('.cg .cg-steps');
+    const guide = await op.evaluate(() => ({ steps: document.querySelectorAll('.cg-steps li').length, zip: !!document.querySelector('[data-action="cg-zip"]'), get: document.querySelector('.cg-get')?.getAttribute('href') }));
+    check('12j: a service shows three steps, a button for its folder, a ZIP as the other way and a link to get its app', guide.steps === 3 && guide.zip && /dropbox\.com/.test(guide.get || ''), JSON.stringify(guide));
+    await op.keyboard.press('Escape');
+    await octx.close();
+  }
   check('No unhandled errors in the console', errors.length === 0, errors.slice(0, 3).join(' | '));
 } catch (e) {
   check('Test run', false, e.stack || e.message);

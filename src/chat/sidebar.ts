@@ -7,7 +7,7 @@
 // cards of the tool calls, error pause with retry and correction, search, history per project and
 // across projects, export, and live token usage with the context window in the footer.
 
-import { h, esc, uid, modKey, debounce, nodes, extname, basename } from '../app/util.js';
+import { h, esc, uid, modKey, debounce, nodes, basename } from '../app/util.js';
 import { icon } from '../app/icons.js';
 import { bus } from '../app/bus.js';
 import { prefs } from '../app/settings.js';
@@ -17,7 +17,7 @@ import { notifyError, banner, explain, toast } from '../app/notifications.js';
 import { play } from '../app/sounds.js';
 import { APP_ACCENT, TOOL_BY_NAME } from '../mcp/schemas.js';
 import { orchestrator, type ToolMeta } from '../mcp/orchestrator.js';
-import { toolMark, type PanelContext, type PanelInstance } from '../workspace/registry.js';
+import { TOOLS, toolMark, type PanelContext, type PanelInstance, type ToolId } from '../workspace/registry.js';
 import { workspace } from '../workspace/layout.js';
 import { attachMentions, findMentions, resolveMentions, agentMentions, SYSTEM_COMMANDS, type Attachment } from './mentions.js';
 import { TeamSession, settleSaved, type TeamSendOptions } from './team-runner.js';
@@ -35,7 +35,7 @@ import { loadTokenizer, tokenizerNow } from './tokens.js';
 import { fitRequest } from './budget.js';
 import { DEEPSEEK_PRESETS, presetOf, resolveDeepSeekParams, type DeepSeekPresetId } from './deepseek.js';
 import { effortChoices } from './models.js';
-import { PERSONA_CATEGORIES } from '../core/defaults.js';
+import { suggestedPersonas } from './essentials.js';
 import { connectionLost, elapsedText, stepDisplay } from './step-view.js';
 import { activeApps } from '../ecosystems/ecosystems.js';
 import type { Effort } from './types.js';
@@ -74,24 +74,6 @@ function writeFlag(key: string, v: boolean) {
   } catch {
     /* storage blocked */
   }
-}
-
-/** Suggestion cards of the welcome screen, with files of the project where there are some. */
-function suggestions(): { app: 'gridcraft' | 'wordcraft' | 'deckcraft' | 'pdfcraft'; title: string; text: string; prompt: string }[] {
-  const pick = (exts: string[]) => fs.files().find((f) => exts.includes(extname(f.path)));
-  const ref = (exts: string[], fallback: string) => {
-    const f = pick(exts);
-    return f ? '@' + basename(f.path) : fallback;
-  };
-  const sheet = ref(['xlsx', 'csv'], '@sheets/');
-  const doc = ref(['docx', 'md'], '@documents/');
-  const pdf = ref(['pdf'], '@pdf/');
-  return [
-    { app: 'gridcraft', title: tr('Analyze a GridCraft sheet'), text: tr('Read the figures and sum up the trend'), prompt: tr('Read {ref} with @gridcraft and sum up revenue, costs and margin per quarter in a short table.', { ref: sheet }) },
-    { app: 'wordcraft', title: tr('Draft a WordCraft report'), text: tr('A one-page report from your data'), prompt: tr('Write a one-page report about {ref} in @wordcraft and save it as /documents/report.docx.', { ref: sheet }) },
-    { app: 'deckcraft', title: tr('Build DeckCraft slides'), text: tr('Three slides with the key points'), prompt: tr('Create three presentation slides in @deckcraft with the key points of {ref}.', { ref: doc }) },
-    { app: 'pdfcraft', title: tr('Redact a PdfCraft file'), text: tr('Find what should be blacked out'), prompt: tr('Read {ref} with @pdfcraft and list every passage with confidential or personal data that I should redact.', { ref: pdf }) },
-  ];
 }
 
 export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelInstance> {
@@ -156,12 +138,8 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       providerWrap,
       personaWrap,
       h('span.spacer'),
-      searchBtn,
-      usageBtn,
-      btn('download', tr('Export chat'), (e) => exportMenu(e.currentTarget as HTMLElement), { 'data-action': 'export' }),
-      btn('trash', tr('Clear chat'), () => void clearChat(), { 'data-action': 'clear' }),
+      // Two buttons: a new chat and the menu. Search, token usage, export, clear and Full Chat Mode are in the menu.
       btn('plus', tr('New chat'), () => void startNew(), { 'data-action': 'new' }),
-      fullBtn,
       moreBtn
     ),
     h('div.chat-badges', pet.el, modeSeg, rosterBtn, localBadge, statusPill, latencyBadge, mcpBadge)
@@ -362,6 +340,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
         { label: tr('Right'), icon: 'sidebar', checked: side === 'right', run: () => prefs.set('chatSide', 'right') },
         '-',
         { label: tr('Chat history'), icon: 'clock', run: () => toggleDrawer(true) },
+        { label: tr('Search in the chat'), icon: 'search', run: () => toggleSearch() },
         { label: tr('Export chat'), icon: 'download', run: () => exportMenu(anchor) },
         { label: tr('Token usage'), icon: 'trend', run: () => void openUsage(anchor) },
         { label: tr('Clear chat'), icon: 'trash', danger: true, run: () => void clearChat() },
@@ -423,6 +402,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       const tgt = chatTarget(chosen);
       const local = picked ? picked.local : st.active.local;
       statusPill.dataset.state = local ? 'local' : 'ok';
+      statusPill.hidden = false;
       statusPill.classList.add('is-icon-only');
       const eff = effortFor(tgt?.id);
       const ds = eff ? ` · ${EFFORT_LABEL[eff]}` : tgt?.deepseek ? ` · ${tr(presetOf(aiConfig.config?.ai.deepseek?.preset).name)}` : '';
@@ -431,9 +411,9 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       statusPill.setAttribute('aria-label', statusPill.title.replace('\n', '. '));
       bannerHost.replaceChildren();
     } else {
+      // No model: no red key icon in the header. The banner below says what is missing and links to the setup.
       statusPill.dataset.state = 'error';
-      statusPill.classList.add('is-icon-only');
-      statusPill.innerHTML = icon('key', { size: 13 }) + `<span class="sr-only">${esc(tr('no model'))}</span>`;
+      statusPill.hidden = true;
       statusPill.title = st.error || tr('No AI model set up');
       statusPill.setAttribute('aria-label', statusPill.title);
       bannerHost.replaceChildren();
@@ -443,20 +423,16 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
   function paintPersonas() {
     const pc = aiConfig.config?.personal;
     if (!pc) return void aiConfig.get().then(() => aiConfig.config?.personal && paintPersonas()).catch(() => {});
-    personaSel.replaceChildren(...pc.personas.map((p) => h('option', { value: p.id, selected: p.id === pc.active }, p.id === 'default' ? tr('No persona') : p.name)));
+    personaSel.replaceChildren(...pc.personas.map((p) => h('option', { value: p.id, selected: p.id === pc.active }, p.id === 'default' ? tr('Standard') : p.name)));
     personaSel.dataset.active = pc.active;
     const activePersona = pc.personas.find((p) => p.id === pc.active);
     const isDefault = !activePersona || activePersona.id === 'default';
-    const pName = isDefault ? tr('No persona') : activePersona.name;
+    const pName = isDefault ? tr('Standard') : activePersona.name;
     personaBtn.classList.toggle('has-persona', !isDefault);
     personaBtn.classList.toggle('is-icon-only', isDefault);
-    personaBtn.innerHTML =
-      icon(isDefault ? 'spark' : 'user', { size: 14 }) +
-      `<span class="chat-select-name${isDefault ? ' sr-only' : ''}">${esc(pName)}</span>` +
-      icon('chevronDown', { size: 11 });
-    personaBtn.title = isDefault
-      ? `${tr('Persona')}: ${tr('No persona')} (${tr('Default assistant')})`
-      : `${tr('Persona')}: ${activePersona.name}${activePersona.prompt ? ` — ${activePersona.prompt.slice(0, 80)}` : ''}`;
+    // Standard: just the icon. A persona in use shows its name as quiet text next to the icon.
+    personaBtn.innerHTML = icon(isDefault ? 'spark' : 'user', { size: 14 }) + `<span class="chat-select-name${isDefault ? ' sr-only' : ''}">${esc(pName)}</span>`;
+    personaBtn.title = isDefault ? tr('Persona: Standard') : `${tr('Persona')}: ${activePersona.name}`;
   }
   /** Switches the named context ('' = none), the same call as in Settings. */
   async function setContext(id: string) {
@@ -474,7 +450,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       await aiConfig.put('personal', { active: personaSel.value });
       paintPersonas();
       const p = aiConfig.config?.personal.personas.find((x) => x.id === personaSel.value);
-      toast(p && p.id !== 'default' ? tr('Persona: {name}', { name: p.name }) : tr('No persona'), 'info');
+      toast(p && p.id !== 'default' ? tr('Persona: {name}', { name: p.name }) : tr('Persona: Standard'), 'info');
     } catch (e) {
       notifyError(e);
     }
@@ -490,16 +466,13 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
     if (!pc) return;
     const r = anchor.getBoundingClientRect();
     const currentActive = pc.active || 'default';
-    const items: Parameters<typeof menu>[0] = [
-      { heading: tr('AI Assistant & Persona') },
-    ];
+    const items: Parameters<typeof menu>[0] = [];
     const pushPersona = (p: (typeof pc.personas)[number]) => {
       const isDefault = p.id === 'default';
+      // A plain list: a name and a check, no descriptions, no tags, no groups
       items.push({
-        label: isDefault ? tr('No persona') : p.name,
-        icon: isDefault ? 'spark' : 'user',
+        label: isDefault ? tr('Standard') : p.name,
         checked: p.id === currentActive,
-        ...(isDefault ? { hint: tr('Default assistant') } : p.description ? { hint: p.description } : {}),
         run: () => {
           if (personaSel.value !== p.id) {
             personaSel.value = p.id;
@@ -508,36 +481,10 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
         },
       });
     };
-    // No persona first, then the ones that suit the apps of this workspace, then the rest by group
-    const suited = new Set(activeApps());
-    const fits = (p: (typeof pc.personas)[number]) => !!p.apps?.some((a) => suited.has(a as never));
-    pc.personas.filter((p) => p.id === 'default').forEach(pushPersona);
-    const suggested = pc.personas.filter((p) => p.id !== 'default' && fits(p));
-    if (suggested.length) {
-      items.push({ heading: tr('Suits this workspace') });
-      suggested.forEach(pushPersona);
-    }
-    for (const cat of [...PERSONA_CATEGORIES, 'Yours']) {
-      const rest = pc.personas.filter((p) => p.id !== 'default' && !fits(p) && (p.category || 'Yours') === cat);
-      if (!rest.length) continue;
-      items.push({ heading: tr(cat) });
-      rest.forEach(pushPersona);
-    }
-    // Named contexts (facts about you or a project), one at a time
-    const contexts = pc.contexts || [];
-    if (contexts.length) {
-      items.push({ heading: tr('Context') });
-      items.push({ label: tr('No context'), icon: 'file', checked: !pc.contextActive, run: () => void setContext('') });
-      for (const c of contexts) items.push({ label: c.name, icon: 'file', checked: pc.contextActive === c.id, run: () => void setContext(c.id) });
-    }
-    items.push(
-      '-',
-      {
-        label: tr('Manage personas and contexts…'),
-        icon: 'settings',
-        run: () => bus.emit('open-settings', 'personal'),
-      }
-    );
+    // Few choices, opinionated: Standard, up to five that suit the apps of this workspace (and the one in use), and the rest in Settings
+    const picks = suggestedPersonas(pc.personas, activeApps(), currentActive);
+    picks.forEach(pushPersona);
+    items.push('-', { label: tr('All personas and context…'), icon: 'settings', run: () => bus.emit('open-settings', 'personal') });
     menu(items, r.left, r.bottom + 6);
   }
 
@@ -922,20 +869,9 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       h(
         'div.chat-empty.chat-welcome',
         h('div.chat-hero', hero.el),
-        h('p.eyebrow', tr('AI assistant')),
-        h('h2.duo', tr('How can I help') + ' ', h('span.tone', tr('with your project?'))),
-        h('p.muted', tr('Mention files and apps with @, pick tools with /, attach files with the clip. The AI works on the project files through MCP and the apps show the changes right away.')),
-        h(
-          'div.welcome-cards',
-          suggestions().map((s) =>
-            h(
-              'button.welcome-card.frame.sm',
-              { type: 'button', style: `--tool:${APP_ACCENT[s.app]}`, 'data-app': s.app, onclick: () => ((ta.value = s.prompt), autoGrow(), paintChips(), ta.focus()) },
-              h('span.well.welcome-well', h('span.welcome-mark', { html: toolMark(s.app, 22) }), h('strong', s.title), h('span.muted', s.text))
-            )
-          )
-        ),
-        h('div.chat-examples', h('button.chat-example', { type: 'button', onclick: () => ((ta.value = '/help'), autoGrow(), ta.focus()) }, h('span', { html: icon('help', { size: 14 }) }), h('span.mono', tr('/help lists every tool and command'))))
+        // Just a greeting: no cards, no canned tasks, no list of options
+        h('h2.duo', tr('What are you') + ' ', h('span.tone', tr('working on?'))),
+        h('p.muted.chat-hint', tr('Type below. @ adds a file or an app, / picks a tool.'))
       )
     );
   }

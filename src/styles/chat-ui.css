@@ -188,9 +188,6 @@ html.is-touch .chat-voice-cancel, html.is-ipad .chat-voice-cancel { width: 44px;
 /* ---------- Welcome (empty state) ---------- */
 .chat-welcome { padding: 10px 6px 6px; gap: 10px; text-align: left; }
 .chat-hero + .eyebrow { text-align: center; }
-.welcome-card { transition: transform .18s var(--ease-out), box-shadow .18s var(--ease-out); }
-.welcome-card:hover { transform: translateY(-1px); }
-@media (prefers-reduced-motion: reduce) { .welcome-card { transition: none; } .welcome-card:hover { transform: none; } }
 
 /* On-screen keyboard open: the screen is short, the hero and the companion row step aside */
 html.kb-open .chat-hero { display: none; }

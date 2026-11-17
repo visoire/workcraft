@@ -475,7 +475,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       return fail(tr('{name} needs shared memory, which a browser allows only on a cross-origin isolated page. Turn isolation on when asked (it needs HTTPS or localhost and the service worker), then reload.', { name: t.name }));
     }
     // A Rust panic ends in `RuntimeError: unreachable`; the engine is dead after it. Without this the panel would stay a black
-    // canvas that looks like a slow start (MailCraft 0.12.0 panics at startup on `std::time`, checked on the unmodified
+    // canvas that looks like a slow start (MailCraft 0.12.0 panicked at startup on `std::time`, checked on the unmodified
     // upstream build too). Only that one error counts, a failing file or a network error of the app does not.
     const handleStartupError = (raw: string) => {
       if (win !== w || started) return;

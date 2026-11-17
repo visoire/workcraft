@@ -38,7 +38,7 @@ All 44 apps are grouped into ecosystems (`src/ecosystems/catalog.json`): all 40 
 | [storytold/texturecraft](https://github.com/storytold/texturecraft) | TextureCraft, 3D textures (web build) |
 | [storytold/materialcraft](https://github.com/storytold/materialcraft) | MaterialCraft, procedural materials (web build) |
 | [tangency-labs/solidcraft](https://github.com/tangency-labs/solidcraft) | SolidCraft, 3D CAD, made by tangency-labs, not by the ArtCraft team (the web build asset is named `solidcraft-web-<version>.zip`; the `storytold/solidcraft` repository does not exist) |
-| [UCS-Care-Group/mailcraft](https://github.com/UCS-Care-Group/mailcraft) | MailCraft, mail (community app; the workspace runs its 0.11.1 web build, the 0.12.0 web build panics in the browser on std::time, see CHANGELOG) |
+| [UCS-Care-Group/mailcraft](https://github.com/UCS-Care-Group/mailcraft) | MailCraft, mail (community app; the workspace runs its 0.13.0 web build; the 0.12.0 web build panicked in the browser on std::time, 0.13.0 does not, see CHANGELOG) |
 | [storytold/anicraft](https://github.com/storytold/anicraft) | AniCraft, 2d animation (source tree only, no web build yet) |
 | [storytold/craft-anything](https://github.com/storytold/craft-anything) | Craft Anything, reverse engineering |
 
@@ -166,6 +166,23 @@ whose licence does not fit MIT OR Apache-2.0 was copied. The 17 web builds thems
 | `craft-ipad-apps-1.0.0` (local, no licence file) | not stated | Studied: a native Swift wrapper (local asset server, Files app, Save to Files) as the alternative to the web path. Not used | none; the browser path (PWA, OPFS) is the chosen route |
 | visoire/workcraft-ai, `crates/agents/src/craft/spec.rs` | MIT OR Apache-2.0 (same owner) | The 17-app registry: ids, aliases, file formats read and written, which kind of specialist each app is | `src/ecosystems/catalog.json`, `lookupApp` |
 | [cjpais/Handy](https://github.com/cjpais/Handy) | see its repository | Offline voice input, unchanged here | `src/server/voice.ts` |
+
+## Cloud storage (studied, not shipped; icons shipped)
+
+Where the guided cloud setup (`src/app/cloud-guide.ts`) got its ideas. From the reference index for cloud work that came with the CraftCloud project (`artcraft/cloudcraft/github_reference_index_for_ai_agents.md`, a local file). Nothing here is a dependency and no code was copied: WorkCraft keeps a project in a folder that the service's own app syncs, or hands out a ZIP; it has no sync engine of its own for these services. Check each repository's licence before you reuse anything.
+
+| Repository | Idea or use |
+| :--- | :--- |
+| [jonasbove/craftcloud](https://github.com/jonasbove/craftcloud) | CraftCloud: two-way sync with guarded writes, a version history and conflict copies, `craftcloud://` links. The model for "a copy that stays in step, nothing overwritten silently" in the cloud card, and the likely target of a later native provider |
+| [AtalayaLabs/OxiCloud](https://github.com/AtalayaLabs/OxiCloud) | The self-hosted server inside CraftCloud's image (WebDAV, REST, OpenID Connect). Studied only |
+| [simple-icons/simple-icons](https://github.com/simple-icons/simple-icons) | CC0 1.0: the six service icons in `public/assets/cloud/` (Google Drive, iCloud, OneDrive from 11.14.0, Dropbox, MEGA, Proton Drive), stored locally, downloaded 2026-11-17; the logos themselves are the owners' trademarks (`docs/LEGAL.md`) |
+| [rclone/rclone](https://github.com/rclone/rclone) | Reference for provider quirks (Google Drive, OneDrive, iCloud, Dropbox, WebDAV): why a synced folder is the simplest, most robust route. A service WorkCraft does not list can be mounted as a folder with rclone and used through "Another service" |
+| [apache/opendal](https://github.com/apache/opendal) | One storage interface across many services: the candidate for a future native provider layer in place of per-service code. Not used yet |
+| [tpluharik/Tuxindrive](https://github.com/tpluharik/Tuxindrive) | Multi-cloud client over rclone with files on demand and per-provider rules. Studied only |
+| [cberner/fuser](https://github.com/cberner/fuser) | FUSE library named for online-only placeholder files (a later "files on demand" stage). Studied only |
+| [storytold/craft-libs](https://github.com/storytold/craft-libs), [storytold/craft-launcher](https://github.com/storytold/craft-launcher) | `craft-web-host` (the `?host=parent` iframe message bridge for open, save, dirty) and the launcher catalog: the contract behind WorkCraft's own `playgroundFiles` bridge and the app list |
+| [bhimio1/CreativeCraft](https://github.com/bhimio1/CreativeCraft), [cryptpad/cryptpad](https://github.com/cryptpad/cryptpad) | Community wrapper (apps, cloud sync, MCP) and an end-to-end encrypted collaboration suite: studied as references for later work |
+
 ## npm dependencies of the workspace
 
 | Repository | Package |

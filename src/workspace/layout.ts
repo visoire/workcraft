@@ -613,17 +613,17 @@ function createPanelDom(id: string) {
     pop: headButton('popout', tr('Open in a separate window'), () => void workspace.popOut(id)),
     max: headButton('expand', tr('Maximize'), () => workspace.toggleMaximize(id)),
     hide: headButton('eyeOff', tr('Hide'), () => workspace.hide(id)),
-    close: headButton('close', tr('Close'), () => void workspace.close(id)),
+    // X only hides: the panel keeps its state and its tab, and comes back with one click. Closing for good (and freeing the memory)
+    // is a red entry in the panel menu.
+    close: headButton('close', tr('Hide'), () => workspace.hide(id)),
   };
-  if (side) btn.close.hidden = true;
+  // The header has two buttons: Maximize and X. In the side zones (project tree, chat) X hides the panel, since
+  // they are never closed. Everything else (full screen, floating, separate window, hide, file actions ...) sits
+  // behind a right click, a pencil barrel button or a long press on the header, and is built from the state of
+  // the buttons below, which are not shown.
   // Only apps and the code editor can run in a window of their own (the chat has its own pop-out)
   if (side || !canPopOut(p.tool)) btn.pop.hidden = true;
   for (const [k, b] of Object.entries(btn)) b.dataset.btn = k;
-  // Only the essentials stay in the header (Maximize, Hide, Close). The rest sits behind the "More" button; the
-  // buttons below keep their state (pressed, hidden) and the menu is built from it.
-  const more = headButton('dots', tr('More window actions'), () => openPanelMenu(id, more));
-  more.dataset.btn = 'more';
-  more.setAttribute('aria-haspopup', 'menu');
   const head = h(
     'header.panel-head',
     side ? null : h('span.panel-grip', { html: icon('grip', { size: 14 }), 'aria-hidden': 'true' }),
@@ -635,9 +635,7 @@ function createPanelDom(id: string) {
     badgeEl,
     h('span.spacer'),
     stateEl,
-    more,
     btn.max,
-    btn.hide,
     btn.close
   );
   head.addEventListener('dblclick', (e) => {
@@ -678,18 +676,12 @@ function createPanelDom(id: string) {
   renderPanelState(id);
 }
 
-/** The "More" button of a panel header opens the same menu as a right click on the header, the tab or the app's icon in the rail. */
-function openPanelMenu(id: string, anchor: HTMLElement) {
-  const a = anchor.getBoundingClientRect();
-  panelMenu(id, a.right, a.bottom + 6, { alignRight: true, anchor });
-}
-
 /**
- * The menu of a panel: window actions, the file (desktop app, project tree, file manager, copy path), the engine
+ * The menu of a panel (right click or long press on the header, the tab or the app's icon in the rail): window actions, the file (desktop app, project tree, file manager, copy path), the engine
  * (reload, unload, info) and how it goes away. What is offered is decided by panelActions() (panel-menu.ts); the
  * window actions follow their (not shown) header buttons, so a state change in one place shows in the other.
  */
-function panelMenu(id: string, x: number, y: number, opt: { alignRight?: boolean; anchor?: HTMLElement } = {}) {
+function panelMenu(id: string, x: number, y: number, opt: { alignRight?: boolean; anchor?: HTMLElement; extra?: MenuEntry[] } = {}) {
   void desktopApps();
   const r = rt.get(id);
   const p = state.panels[id];
@@ -723,13 +715,14 @@ function panelMenu(id: string, x: number, y: number, opt: { alignRight?: boolean
     reveal: () => ({ label: tr('Show in the file manager'), icon: 'folderOpen', run: () => void revealInFileManager(p.path!) }),
     'copy-path': () => ({ label: tr('Copy path'), icon: 'copy', run: () => void copyProjectPath(p.path!) }),
     reload: () => ({ label: tr('Reload'), icon: 'refresh', run: () => void workspace.reload(id) }),
-    unload: () => ({ label: label(r.btn.unload), icon: 'power', run: () => r.btn.unload.click() }),
+    unload: () => ({ label: label(r.btn.unload), icon: 'power', danger: true, run: () => r.btn.unload.click() }),
     info: () => ({ label: tr('Panel info'), icon: 'info', run: () => void showPanelInfo(id) }),
     hide: () => ({ label: tr('Hide'), icon: 'eyeOff', run: () => workspace.hide(id) }),
-    close: () => ({ label: tr('Close'), icon: 'close', run: () => void workspace.close(id) }),
+    close: () => ({ label: tr('Close and free memory'), icon: 'close', danger: true, run: () => void workspace.close(id) }),
   };
   const items: MenuEntry[] = plan.map((a) => (a === '-' ? a : entries[a]()));
-  menu(items, x, y, opt);
+  if (opt.extra?.length) items.push('-', ...opt.extra);
+  menu(items, x, y, { alignRight: opt.alignRight, anchor: opt.anchor });
 }
 
 /** Opens the project tree (it may be hidden or not started yet) and selects the file in it. */
@@ -770,9 +763,6 @@ function updateHead(id: string) {
   const r = rt.get(id);
   const p = state.panels[id];
   if (!r || !p) return;
-  // Many windows open: the header keeps Hide and Close, Maximize moves into the More menu
-  const shown = Object.values(state.panels).filter((q) => q.mode === 'normal' && TOOLS[q.tool].zone === 'stage' && !q.pip).length;
-  r.el.classList.toggle('is-crowded', shown >= 4);
   r.pathEl.textContent = p.path || '';
   r.pathEl.title = p.path || '';
   r.el.classList.toggle('is-focused', state.focused === id);
@@ -1795,8 +1785,9 @@ export const workspace = {
   },
 
   /** The context menu of a panel at a position (right click on its tab or the app's icon in the tool rail). */
-  panelMenu(id: string, x: number, y: number) {
-    panelMenu(id, x, y);
+  /** `extra` entries are appended after a separator (the tool rail adds Move up and Move down) */
+  panelMenu(id: string, x: number, y: number, extra: MenuEntry[] = []) {
+    panelMenu(id, x, y, { extra });
   },
 
   /** Returns the instance of a panel. Shows it and loads it first (for MCP commands). */

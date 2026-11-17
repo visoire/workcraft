@@ -3,7 +3,7 @@
 import { esc } from './util.js';
 import { t } from './i18n.js';
 
-const URL_BMC = 'https://www.buymeacoffee.com/visoire';
+export const URL_BMC = 'https://www.buymeacoffee.com/visoire';
 const KEY = 'workcraft.coffee';
 const DELAY = 10 * 60 * 1000;
 const SNOOZE = 14 * 24 * 3600 * 1000;

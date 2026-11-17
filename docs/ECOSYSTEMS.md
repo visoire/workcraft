@@ -62,7 +62,7 @@ The five ids `office`, `imaging`, `motion`, `design` and `cad` are the ones earl
 
 ## Choosing a workspace
 
-- First run: the picker opens once. Closing it keeps Office & Documents.
+- First run: the onboarding page (welcome and support, the workspace, where the files are saved) comes first and nothing else is loaded yet. "Skip setup" keeps Office & Documents. Later runs and a `/?ecosystem=` link skip it; `/?onboarding=1` shows it again.
 - Later: the grid button on the rail (launcher, then Switch workspace) or the command palette (Switch workspace, or
   `Workspace: <name>`).
 - A link: `/?ecosystem=<id>` (any id of the table above, or `custom-<name>`). It counts as the choice, so the picker stays
@@ -200,12 +200,12 @@ Both routes apply the same rules and write the same manifest.
 ### A build that does not start
 
 A panel reports **Start failed** when the engine's own WebAssembly code panics (`RuntimeError: unreachable`) or does not start
-within the time limit, and says which build it was. **MailCraft 0.12.0 is such a build**: it calls `std::time::Instant::now()` in many places, which panics on
+within the time limit, and says which build it was. **MailCraft 0.12.0 was such a build**: it called `std::time::Instant::now()` in many places, which panics on
 `wasm32-unknown-unknown` (`time not implemented on this platform`). It does the same served on its own with none of WorkCraft's
 scripts, so it is the upstream build, not this workspace. It cannot be repaired by patching the wasm (an earlier attempt cut the trap
 out; the compiler had deleted everything after the call, so the app ran into code that was never meant to run and corrupted its heap:
-a picture, then nothing clickable). **The workspace runs MailCraft 0.11.1**, the newest official web build without that call (sha256
-checked against the release; starts, takes clicks, no panic in a panel and on its own). 0.12.0 stays in `versions/zip/community/`;
+a picture, then nothing clickable). **MailCraft 0.13.0 does not have the problem** (checked 2026-11-17 in a workspace panel: the mail list, the reminders and the folders
+draw and answer; no panic; sha256 checked against the release), and the workspace runs it. 0.11.1 was the workaround in between; 0.12.0 stays in `versions/zip/community/`;
 `npm run versions -- --remote` shows when a newer web build exists, and `scripts/patch-apps.mjs` reports any build that has the trap.
 
 ### When an app updates
@@ -301,10 +301,12 @@ search, the `?ecosystem=` links and the start of the apps in a desktop Chromium 
 | FireCraft 0.2.5 | starts, after the install fix `relative-paths` (its `index.html` used root-absolute paths) |
 | Paint.RS 0.7.3 | starts (canvas taken over) |
 | Lemon Studio web.26 | does **not** start without cross-origin isolation (it draws its own "needs COOP and COEP" page); the panel says so and offers the isolation switch. Not tried with a service worker |
-| LightCraft Classic 26.46.3 (26.46.2 did the same) | **upstream bug**: stops at startup with `no pids on this platform`; also refuses to run beside LightCraft (both hold the Web Lock `lightcraft-library`). Checked again on the newest build, in a workspace panel, with the same result |
+| LightCraft Classic 26.47.1 (26.46.3 and 26.46.2 did the same) | **upstream bug**: stops at startup with `no pids on this platform`; also refuses to run beside LightCraft (both hold the Web Lock `lightcraft-library`). Checked again on the newest build (26.47.1, 2026-11-17), in a workspace panel: the same message |
 | SubCraft 0.3.6 (Pages) | **upstream bug**: panics at startup with `time not implemented on this platform` (the deployed site does the same) |
 
-**Updated builds, checked in a workspace panel on 2026-11-14 (Chromium, WebGL2):** SolidCraft 0.41.0 starts (about 6 seconds) and keeps its own dark look in both workspace themes, as the catalog says; its Rust CLI flags were not re-read, because only the web build was installed. LightCraft Classic 26.46.3 is the row above.
+**Updated builds, checked in a workspace panel on 2026-11-14 (Chromium, WebGL2):** SolidCraft 0.41.0 starts (about 6 seconds) and keeps its own dark look in both workspace themes, as the catalog says; its Rust CLI flags were not re-read, because only the web build was installed. LightCraft Classic is the row above.
+
+**Updated again on 2026-11-17 (Chromium, SwiftShader, in a workspace panel, each next to the others):** MailCraft 0.13.0 starts and works (see above), SolidCraft 0.43.0 starts and shows its start page, LightCraft Classic 26.47.1 stops with the same upstream message as before. Honeydew 0.5.4 was not installed (its web zip is 1.36 GB; `npm run apps:fetch -- --yes --max-mb 1461 --app honeydew` takes it). Other apps with a newer upstream tag have no web zip (they are built from source only); `npm run versions -- --remote` lists them.
 
 **Not verified:**
 

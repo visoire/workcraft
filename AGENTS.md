@@ -63,7 +63,9 @@ docs/*.md                  guides for people and agents: ARCHITECTURE, MCP-TOOLS
 SOURCES.md                 every GitHub repository the project builds on, ships, connects to or learned from
 skills/                    the 13 artcraft-skills (agentskills.io format) the assistant reads with read-skill
 src/app/                   shell
-  main.ts                  entry: top bar, tool rail, menu, keyboard shortcuts, theme, boot
+  main.ts                  entry: top bar, tool rail, menu, keyboard shortcuts, theme, boot (the onboarding runs first; settings button is top right)
+  onboarding.ts, onboarding-state.ts  first start: welcome (support link), workspace, where files are saved; runs BEFORE project, tree, chat and rail load; the pure rules (who sees it, what is remembered,
+                           localStorage workcraft.onboarding) are in onboarding-state.ts (tests/server/onboarding.test.ts)
   brand.js, icons.js       brand.js is GENERATED (traced W mark and wordmark, from assets/workcraft/build/make-icons.mjs,
                            outside this repository); icons.js draws them: markSvg, logoSvg, wordmarkSvg (currentColor)
   settings.ts              interface prefs (localStorage workcraft.prefs), prefs.get/set
@@ -88,7 +90,8 @@ src/workspace/
   popout.ts                separate browser window for one panel (?popout=1, second display), BroadcastChannel sync
   pencil.ts, pdf-pen.ts    Apple Pencil and touch handling
   panel-menu.ts            pure: what the right-click menu of a panel offers (panelActions over the facts of the panel) and the rows of Panel info; layout.ts builds and runs the
-                           menu (header, tab, rail icon, More button), tests/server/panel-menu.test.ts
+                           menu (header, tab, rail icon), tests/server/panel-menu.test.ts. The header itself has only Maximize and X; the other
+                           buttons (full, min, pip, pop, unload) exist but are not shown, the menu clicks them to follow their state
   panels/craftapp.ts       an engine in an iframe: load, save, live sync, theme, render loop pause; attaches the iPadOS adapter and the
                            playgroundFiles bridge (window.__workcraftFiles); makes room first for a heavy app (launch-relief)
   panels/unavailable.ts    the panel of an app that has no web build in this installation (explains, opens the desktop app if installed)
@@ -101,10 +104,12 @@ src/ecosystems/            ecosystems (workspaces) of the 44 apps (ArtCraft, com
                            file types), makeCustomEcosystem, sanitizeCustom, availabilityOf; CRAFT_IDS = the ids of catalog.json in the same order (a test checks)
   describe.ts              pure: what list-craft-apps answers (filters) and why open-in-app cannot open an app without a build (tests/server/ecosystems.test.ts)
   ecosystems.ts            the ecosystem in use (prefs ecosystem, ecosystemsCustom, ecosystemChosen), setEcosystem, ?ecosystem= link
+  rail-order.ts            pure: the order of the app icons in the tool rail (orderApps, moveApp, stepApp, dropIndex; pref railOrder per workspace); main.ts does the dragging
+                           (tests/server/essentials.test.ts)
   stage-plan.ts            pure: planLeave (what gives way when a workspace is entered), planStage (for "Open the first apps": one or two by device and stage width), tabBelongs
                            (tests/server/stage-plan.test.ts). The ONLY place that decides what the stage shows
   enter.ts                 enterEcosystem (hides the apps of the workspace you left, opens NOTHING), openFirstApps (the welcome page button, an explicit choice)
-  ui.ts                    picker (first run, Switch workspace, Create your own), launcher; re-exports enterEcosystem
+  ui.ts                    picker (ecosystemPickerBody: the cards and Create your own, used by the Switch workspace dialog and the onboarding), launcher; re-exports enterEcosystem
   offline-apps.ts          Keep these apps offline: asks the service worker to cache the engines of an ecosystem (storage-fit.ts: the pure quota check)
 src/storage/               one storage for every app: the project. paths.ts (browser:/x <-> /x), recent.ts (Recent files, pure + localStorage),
                            recent-view.ts (DOM list), app-files-bridge.ts (the independent apps' playgroundFiles contract on top of the project)
@@ -136,6 +141,7 @@ src/chat/
                            model-notice.ts shows the "Keep this model" notice; step-view.ts: tool card names, clock, totals
   team.ts, team-runner.ts, team-ui.ts   Team Mode: task DAG, scheduler, review, Mission Control; patterns (supervisor,
                            sequential, parallel, human), shared memory, agents you create (AgentProfile, registerAgents)
+  essentials.ts            pure: the question cards of the empty chat (one per app of the workspace, welcomeCards) and the short persona list (suggestedPersonas)
   agents-ui.ts             editor of one agent (color, icon, tool groups); skills.ts (index for the prompt); craft-icons.ts
   adapters/claude.ts, gemini.ts, openai.ts, ollama.ts   raw-fetch provider adapters (no SDKs)
   providers.ts, models.ts, params.ts, config.ts, http.ts   provider list, model rules, parameters
@@ -170,7 +176,7 @@ src/server/                Hono backend (Node 22+)
   seed.ts (sample project), tokenizer.ts
 src/core/                  no DOM, no Node: search ranking, three-way sync, Markdown, defaults,
                            JSON repair, BPE tokenizer
-src/project/desktop.ts      the installed desktop Craft apps next to the panels: Open in the desktop app (tree menu, window More menu)
+src/project/desktop.ts      the installed desktop Craft apps next to the panels: Open in the desktop app (tree menu, panel menu)
 src/styles/                polish.css (loaded last: consistency pass, (i) tips, status chips, window header, Team Mode without glow), tokens.css (colors, fonts, radii), base.css, workspace.css, tools.css, chat-ui.css (chat polish,
                            loaded after tools.css), blip.css (the companion)
 src/docs/                  content.md, main.ts (renderer, search, docs assistant), docs.css

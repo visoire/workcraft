@@ -25,6 +25,7 @@ import { wantsWebgl } from './craftapp.js';
 import { projects } from '../../project/manager.js';
 import { fs } from '../../project/fs.js';
 import { downloadBlob, basename, normPath } from '../../app/util.js';
+import { shareOrDownload } from '../../app/share-file.js';
 import { t, tn, lang, LANGS, LANG_LABELS, setLang } from '../../app/i18n.js';
 import { VERSION, appStatus } from '../../app/status.js';
 import { workspace } from '../layout.js';
@@ -57,21 +58,6 @@ function savedDesktop(): { host: string; port: string; token: string } {
   }
 }
 
-/** Save a file through the iPadOS share sheet (Save to Files), otherwise as a download. */
-async function shareOrDownload(blob: Blob, name: string): Promise<void> {
-  const file = new File([blob], name, { type: blob.type || 'application/octet-stream' });
-  const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
-  if (device.touchUi && nav.canShare?.({ files: [file] })) {
-    try {
-      await navigator.share({ files: [file], title: name });
-      return;
-    } catch (e) {
-      if ((e as Error).name === 'AbortError') return;
-    }
-  }
-  downloadBlob(blob, name);
-}
-
 export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelInstance> {
   const root = h('div.sp');
   const nav = h('nav.sp-nav', { 'aria-label': t('Sections') });
@@ -91,15 +77,41 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
 
   let cfg: PublicConfig;
   let section: Section = 'ai';
-  const GROUPS: [string, [Section, string, string][]][] = [
-    [t('Overview'), [['status', t('Status'), 'activity'], ['updates', t('Updates'), 'download'], ['health', t('Health check'), 'life'], ['monitor', t('Memory and GPU'), 'cpu']]],
-    [t('AI'), [['ai', t('AI models'), 'spark'], ['team', t('Team Mode'), 'users'], ['personal', t('Personal context'), 'user'], ['search', t('Search and memory'), 'search'], ['usage', t('Usage and telemetry'), 'trend']]],
-    [t('Privacy'), [['privacy', t('Privacy'), 'lock'], ['audit', t('Audit log'), 'shield']]],
-    [t('Project'), [['history', t('History and snapshots'), 'clock'], ['trash', t('Trash'), 'trash'], ['share', t('Share and sync'), 'share'], ['cloud', t('Cloud storage'), 'upload']]],
-    [t('Extensions'), [['mcp', t('MCP servers'), 'plug'], ['craft', t('Craft apps'), 'layers'], ['bridge', t('Connect other IDEs'), 'link'], ['plugins', t('Plugins and sandbox'), 'box'], ['logs', t('Logs and metrics'), 'terminal']]],
-    [t('Workspace'), [['view', t('Appearance and layout'), 'palette'], ['device', t('iPad and network'), 'tablet']]],
+  // Few choices up front: the five things most people ever change. Everything else is behind "Developer options", one toggle,
+  // where every section and option stays reachable (they are also found by the command palette).
+  const MAIN: [Section, string, string][] = [
+    ['ai', t('AI models'), 'spark'],
+    ['personal', t('Personas and context'), 'user'],
+    ['view', t('Appearance and layout'), 'palette'],
+    ['privacy', t('Privacy'), 'lock'],
+    ['cloud', t('Cloud storage'), 'upload'],
   ];
-  const SECTIONS: [Section, string, string][] = GROUPS.flatMap(([, list]) => list);
+  const DEV: [string, [Section, string, string][]][] = [
+    [t('Overview'), [['status', t('Status'), 'activity'], ['updates', t('Updates'), 'download'], ['health', t('Health check'), 'life'], ['monitor', t('Memory and GPU'), 'cpu']]],
+    [t('AI'), [['team', t('Team Mode'), 'users'], ['search', t('Search and memory'), 'search'], ['usage', t('Usage and telemetry'), 'trend']]],
+    [t('Privacy'), [['audit', t('Audit log'), 'shield']]],
+    [t('Project'), [['history', t('History and snapshots'), 'clock'], ['trash', t('Trash'), 'trash'], ['share', t('Share and sync'), 'share']]],
+    [t('Extensions'), [['mcp', t('MCP servers'), 'plug'], ['craft', t('Craft apps'), 'layers'], ['bridge', t('Connect other IDEs'), 'link'], ['plugins', t('Plugins and sandbox'), 'box'], ['logs', t('Logs and metrics'), 'terminal']]],
+    [t('Workspace'), [['device', t('iPad and network'), 'tablet']]],
+  ];
+  const SECTIONS: [Section, string, string][] = [...MAIN, ...DEV.flatMap(([, list]) => list)];
+  const isDevSection = (s: Section) => DEV.some(([, list]) => list.some(([id]) => id === s));
+  const DEV_KEY = 'workcraft.settings.dev';
+  let devOpen = (() => {
+    try {
+      return localStorage.getItem(DEV_KEY) === '1';
+    } catch {
+      return false;
+    }
+  })();
+  const setDevOpen = (open: boolean) => {
+    devOpen = open;
+    try {
+      localStorage.setItem(DEV_KEY, open ? '1' : '0');
+    } catch {
+      /* storage blocked: the fold just starts closed next time */
+    }
+  };
   const extraCtx = {
     cfg: () => cfg,
     setCfg: (c: PublicConfig) => void (cfg = c),
@@ -112,11 +124,19 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
   const extras: Record<ExtraSection | ConnectSection, () => Promise<HTMLElement>> = { ...extraSections(extraCtx), ...connectSections(extraCtx) };
 
   function renderNav() {
+    // A section opened from somewhere else (the status chip, the palette, a link) opens the fold it lives in
+    if (isDevSection(section) && !devOpen) setDevOpen(true);
+    const tab = ([id, label, ic]: [Section, string, string]) =>
+      h('button.sp-tab' + (section === id ? '.is-active' : ''), { type: 'button', 'data-section': id, 'aria-current': section === id ? 'page' : 'false', html: icon(ic, { size: 16 }) + `<span>${label}</span>`, onclick: () => ((section = id), render()) });
     nav.replaceChildren(
-      ...GROUPS.flatMap(([group, list]) => [
-        h('p.sp-nav-group.eyebrow', group),
-        ...list.map(([id, label, ic]) => h('button.sp-tab' + (section === id ? '.is-active' : ''), { type: 'button', 'data-section': id, 'aria-current': section === id ? 'page' : 'false', html: icon(ic, { size: 16 }) + `<span>${label}</span>`, onclick: () => ((section = id), render()) })),
-      ])
+      ...MAIN.map(tab),
+      h('button.sp-tab.sp-dev-toggle', { type: 'button', 'data-action': 'dev-options', 'aria-expanded': String(devOpen), html: icon('code', { size: 16 }) + `<span>${t('Developer options')}</span>` + icon(devOpen ? 'chevronUp' : 'chevronDown', { size: 14 }), onclick: () => {
+        // Closing the fold while one of its sections is open goes back to the first section
+        if (devOpen && isDevSection(section)) section = 'ai';
+        setDevOpen(!devOpen);
+        render();
+      } }),
+      ...(devOpen ? DEV.flatMap(([group, list]) => [h('p.sp-nav-group.eyebrow', group), ...list.map(tab)]) : [])
     );
   }
 

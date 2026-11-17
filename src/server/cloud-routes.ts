@@ -3,6 +3,10 @@ import type { Hono, Context } from 'hono';
 import { z } from 'zod';
 import { config, updateConfig } from './config.js';
 import { listProjects } from './projects.js';
+import { homedir } from 'node:os';
+import { readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import { detectSyncFolders } from './cloud-detect.js';
 import { CloudError, bindProject, googleCallback, googleDisconnect, googleStart, googleStatus, icloudRoot, openRemoteProject, providerLabel, remoteProjects, syncProject, unbindProject } from './cloud.js';
 
 interface Deps {
@@ -33,6 +37,34 @@ export function registerCloudRoutes(api: Hono, deps: Deps): void {
   const localOnly = (c: Context) => (deps.isLocal(c) ? null : c.json({ error: { code: 'FORBIDDEN', message: 'Cloud accounts are set up on the computer that runs WorkCraft.' } }, 403));
 
   api.get('/cloud', (c) => c.json(state()));
+
+  // Sync folders of the cloud services that are installed on this computer (Dropbox, OneDrive, Google Drive for desktop, MEGA, Proton Drive)
+  api.get('/cloud/detect', (c) => {
+    const deny = localOnly(c);
+    if (deny) return deny;
+    const ic = icloudRoot();
+    const found = detectSyncFolders({
+      home: homedir(),
+      env: process.env,
+      platform: process.platform,
+      exists: (p) => {
+        try {
+          return statSync(p).isDirectory();
+        } catch {
+          return false;
+        }
+      },
+      list: (p) => {
+        try {
+          return readdirSync(p);
+        } catch {
+          return [];
+        }
+      },
+      join,
+    });
+    return c.json({ found: [...(ic ? [{ id: 'icloud', name: 'iCloud Drive', path: ic }] : []), ...found] });
+  });
 
   // Google: the user's own OAuth client
   api.put('/cloud/google', async (c) => {

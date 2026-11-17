@@ -14,7 +14,50 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
+## [0.1.0-alpha.2] - 2026-11-17
+
+### Added
+
+- **A guided cloud setup** ("Save in the cloud": main menu, command palette, Settings, Cloud storage, and the last step of the first-start page). Pick Google Drive, iCloud Drive, OneDrive, Dropbox, MEGA, Proton
+  Drive or Another service; each opens three short steps and one button, with a link to get the service's app. No password is typed into WorkCraft: the service's own app syncs a folder and WorkCraft keeps
+  a copy of the project in a folder called WorkCraft inside it. On a computer with the desktop backend the folder is found for you (`GET /api/cloud/detect`: Dropbox, OneDrive including company folders, Google Drive for
+  desktop, MEGA, Proton Drive, iCloud Drive) and **Use this folder** is the whole setup; in Chrome and Edge on their own **Choose the folder** opens the browser's folder picker; on iPad, iPhone, Safari and Firefox
+  (no folder access) **Save ZIP** opens the share sheet (Save to Files lists iCloud Drive and every cloud app). A ZIP is also offered next to every folder route, so there is always a way out. The project is
+  bound to the folder and its first sync runs right away. The icons of the six services are stored locally in `public/assets/cloud/` (CC0 Simple Icons set, downloaded 2026-11-17; the logos are their owners' trademarks, see `docs/LEGAL.md`), so the workspace loads nothing from the network for them. Pure rules in `src/app/cloud-providers.ts`, the finder in `src/server/cloud-detect.ts`, the dialog in `src/app/cloud-guide.ts`.
+  Not verified: a real Dropbox, OneDrive, MEGA or Proton Drive folder (the finder is tested with a fake disk), the iPad share sheet, the browser folder picker with a real click.- **Onboarding.** The first start is a page in three steps that runs before anything else loads (no project, project tree, chat or tool rail yet): a welcome with a way to support the project, the
+  workspace (or Create your own), and where the files are saved (only on this computer, or also in the cloud, which opens the cloud guide right after the start). The card is a landscape card on a computer, a smaller one on an iPad and the whole screen on a phone; only its body scrolls, and the workspaces are compact tiles. The answer is kept in the
+  browser and not asked again. "Skip setup" keeps Office & Documents. Returning users, `/?ecosystem=` links and automated browsers skip it; `/?onboarding=1` shows it again.
+
+### Fixed
+
+- **Team configuration** had two scrollbars (the card and the list inside it); there is one now.
+- **WordCraft and the other egui apps sometimes stayed black** until a click. The apps draw a frame only when asked, and a lost first frame left them waiting. The frame layer
+  (`public/craft-frame.js`, measure `repaint-wake`) now sends a few "pointer left the canvas" events in the first seconds, which ask the app for a frame and cause no hover or click. In a test an idle
+  WordCraft drew 1 frame in 1.5 s and 4 after the nudge. I could not make the black screen appear on demand, so the fix is not proven against it; the hosted copy gets it with the next build and deploy.
+
 ### Changed
+
+- **App builds updated.** MailCraft 0.11.1 to **0.13.0** (0.12.0's web build panicked on `std::time` in the browser; 0.13.0 starts, draws the mail list and the reminders, no panic), SolidCraft 0.41.0 to **0.43.0**
+  (starts, start page), LightCraft Classic 26.46.3 to **26.47.1** (still stops at startup with `no pids on this platform`, an upstream fault that is documented; it also refuses to run beside LightCraft).
+  Installed with `npm run apps:fetch -- --yes --app solidcraft,mailcraft,lightcraft-classic` (sha256 checked) and started in a workspace panel (Chromium, SwiftShader). Not installed: Honeydew 0.5.4 (its web zip
+  is 1.36 GB; `--max-mb 1461` takes it) and every app whose upstream tag has no web zip (they are built from source only; `npm run versions -- --remote` lists them). The CLI flags of SolidCraft and MailCraft
+  were not re-read.- **The X of a panel only hides it**, no longer closes and unloads. Closing for good is a red "Close and free memory" in the panel menu (Unload and free memory is red too); Hide is in the menu as well.
+- **Settings moved to the top right** of the top bar (it was at the bottom of the rail).
+- **A simpler interface.** Fewer buttons, stronger defaults, the rest one right click away.
+  - *Panels:* the header has two buttons, Maximize and X (for the project tree and the chat, X hides). The "More" button and the Hide eye are gone from the header; Full screen,
+    Minimize, Picture in picture, separate window, file actions, Reload, Info and Hide are in the right-click menu (long press on a touch screen), which was already there.
+  - *Top bar:* one AI button (Full Chat Mode is in the chat's menu), no second project-tree button next to the logo (the rail has it), no extra filter button for project search (main menu
+    and palette), no "hide the bar" button (main menu). The **+** lists the apps of the workspace in use and its recent files, without "new" tags.
+  - *Tool rail:* drag an app icon up or down to reorder (mouse and pen), or use Move up and Move down in its menu (finger). The order is kept per workspace (`railOrder`).
+  - *Chat:* the header keeps New chat and one menu (search, usage, export, clear and Full Chat Mode moved into it); latency and MCP count show only when something is wrong; no red key icon
+    when no model is set up (the banner says it). The persona menu is a short list: Standard, up to five personas for the workspace, the one in use, and "All personas and context…";
+    descriptions, tags, groups and contexts left the menu, and the persona button is quiet text instead of a blue pill. The empty chat is a greeting ("What are you working on?") and one quiet line; the option cards are gone.
+  - *Workspaces:* a chosen app (Create your own) and the workspace in use get a green outline, no check mark and no badge.
+  - *Settings:* five sections up front (AI models, Personas and context, Appearance and layout, Privacy, Cloud storage); every other section is behind **Developer options**, which opens by itself
+    when something links into it.
+  - Verified: type check, `npm test` 394 (387 pass, 7 skipped, none failing, 10 new in `tests/server/essentials.test.ts`), both builds, `check:docs`, `check:clean`, the main browser run 103/103,
+    the iPad run in WebKit 66/66, and a real-mouse drag of a rail icon in Edge. The features run has two failures (A2 project memory in the prompt, F2 monitor of a running app) that fail the same way
+    on the last commit: F2 expects a GridCraft panel that no longer opens by itself. Not verified: a real finger long press and Move up and Move down on a real iPad.
 
 - **Documentation brought up to date for the 44 apps.** The README, the in-app documentation, ARCHITECTURE, the iPad guides, SECURITY, SOURCES and the repository description no longer
   speak of four apps only; they explain that the repository holds the four office apps, that all 44 apps open in the browser at [workcraft.cc/app](https://workcraft.cc/app/) and that

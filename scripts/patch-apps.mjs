@@ -106,7 +106,7 @@ function findBuildDirs(prefix) {
  * returns), so execution fell into code that is not meant to run and corrupted the heap (dlmalloc "assertion failed: psize <= size +
  * max_overhead", the panel drew once and then nothing was clickable). A web build cannot be repaired by patching the binary.
  * It is a fault of that build: the script now only reports a build that has it (the first `call; unreachable` of the trap), and
- * the workspace runs MailCraft 0.11.1, the newest official web build that does not use Instant (checked: starts, answers clicks).
+ * the workspace ran MailCraft 0.11.1, the newest official web build without Instant, until 0.13.0 (checked 2026-11-17: starts, answers clicks, no trap).
  */
 function patchMailCraftDir(dir, check, report) {
   const files = readdirSync(dir);
@@ -115,7 +115,7 @@ function patchMailCraftDir(dir, check, report) {
   const wasm = readFileSync(join(dir, wasmFile));
   const callSeq = Buffer.from([0x10, 0xd2, 0x7f, 0x00]);
   if (wasm.includes(callSeq)) {
-    report.push({ app: 'mailcraft', state: 'missing', detail: `${join(dir, wasmFile)} uses std::time::Instant on wasm32 and panics at start (upstream fault of 0.12.0, not patchable): install 0.11.1` });
+    report.push({ app: 'mailcraft', state: 'missing', detail: `${join(dir, wasmFile)} uses std::time::Instant on wasm32 and panics at start (upstream fault of 0.12.0, not patchable): install 0.13.0 or 0.11.1` });
     return;
   }
   report.push({ app: 'mailcraft', state: 'ok', detail: `${wasmFile}: no Instant::now trap` });

@@ -1,0 +1,9 @@
+Icons of the cloud services in the guided cloud setup (src/app/cloud-guide.ts, Save in the cloud).
+
+Source: Simple Icons (https://simpleicons.org, https://github.com/simple-icons/simple-icons), the icon files are released under CC0 1.0.
+Downloaded 2026-11-17 and kept here so the workspace loads nothing from the network. The OneDrive icon is from simple-icons 11.14.0
+(newer releases no longer include it); the others from the develop branch. Each file got its brand color as the fill of the svg element.
+
+The names and logos are trademarks of their owners (Google Drive: Google LLC, iCloud: Apple Inc., OneDrive: Microsoft Corporation,
+Dropbox: Dropbox, Inc., MEGA: Mega Limited, Proton Drive: Proton AG). They are shown only to identify the service you connect;
+WorkCraft is not affiliated with or endorsed by any of them. See docs/LEGAL.md.

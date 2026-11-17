@@ -104,10 +104,9 @@ html.is-touch .sp, html.is-ipad .sp { --sp-ctl: 44px; --sp-ctl-sm: 40px; }
 html.is-touch .tree-filter .tree-search, html.is-ipad .tree-filter .tree-search { height: 44px; }
 .tree-actions .icon-btn[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent-text); }
 
-/* ---------- Window header: Maximize, Hide and Close; the rest sits behind More ---------- */
-.panel-head [data-btn='more'] { color: var(--muted); }
-.panel.is-crowded:not(.is-max) .panel-head [data-btn='max'] { display: none; }
-.panel[data-zone='left'] .panel-head [data-btn='more'] { display: none; }
+/* ---------- Window header: only Maximize and X; everything else is behind a right click or a long press ---------- */
+.panel-head [data-btn='close'] { color: var(--muted); }
+.panel-head [data-btn='close']:hover { color: var(--ink); }
 
 /* ---------- Team Mode: calm surfaces, no glow, no colored side bars ---------- */
 /* The agent color stays on small things only: the dot, the name and the icon tile */
@@ -184,3 +183,111 @@ html.is-touch .msg-undo, html.is-ipad .msg-undo { height: 40px; }
 .tree-row.is-found { animation: oc-found 1.4s ease-out 1; }
 @keyframes oc-found { 0%, 35% { box-shadow: inset 0 0 0 2px var(--ink-2); } 100% { box-shadow: inset 0 0 0 2px transparent; } }
 @media (prefers-reduced-motion: reduce) { .tree-row.is-found { animation: none; box-shadow: inset 0 0 0 2px var(--ink-2); } }
+/* ---------- Less in the chat header: only what matters now ---------- */
+/* Latency and the MCP count appear in the token usage card and the status page; the badge row keeps the mode, the model location and problems */
+.chat-badge[data-kind='latency'], .chat-badge[data-kind='mcp']:not([data-state='error']) { display: none; }
+/* The persona in use is quiet text, in the interface font like the rest, not a blue pill */
+.chat-persona-btn.has-persona { border-color: var(--line); background: transparent; color: var(--ink-2); font-weight: 400; }
+.chat-persona-btn.has-persona .ic { color: var(--muted); }
+.chat-persona-btn.has-persona:hover { border-color: var(--line-strong); background: var(--card); color: var(--ink); }
+.chat-persona-btn .chat-select-name { font-family: inherit; letter-spacing: 0; text-transform: none; }
+
+
+/* ---------- Settings: the main list is short, the rest is behind Developer options ---------- */
+.sp-dev-toggle { margin-top: 10px; border-top: 1px solid var(--line); border-radius: 0 0 7px 7px; padding-top: 4px; color: var(--muted); }
+.sp-dev-toggle > span { flex: 1; }
+.sp-dev-toggle:hover { color: var(--ink); }
+@container (max-width: 560px) { .sp-dev-toggle { margin-top: 0; border-top: 0; padding-top: 6px; } }
+
+/* ---------- Team configuration card: one scrollbar (the card's well), not two ---------- */
+.team-pop { max-height: none; overflow: visible; }
+
+/* ---------- Onboarding: one calm card, shaped by the device ---------- */
+html.is-onboarding #app { visibility: hidden; }
+.onb { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 24px; background: var(--bg); }
+/* A landscape card on a computer; the body scrolls, the card does not grow */
+.onb-card { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; width: min(960px, 100%); height: min(660px, 100%); box-shadow: var(--shadow-lift); }
+.onb-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 2px 6px 0; }
+.onb-top-l { display: flex; align-items: center; gap: 10px; }
+.onb-mark { display: grid; place-items: center; color: var(--ink); }
+.onb-dots { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.onb-dots li { width: 28px; height: 4px; border-radius: 4px; background: var(--line-strong); transition: background var(--t-color); }
+.onb-dots li.is-done { background: var(--ink-2); }
+.onb-dots li.is-on { background: var(--ink); }
+.onb-body.well { display: grid; gap: 16px; padding: 32px 36px; align-content: start; overflow-y: auto; overscroll-behavior: contain; min-height: 0; scrollbar-width: thin; }
+/* Short steps sit in the middle of the card, the long one (the workspaces) starts at the top and scrolls */
+.onb-card[data-step='welcome'] .onb-body, .onb-card[data-step='files'] .onb-body { align-content: center; }
+.onb-body h1 { margin: 0; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.08; letter-spacing: -0.01em; }
+.onb-lead { margin: 0; max-width: 58ch; color: var(--ink-2); font-size: 16px; line-height: 1.55; }
+.onb-points { display: grid; gap: 10px; margin: 2px 0 6px; padding: 0; list-style: none; }
+.onb-points li { display: flex; align-items: center; gap: 12px; color: var(--ink); font-size: 15px; line-height: 1.4; }
+.onb-points li > span:first-child { display: grid; place-items: center; width: 30px; height: 30px; flex: none; border-radius: 9px; background: var(--card); color: var(--ink-2); }
+.onb-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 0 4px 2px; min-height: 40px; }
+.onb-actions:empty { display: none; }
+.onb-actions .btn.primary { margin-left: auto; min-width: 150px; }
+.onb-support { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-inner); background: var(--bg); }
+.onb-support p { margin: 2px 0 0; font-size: 13px; line-height: 1.45; }
+.onb-support-ic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--card); color: var(--ink-2); }
+.onb-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.onb-choice { display: grid; gap: 6px; align-content: start; text-align: left; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--bg); color: var(--ink); font: inherit; cursor: pointer; transition: border-color var(--t-color), transform var(--t-color); }
+.onb-choice:hover, .onb-choice:focus-visible { border-color: var(--ink-2); outline: none; transform: translateY(-1px); }
+.onb-choice strong { font-size: 16px; }
+.onb-choice .muted { font-size: 13px; line-height: 1.5; }
+.onb-choice-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--card); color: var(--ink-2); margin-bottom: 6px; }
+/* The workspaces as compact tiles: a name, a line, the app icons; no version legend and no status line */
+.onb .eco { max-height: none; overflow: visible; gap: 12px; }
+.onb .eco-intro .ver-legend { display: none; }
+.onb .eco-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 10px; }
+.onb .eco-card { padding: 12px 14px; gap: 8px; }
+.onb .eco-blurb { -webkit-line-clamp: 1; line-clamp: 1; min-height: 0; }
+.onb .eco-state, .onb .eco-label, .onb .eco-tile .ver-dot { display: none; }
+.onb .eco-tiles { display: flex; flex-wrap: wrap; gap: 6px; }
+.onb .eco-icon-wrap { width: 26px; height: 26px; }
+.onb .eco-icon, .onb .eco-icon .tool-logo { width: 26px; height: 26px; }
+.onb .eco-new .eco-plus { margin-top: auto; }
+/* iPad: a smaller card with 44 px targets, centered in either orientation */
+html.is-ipad .onb-card, html.is-touch .onb-card { width: min(720px, 100%); height: min(740px, 100%); }
+html.is-ipad .onb-body.well, html.is-touch .onb-body.well { padding: 28px; }
+html.is-ipad .onb .btn, html.is-touch .onb .btn { min-height: 44px; }
+html.is-ipad .onb .eco-grid, html.is-touch .onb .eco-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Landscape iPad is wide but short: the card takes the height it has */
+@media (max-height: 640px) { .onb { padding: 12px; } .onb-body.well { padding: 20px 24px; } .onb-body h1 { font-size: 26px; } }
+/* Phone: the whole screen */
+@media (max-width: 640px) {
+  .onb { padding: 0; }
+  .onb-card { width: 100%; height: 100%; border-radius: 0; box-shadow: none; }
+  .onb-body.well { padding: 20px; }
+  .onb-choices { grid-template-columns: 1fr; }
+  .onb-support { grid-template-columns: auto 1fr; }
+  .onb-support .btn { grid-column: 1 / -1; justify-self: start; }
+  .onb .eco-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .onb-choice, .onb-dots li { transition: none; } .onb-choice:hover { transform: none; } }
+
+/* ---------- Cloud guide: tiles, three steps, one button ---------- */
+.cg { display: grid; gap: 16px; min-width: 0; }
+.cg-lead { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.cg-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.cg-tile { display: grid; grid-template-columns: auto 1fr; grid-template-areas: 'mark name' 'mark note'; align-items: center; column-gap: 12px; row-gap: 2px; text-align: left; padding: 12px; border: 1px solid var(--line); border-radius: var(--r-inner); background: var(--bg); color: var(--ink); font: inherit; cursor: pointer; transition: border-color var(--t-color), background var(--t-color); }
+.cg-tile:hover, .cg-tile:focus-visible { border-color: var(--ink-2); background: var(--card); outline: none; }
+.cg-tile .cg-mark { grid-area: mark; }
+.cg-tile strong { grid-area: name; font-size: 14px; }
+.cg-tile small { grid-area: note; font-size: 12px; }
+.cg-tile small.is-found { color: var(--ver-newest); }
+.cg-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--card); color: var(--ink); font: 600 14px var(--font-mono, var(--mono)); flex: none; }
+.cg-foot { margin: 0; font-size: 12.5px; line-height: 1.5; }
+.cg-foot .link { padding: 0; border: 0; background: none; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; font: inherit; cursor: pointer; }
+.cg-head { display: flex; align-items: center; gap: 12px; }
+.cg-title { font-size: 18px; }
+.cg-steps { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: cg; }
+.cg-steps li { position: relative; padding-left: 38px; min-height: 26px; line-height: 1.5; color: var(--ink); counter-increment: cg; }
+.cg-steps li::before { content: counter(cg); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--card); color: var(--ink-2); font: 600 12px var(--font-mono, var(--mono)); }
+.cg-found { margin: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-inner); background: var(--bg); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cg-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.cg-path { display: flex; flex-wrap: wrap; align-items: center; flex: 1 1 100%; gap: 8px; }
+.cg-path .input { flex: 1 1 220px; min-width: 0; }
+.cg-or { font-size: 13px; }
+.cg-get { display: inline-flex; align-items: center; gap: 6px; width: fit-content; color: var(--ink-2); font-size: 13px; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+html.is-ipad .cg-tile, html.is-touch .cg-tile { min-height: 56px; }
+@media (max-width: 560px) { .cg-tiles { grid-template-columns: 1fr 1fr; } }
+.cg-mark img { display: block; width: 24px; height: 24px; }

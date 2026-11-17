@@ -74,7 +74,7 @@ Set `WORKCRAFT_HOME` to move the folder, `WORKCRAFT_PORT` for the backend port a
 
 WorkCraft groups its 44 apps into **workspaces** so you only see the apps for the work you are doing: **Office & Documents** (WordCraft, GridCraft, DeckCraft, PdfCraft, MailCraft), **Notes, Text & Maths** (NoteCraft, TextCraft, WordCraft, MatCraft), **Imaging & Photography** (PhotoCraft, LightCraft, LightCraft Classic, VectorCraft), **Paint & Pixel Art** (PaintCraft, Paint.RS, PixelCraft, ProCraft, FireCraft), **Video, Motion & Audio** (FilmCraft, EffectCraft, SoundCraft, AniCraft, Picasso Suite, Align), **Music Production** (SoundCraft, Retake, Lemon Studio, Honeydew, Suhina, Pro Wave, Transit, OxiGuitar, MixStudio), **Design, UI & Publishing** (DesignCraft, FigCraft, VectorCraft, TraceDraw), **3D, CAD & Materials** (CADCraft, TextureCraft, MaterialCraft, SolidCraft, SubCraft), **3D Sculpt & Characters** (OxyBrush, ClothCraft, HumanMotionCraft, SubCraft, TextureCraft) and **Explore & Build** (EarthCraft, Craft Anything). The apps come from the ArtCraft team, from community apps its launcher lists (SolidCraft, MailCraft) and from independent developers (25 third-party apps, each with its own licence, shown in the launcher). A picker asks where to start the first time. Closing it keeps Office & Documents.
 
-Switch with the grid button on the rail (then **Switch workspace**) or the command palette. A link such as `/?ecosystem=imaging` opens a workspace directly. **Create your own** makes a workspace from any apps and a name you choose (the apps are grouped by origin and a search box narrows them); you can edit or remove it later. Your files do not belong to a workspace: they stay in the project, and any project opens in any workspace.
+On the first start an **onboarding page** comes before anything else loads (no project, project tree, chat or rail yet): a welcome with a way to support the project, the workspace (or **Create your own**), and where your files are saved (only on this computer, or also in the cloud, which opens Settings, Cloud storage right after the start). The answer is kept in the browser and the question is not asked again; **Skip setup** keeps Office & Documents. Switch later with the grid button on the rail (then **Switch workspace**) or the command palette. A link such as `/?ecosystem=imaging` opens a workspace directly. **Create your own** makes a workspace from any apps and a name you choose (the apps are grouped by origin and a search box narrows them); you can edit or remove it later. Your files do not belong to a workspace: they stay in the project, and any project opens in any workspace.
 
 A new workspace and a new project start on the **welcome page**: nothing opens by itself, so the machine stays fast (several apps starting together are heavy). The page names the workspace, lists the apps to choose from, the panels you hid (one click brings each back as you left it) and your recent files. Open an app from the page, from the tool rail or from the project tree. **Open the first apps** opens the first two apps side by side on a wide stage, or one in a small window; that is your choice, never automatic. Switching workspace hides the open apps of the one you left (hidden, not closed, so nothing is lost). A layout you saved comes back as it was.
 
@@ -142,14 +142,26 @@ The workspace keeps its own shortcuts to a minimum on purpose. Keys that browser
 
 ## The panel menu
 
-Every panel has a context menu, the one the project tree already had. Open it with a **right click** on the panel header (the name, not a button), on its **tab**, or on the app's **icon in the tool rail**; with the Apple Pencil's barrel button; or with a **long press** (about half a second) with a finger on an iPad. The **More** button in the header opens the same menu.
+The header of a panel has two buttons: **Maximize** and **X**. X only **hides** the panel (its state and tab stay, one click brings it back). **Close and free memory** (red, in the panel menu) closes it for good and unloads the app; **Unload and free memory** (also red) keeps the tab. Everything else is in the panel menu, the one the project tree already had. Open it with a **right click** on the panel header (the name, not a button), on its **tab**, or on the app's **icon in the tool rail**; with the Apple Pencil's barrel button; or with a **long press** (about half a second) with a finger on an iPad. A double click on the header also maximizes.
 
 - **Window**: Maximize, Full screen, Minimize to the dock, Picture in picture, Open in a separate window. A hidden or minimized panel offers **Show** instead, because the other actions would act on something nobody sees.
 - **File**: Open in the desktop app (when it is installed), **Show in the project tree** (opens the tree, opens the folders above the file, selects it and scrolls to it), Show in the file manager (the computer that runs WorkCraft only), Copy path.
 - **Engine** (apps): **Reload** starts the app again from its file and asks first when there are unsaved changes; Unload frees the memory and keeps the tab; **Panel info** lists the app and version, its state, window and file, the start time, the WebAssembly, GPU and JavaScript memory, and what the engine itself reports.
-- **Leaving**: Close, or Hide for the project tree and the chat.
+- **Leaving**: Hide, and Close and free memory (red) for apps and the code editor; the project tree and the chat are only hidden.
 
 A right click on the rail icon of an app that is not open offers Open (and the desktop app). Moving a panel to another workspace is not part of the menu yet.
+
+## Settings and Developer options
+
+Settings lists five sections: **AI models**, **Personas and context**, **Appearance and layout**, **Privacy** and **Cloud storage**. Everything else sits behind **Developer options** at the end of the list: status, updates, health check, memory, Team Mode, search, usage, audit log, history, trash, sharing, MCP servers, Craft apps, other IDEs, plugins, logs and iPad settings. Nothing was removed; the fold only keeps the first screen short. It opens by itself when a link or the status chips point to one of those sections, and it remembers whether you left it open.
+
+## Arranging the tool rail
+
+The rail shows the apps of the workspace in use. **Drag an icon up or down** (mouse or pen) to put it where you want it; a line shows where it lands. With a finger, press and hold the icon and choose **Move up** or **Move down**. The order is kept per workspace, and the rail scrolls when there are more icons than room.
+
+## The top bar
+
+The top bar has one button for the AI chat, the command palette, the **+** button, the color scheme, **Settings** (top right) and the main menu. **+** lists the apps of the workspace in use and the files you opened last in them. The project tree is the first button of the tool rail (`Ctrl \`); project search, Full Chat Mode and hiding the top bar are in the main menu and the command palette.
 
 ## Full screen and separate windows
 
@@ -589,6 +601,15 @@ A skill is a folder with a `SKILL.md` that explains how to drive an app or do a 
 
 **Settings, Cloud storage** keeps a project in the cloud as well as on this computer. It syncs both ways a few seconds after a change, every five minutes and on **Sync now**. A file changed on both sides keeps both versions, and nothing is overwritten silently.
 
+**The simple way: the guide.** Choose **Save in the cloud** in the main menu (the command palette has it, **Guided setup** in Settings opens it, and so does the last step of the first-start page when you pick "Also in the cloud"). Pick the service you already use: **Google Drive, iCloud Drive, OneDrive, Dropbox, MEGA, Proton Drive** or **Another service** (pCloud, Nextcloud, Box and others). Each opens three short steps and one button, and no password is typed into WorkCraft: the service's own app syncs a folder, and WorkCraft keeps a copy of the project in a folder called WorkCraft inside it. What the button does depends on the device:
+
+- **A computer with the desktop backend.** WorkCraft looks for the folder of the service (Dropbox, OneDrive including company folders, Google Drive for desktop, MEGA, Proton Drive, iCloud Drive). When it finds it, **Use this folder** is the whole setup. Otherwise install the service's desktop app (the guide links to it), press **Check again** or paste the folder.
+- **A browser on its own** (browser mode). In Chrome and Edge **Choose the folder** opens the browser's folder picker once. In Safari and Firefox there is no folder access, so the ZIP route applies.
+- **iPad, iPhone and any device without folder access.** **Save ZIP** opens the share sheet: **Save to Files** lists iCloud Drive and every cloud app that is installed (Google Drive, OneDrive, Dropbox, MEGA, Proton Drive ...). Do it again whenever you want a fresh copy; the project also stays on the device.
+- **Everywhere:** a ZIP is also offered next to a folder, so there is always a way out, also for a service that is not in the list. The ZIP holds files, chats and layout.
+
+Google Drive can still be connected directly with your own OAuth client (below; the guide's **Advanced** link opens it). A service with a Linux or macOS mount (rclone, for example) works through **Another service**: choose its mount folder.
+
 - **Google Drive.** Create an OAuth client of type Desktop app in Google Cloud Console, enable the Drive API, paste its ID and secret and press **Connect**. The client is yours; the tokens stay in `config.json`. By default only files WorkCraft creates are visible; choose all of Drive to open existing Google Docs. The AI uses `cloud-list`, `cloud-import` and `cloud-export` for Docs, Sheets and Slides (they become .docx, .xlsx and .pptx; sending a file asks for your approval).
 - **iCloud Drive.** Apple offers no file API for other apps, so WorkCraft mirrors the project into `WorkCraft/<project>` inside the iCloud Drive folder that iCloud for Windows or macOS keeps. On an iPad open the same folder in Files.
 - **Other folders.** OneDrive, Dropbox or a network drive work the same way.
@@ -608,6 +629,8 @@ Local-only mode blocks Google Drive. Every request to Google is in the audit log
 - `/` picks a tool or a command. With complete arguments a tool runs directly without a model.
 - Attach files with the **+** button, drag and drop or paste. They are saved under `/attachments/`.
 - Tool calls show as timeline cards with parameters, duration and result.
+- The empty chat asks **What are you working on?** and offers up to three questions that fit the apps of the workspace in use. A tap puts the question and the request "ask me one short question at a time" into the message box; nothing is sent until you press Send.
+- The chat header has a New chat button and one menu. Search in the chat, token usage, export, clear, history and Full Chat Mode are in that menu. With no model set up there is no red icon; the banner under the header says what is missing.
 
 ## Commands
 
@@ -640,7 +663,7 @@ The mode applies to the chat of this workspace, to Team Mode and to external MCP
 
 ## Chat views
 
-The chat docks left or right of the workspace, fills the window as **Full Chat Mode** (the chat button in the top bar or the command palette), or floats above a document as a picture-in-picture window. In desktop Chrome and Edge it can also pop out into its own always-on-top window. Switching views keeps a running answer and your draft.
+The chat docks left or right of the workspace, fills the window as **Full Chat Mode** (the chat's own menu, the main menu or the command palette), or floats above a document as a picture-in-picture window. In desktop Chrome and Edge it can also pop out into its own always-on-top window. Switching views keeps a running answer and your draft.
 
 <!-- page: vision | AI | Vision and scanning | Images, screenshots and document scans in the chat, for models that read images. -->
 
@@ -660,7 +683,7 @@ Ask for example:
 
 <!-- page: personas | AI | Personas and personal context | Your own roles and system prompts, and the context the AI always knows. -->
 
-**Settings, Personal context** holds three things: a persona (a role), your context (facts) and, on top of it, named contexts you switch.
+**Settings, Personas and context** holds three things: a persona (a role), your context (facts) and, on top of it, named contexts you switch.
 
 ## Personal context
 
@@ -672,11 +695,11 @@ Named sets of facts: your studio, a client, a subject. Add one with **Add contex
 
 ## Personas
 
-Roles with their own system prompt. WorkCraft ships 19 you can edit, in four groups: **Work** (Financial analyst, Copywriter, Strict reviewer, Technical writer, Data analyst, Project manager, Researcher, Editor and proofreader, Contract reader), **Create** (Creative director, Presentation coach, Photo retoucher, Sound engineer, CAD and 3D engineer), **Build** (Developer, Code reviewer) and **Learn** (Teacher, Translator, Brief answers). A new version adds its new personas to your list; what you edited stays, and **Reset to the original** brings a built-in prompt back. Add your own with **Add persona**, copy one with **Duplicate**, find one with the search and the group buttons. **For this workspace** shows the personas that suit the apps of the workspace you are in, and the chat header lists them first.
+Roles with their own system prompt. WorkCraft ships 19 you can edit, in four groups: **Work** (Financial analyst, Copywriter, Strict reviewer, Technical writer, Data analyst, Project manager, Researcher, Editor and proofreader, Contract reader), **Create** (Creative director, Presentation coach, Photo retoucher, Sound engineer, CAD and 3D engineer), **Build** (Developer, Code reviewer) and **Learn** (Teacher, Translator, Brief answers). A new version adds its new personas to your list; what you edited stays, and **Reset to the original** brings a built-in prompt back. Add your own with **Add persona**, copy one with **Duplicate**, find one with the search and the group buttons. **For this workspace** shows the personas that suit the apps of the workspace you are in.
 
 **Export** saves your personas and contexts as one file, **Import** reads it back (on another computer, for example). The card **What every request carries** shows the exact text that is added to the system prompt and its size in tokens: short is cheaper. Team Mode specialists receive the same text.
 
-Switch the persona in the chat header or with `/persona reviewer`. The answer shows which persona wrote it.
+Switch the persona in the chat header or with `/persona reviewer`. The menu in the header is short on purpose: **Standard**, up to five personas that suit the workspace you are in (and the one in use), and **All personas and context…**, which opens this page. Contexts are switched here or with `/context`. The answer shows which persona wrote it.
 
 > [!WARNING]
 > The personal context and the persona prompt go to the model of the chat. With a cloud model they leave the device; with local-only mode they do not.

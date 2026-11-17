@@ -711,16 +711,8 @@ button.chat-badge { cursor: pointer; }
 .chat-welcome { padding: 18px 6px 6px; gap: 12px; }
 .chat-welcome h2 { font-size: clamp(22px, 3.2cqi, 32px); margin: 0; }
 .chat-welcome > p.muted { max-width: 62ch; }
-.welcome-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); grid-auto-rows: 1fr; gap: 8px; margin-top: 4px; }
 /* A button centers its content, so the well inside would stay short next to a taller neighbor: the card is a
    flex box and the well fills it, which gives all four cards the same box */
-.welcome-card { --r: 14px; display: flex; align-items: stretch; box-sizing: border-box; min-width: 0; padding: 3px; text-align: left; cursor: pointer; background: var(--card); border-color: var(--line); color: inherit; font: inherit; transition: border-color var(--t-color), transform var(--t-color); }
-.welcome-card:hover, .welcome-card:focus-visible { border-color: var(--line-strong); outline: none; transform: translateY(-1px); }
-.welcome-well { display: grid; flex: 1 1 auto; min-width: 0; gap: 4px; padding: 12px; border-radius: 11px; min-height: 104px; align-content: start; background: var(--bg); }
-.welcome-well strong { font-size: 14px; color: var(--ink); }
-.welcome-well .muted { font-size: 12px; }
-.welcome-mark { display: grid; place-items: start; margin-bottom: 4px; }
-.welcome-mark .tool-logo { border-radius: 6px; }
 
 /* Prompt bar: attachments, auto-growing input, prominent stop button */
 

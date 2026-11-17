@@ -94,15 +94,52 @@ export interface PickerOptions {
 
 export async function openEcosystemPicker(opt: PickerOptions = {}): Promise<void> {
   let closeDlg = () => {};
+  const body = ecosystemPickerBody({
+    first: opt.first,
+    onPick: (e, created) => {
+      if (created) {
+        enterEcosystem(e);
+        toast(tr('Workspace: {name}', { name: e.name }), 'success');
+        closeDlg();
+      } else pick(e, closeDlg);
+    },
+  });
+  await dialog({
+    title: opt.first ? tr('Choose your workspace') : tr('Switch workspace'),
+    tone: opt.first ? tr('start here') : undefined,
+    body,
+    ok: false,
+    cancel: opt.first ? tr('Keep Office & Documents') : tr('Close'),
+    wide: true,
+    onOpen: (close) => (closeDlg = close),
+  });
+}
+
+export interface PickerBodyOptions {
+  /** First run: says so in the text */
+  first?: boolean;
+  /** A workspace was chosen (created: you just made it). The caller decides what happens next: the picker dialog enters it, the onboarding goes on. */
+  onPick: (e: Ecosystem, created: boolean) => void;
+  /** Shown in the intro in place of the first-run or switch text */
+  intro?: string;
+  /** Nothing is marked as "in use" (the onboarding: no choice has been made yet) */
+  noCurrent?: boolean;
+}
+
+/**
+ * The cards of the workspaces, "Create your own" and its form, as one element. It is the body of the picker dialog and the
+ * second step of the onboarding page, so both look and work the same.
+ */
+export function ecosystemPickerBody(opt: PickerBodyOptions): HTMLElement {
   const body = h('div.eco');
-  const current = activeEcosystem().id;
+  const current = opt.noCurrent ? '' : activeEcosystem().id;
 
   const cards = () => {
     const list = allEcosystems();
     body.replaceChildren(
       h(
         'div.eco-intro',
-        h('p.muted.dlg-text', opt.first ? tr('Pick the kind of work you do. Each workspace shows its own apps, and your files stay in the project, so you can switch any time.') : tr('Each workspace shows the apps for one kind of work. Your files stay in the project.')),
+        h('p.muted.dlg-text', opt.intro ?? (opt.first ? tr('Pick the kind of work you do. Each workspace shows its own apps, and your files stay in the project, so you can switch any time.') : tr('Each workspace shows the apps for one kind of work. Your files stay in the project.'))),
         h(
           'div.ver-legend',
           h('span.ver-legend-item', h('i.ver-dot', { 'data-ver-state': 'newest', 'aria-hidden': 'true' }), tr('Newest installed')),
@@ -116,12 +153,9 @@ export async function openEcosystemPicker(opt: PickerOptions = {}): Promise<void
         ...list.map((e) => {
           const card = h<'button'>(
             'button.eco-card' + (e.id === current ? '.is-current' : ''),
-            { type: 'button', role: 'listitem', 'data-eco': e.id, 'aria-pressed': String(e.id === current), style: `--eco:${e.accent}`, onclick: () => pick(e, closeDlg) },
-            h(
-              'span.eco-title',
-              h('strong.eco-name', { title: e.name }, e.name),
-              e.id === current ? h('span.eco-current-pill', { title: tr('in use'), 'aria-label': tr('in use') }, h('span', { html: icon('check', { size: 12 }) }), tr('In use')) : null
-            ),
+            { type: 'button', role: 'listitem', 'data-eco': e.id, 'aria-pressed': String(e.id === current), style: `--eco:${e.accent}`, onclick: () => opt.onPick(e, false) },
+            // The workspace in use is marked by a green outline and aria-pressed, no badge and no check mark
+            h('span.eco-title', h('strong.eco-name', { title: e.name }, e.name)),
             h('small.muted.eco-blurb', e.custom ? e.blurb : tr(e.blurb)),
             appTiles(e.apps),
             h('small.mono.muted.eco-state', { 'data-state': readyState(e) }, h('i.eco-dot', { 'aria-hidden': 'true' }), readyNote(e))
@@ -175,8 +209,7 @@ export async function openEcosystemPicker(opt: PickerOptions = {}): Promise<void
           'span.eco-pick-name',
           h('span.eco-pick-top', h('strong', shortName(a.name)), h('small.mono.ver-pill', { 'data-ver-state': vState, title: vTitle }, t.available ? `v${t.version}` : '—')),
           h('small.muted', tr(a.kind))
-        ),
-        h('span.eco-check', { html: icon('check', { size: 12 }), 'aria-hidden': 'true' })
+        )
       );
     };
     const groups: { origin: Origin; title: string }[] = [
@@ -220,9 +253,7 @@ export async function openEcosystemPicker(opt: PickerOptions = {}): Promise<void
         error.textContent = r.error === 'name' ? tr('Give the workspace a name.') : r.error === 'apps' ? tr('Choose at least one app.') : tr('A workspace with this name exists.');
         return;
       }
-      enterEcosystem(r.ecosystem);
-      toast(tr('Workspace: {name}', { name: r.ecosystem.name }), 'success');
-      closeDlg();
+      opt.onPick(r.ecosystem, true);
     };
     body.replaceChildren(
       h('label.field', h('span', tr('Name')), name),
@@ -235,15 +266,7 @@ export async function openEcosystemPicker(opt: PickerOptions = {}): Promise<void
   };
 
   cards();
-  await dialog({
-    title: opt.first ? tr('Choose your workspace') : tr('Switch workspace'),
-    tone: opt.first ? tr('start here') : undefined,
-    body,
-    ok: false,
-    cancel: opt.first ? tr('Keep Office & Documents') : tr('Close'),
-    wide: true,
-    onOpen: (close) => (closeDlg = close),
-  });
+  return body;
 }
 
 // ---------------------------------------------------------------- launcher

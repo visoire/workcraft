@@ -17,10 +17,14 @@ import { desktopAppCached, desktopApps, openInDesktop } from '../project/desktop
 import { notify, toast, installGlobalHandlers, explain } from './notifications.js';
 import { openPalette, registerCommands, type Command } from './palette.js';
 import { fs } from '../project/fs.js';
+import { loadRecent, recentFor } from '../storage/recent.js';
 import { projects } from '../project/manager.js';
 import { TOOLS, APP_IDS, toolMark, type ToolId } from '../workspace/registry.js';
 import { activeApps, activeEcosystem, initEcosystems, needsChoice, allEcosystems, setEcosystem } from '../ecosystems/ecosystems.js';
 import { enterEcosystem } from '../ecosystems/enter.js';
+import { dropIndex, moveApp, orderApps, sanitizeRailOrder, stepApp } from '../ecosystems/rail-order.js';
+import { needsOnboarding } from './onboarding-state.js';
+import { runOnboarding, type OnboardingResult } from './onboarding.js';
 import { popoutParams } from '../workspace/popout.js';
 import { workspace } from '../workspace/layout.js';
 import { loadOrchestrator } from '../mcp/lazy.js';
@@ -124,6 +128,7 @@ function mainMenu(): MenuEntry[] {
     { heading: t('Workspace') },
     { label: t('Apps, recent files and workspaces'), icon: 'grid', run: () => void import('../ecosystems/ui.js').then((m) => m.openLauncher()) },
     { label: t('Switch workspace'), icon: 'shuffle', run: () => void import('../ecosystems/ui.js').then((m) => m.openEcosystemPicker()) },
+    { label: t('Save in the cloud'), icon: 'upload', run: () => void import('./cloud-guide.js').then((m) => m.openCloudGuide()) },
     '-',
     { heading: t('Layout') },
     { label: t('Columns'), icon: 'layoutColumns', run: () => workspace.applyPreset('columns') },
@@ -193,37 +198,34 @@ function openMainMenu(anchor: HTMLElement) {
 // ---------------------------------------------------------------- Top bar
 function buildTopbar(): HTMLElement {
   const tabs = h('div.tabs', { role: 'tablist', 'aria-label': t('Panels') });
-  const add = h<'button'>('button.icon-btn', { type: 'button', title: t('Add panel'), 'aria-label': t('Add panel'), 'aria-haspopup': 'menu', html: icon('plus', { size: 18 }) });
+  // The + menu belongs to the workspace in use: its apps first (one tap opens or starts one), then the files you worked on last in them.
+  // No "new" tags and no apps of other workspaces; Code, Terminal and the rest are in the tool rail and the command palette.
+  const add = h<'button'>('button.icon-btn', { type: 'button', 'data-act': 'add', title: t('Open an app or a recent file'), 'aria-label': t('Open an app or a recent file'), 'aria-haspopup': 'menu', html: icon('plus', { size: 18 }) });
   add.onclick = () => {
     const r = add.getBoundingClientRect();
-    menu(
-      Object.values(TOOLS)
-        .filter((x) => x.zone === 'stage')
-        .map((x) => ({ label: x.name, html: toolMark(x.id, 16), hint: x.single ? '' : t('new'), run: () => void workspace.openPanel(x.id) })),
-      r.left,
-      r.bottom + 6
-    );
+    const mine = activeApps().filter((id) => TOOLS[id]?.available);
+    const project = projects.current?.id || fs.project;
+    const recent = recentFor(loadRecent(), project, (p) => fs.exists(p), 40)
+      .filter((e) => (mine as string[]).includes(e.tool))
+      .slice(0, 5);
+    const items: MenuEntry[] = mine.map((id) => ({ label: TOOLS[id].name, html: toolMark(id, 16), run: () => void workspace.openPanel(id) }));
+    if (recent.length) items.push('-', { heading: t('Recent') }, ...recent.map((e) => ({ label: basename(e.path), html: toolMark(e.tool as ToolId, 16), run: () => void workspace.openFile(e.path, e.tool as ToolId) })));
+    menu(items, r.left, r.bottom + 6, { anchor: add });
   };
   const search = h('button.icon-btn', { type: 'button', 'data-act': 'search', title: t('Search commands, files and tools ({key} K)', { key: modKey }), 'aria-label': t('Open command palette'), html: icon('search', { size: 18 }), onclick: () => openPalette() });
-  // The project tree and the top bar can be hidden on their own (also with Mod + \ and Mod + Shift + \)
-  const treeBtn = h<'button'>('button.icon-btn', { type: 'button', 'data-act': 'tree', title: t('Project tree ({key} \\)', { key: modKey }), 'aria-label': t('Show or hide the project tree'), html: icon('panelLeft', { size: 18 }), onclick: () => toggleSide('tree') });
-  const paintTree = () => treeBtn.setAttribute('aria-pressed', String(workspace.panel('tree')?.mode === 'normal'));
-  bus.on('workspace:change', paintTree);
-  const hideBarBtn = h<'button'>('button.icon-btn.hide-bar-btn', { type: 'button', 'data-act': 'hide-topbar', title: t('Hide the top bar'), 'aria-label': t('Hide the top bar'), html: icon('chevronUp', { size: 18 }), onclick: () => toggleTopbar(true) });
+  // One AI button. Full Chat Mode is in the chat's own menu, the project tree in the tool rail, the top bar toggle in the main menu.
   const aiBtn = h<'button'>('button.icon-btn', { type: 'button', 'data-act': 'chat', title: t('AI chat ({key} J)', { key: modKey }), 'aria-label': t('Show or hide the AI chat'), html: toolMark('chat', 18), onclick: () => bus.emit('ai:toggle', undefined) });
-  // Chat launcher: the dedicated Full Chat Mode (also ?mode=chat)
-  const fullBtn = h<'button'>('button.icon-btn', { type: 'button', 'data-act': 'chat-full', title: t('Full Chat Mode'), 'aria-label': t('Full Chat Mode'), html: icon('chat', { size: 18 }), onclick: () => workspace.setFullChat() });
-  const paintFull = () => fullBtn.setAttribute('aria-pressed', String(workspace.fullChat));
-  bus.on('chat:view', paintFull);
   const themeBtn = h<'button'>('button.icon-btn', { type: 'button', 'data-act': 'theme', title: t('Light or dark (also for the apps)'), 'aria-label': t('Switch color scheme'), html: icon(resolvedTheme() === 'dark' ? 'sun' : 'moon', { size: 18 }) });
   themeBtn.onclick = toggleTheme;
   bus.on('settings:change', ({ key }) => key === 'theme' && (themeBtn.innerHTML = icon(resolvedTheme() === 'dark' ? 'sun' : 'moon', { size: 18 })));
+  // Settings: top right, next to the color scheme and the menu (it used to sit at the bottom of the rail)
+  const settingsBtn = h<'button'>('button.icon-btn', { type: 'button', 'data-act': 'settings', title: t('Settings'), 'aria-label': t('Settings'), html: icon('settings', { size: 18 }), onclick: () => void workspace.openPanel('settings') });
+  const paintSettings = () => settingsBtn.setAttribute('aria-pressed', String(workspace.panels().some((p) => p.tool === 'settings' && p.mode === 'normal')));
+  bus.on('workspace:change', paintSettings);
   const menuBtn = h<'button'>('button.icon-btn.menu-btn', { type: 'button', 'data-act': 'menu', title: t('Menu'), 'aria-label': t('Open menu'), 'aria-haspopup': 'menu', html: icon('menu', { size: 18 }) });
   menuBtn.onclick = () => openMainMenu(menuBtn);
   const paintAi = () => aiBtn.setAttribute('aria-pressed', String(workspace.panel('chat')?.mode === 'normal'));
   bus.on('workspace:change', paintAi);
-  // Project search across all files and chats
-  const findBtn = h<'button'>('button.icon-btn', { type: 'button', 'data-act': 'project-search', title: t('Search the project'), 'aria-label': t('Search the project'), html: icon('filter', { size: 18 }), onclick: () => openSearch() });
   // Local-only mode: a clear badge while cloud providers are blocked
   const localBadge = h<'button'>('button.top-badge', { type: 'button', 'data-act': 'local-only', hidden: true, title: t('Local-only mode: cloud providers are blocked. Click for the privacy settings.'), onclick: () => bus.emit('open-settings', 'privacy'), html: icon('lock', { size: 14 }) + `<span>${t('Local only')}</span>` });
   bus.on('privacy:change', ({ localOnly }) => (localBadge.hidden = !localOnly));
@@ -243,11 +245,9 @@ function buildTopbar(): HTMLElement {
 
   $('topbar').append(
     h('a.brand', { href: ROOT, title: t('WorkCraft website') }, h('span.brand-mark', { html: logoSvg(22) }), h('span.brand-name', { html: wordmarkSvg(18, 'wordmark-svg', 'WorkCraft') })),
-    treeBtn,
     tabs,
-    h('div.top-actions', localBadge, memBadge, add, search, findBtn, aiBtn, fullBtn, themeBtn, hideBarBtn, menuBtn)
+    h('div.top-actions', localBadge, memBadge, add, search, aiBtn, themeBtn, settingsBtn, menuBtn)
   );
-  paintTree();
 
   // Focus mode: a single floating button brings the menu back
   const fab = h<'button'>('button.icon-btn.focus-fab', { type: 'button', title: t('Menu'), 'aria-label': t('Open menu'), 'aria-haspopup': 'menu', html: icon('menu', { size: 18 }) });
@@ -283,14 +283,13 @@ function buildActivity() {
       h('button.act-btn', { type: 'button', 'data-act': 'launcher', title: t('Apps, recent files and workspaces'), 'aria-label': t('Apps, recent files and workspaces'), html: icon('grid', { size: 20 }), onclick: () => void import('../ecosystems/ui.js').then((m) => m.openLauncher()) }),
       h('span.act-sep')
     );
-    for (const id of activeApps()) {
+    for (const id of railApps()) {
       const x = TOOLS[id];
-      nav.append(btn(id, x.icon, x.available ? x.name : t('{name} (no web build here yet)', { name: x.name }), () => toggleTool(id), { 'data-tool': id, style: `--tool:${x.accent}`, ...(x.available ? {} : { 'data-missing': '1' }) }));
+      nav.append(btn(id, x.icon, x.available ? x.name : t('{name} (no web build here yet)', { name: x.name }), () => toggleTool(id), { 'data-tool': id, 'data-movable': '1', style: `--tool:${x.accent}`, ...(x.available ? {} : { 'data-missing': '1' }) }));
     }
     nav.append(h('span.act-sep'));
     for (const id of ['code', 'terminal'] as ToolId[]) nav.append(btn(id, TOOLS[id].icon, TOOLS[id].name, () => toggleTool(id), { 'data-tool': id, style: `--tool:${TOOLS[id].accent}` }));
-    // The AI chat opens from the top bar (spark button, {key} J); the rail ends with the settings
-    nav.append(h('span.spacer'), btn('settings', 'settings', t('Settings'), () => void workspace.openPanel('settings'), { 'data-tool': 'settings' }));
+    // The AI chat and the settings open from the top bar (top right); the rail holds the project tree, the apps, Code and the Terminal
     paint();
   };
   const paint = () => {
@@ -307,6 +306,7 @@ function buildActivity() {
   bus.on('workspace:focus', paint);
   bus.on('workspace:resources', paint);
   bus.on('ecosystem:change', fill);
+  bus.on('settings:change', ({ key }) => key === 'railOrder' && fill());
   fill();
   // Right click, pencil barrel button or long press on a tool's icon: the same menu as on the panel header. Nothing open yet: open it.
   void desktopApps();
@@ -317,14 +317,25 @@ function buildActivity() {
       const tool = id && TOOLS[id];
       if (!id || !tool) return;
       const mine = workspace.panels().filter((p) => p.tool === id);
+      // Move up and Move down for the apps of the workspace (dragging works with a mouse or a pen; a finger uses these)
+      const order = railApps() as string[];
+      const at = order.indexOf(id);
+      const move: MenuEntry[] =
+        at < 0
+          ? []
+          : [
+              ...(at > 0 ? [{ label: t('Move up'), icon: 'chevronUp', run: () => setRailOrder(stepApp(order, id, -1)) }] : []),
+              ...(at < order.length - 1 ? [{ label: t('Move down'), icon: 'chevronDown', run: () => setRailOrder(stepApp(order, id, 1)) }] : []),
+            ];
       // Several windows of one app: the focused one, else a visible one, else the first
       const pick = mine.find((p) => p.id === workspace.focused) || mine.find((p) => p.mode === 'normal') || mine[0];
-      if (pick) return workspace.panelMenu(pick.id, x, y);
+      if (pick) return workspace.panelMenu(pick.id, x, y, move);
       const desk = desktopAppCached(id);
       menu(
         [
           { label: t('Open {name}', { name: tool.name }), icon: 'plus', run: () => void workspace.openPanel(id) },
           ...(desk ? [{ label: t('Open {name} for desktop', { name: desk.name }), icon: 'external', run: () => void openInDesktop(desk.id) }] : []),
+          ...(move.length ? ['-' as const, ...move] : []),
         ],
         x,
         y
@@ -332,6 +343,77 @@ function buildActivity() {
     },
     { accept: (el) => !!el.closest('[data-tool]') }
   );
+  installRailDrag(nav);
+}
+
+/** The apps of the workspace in the order the rail shows them (your own order, then the workspace's). */
+function railApps(): ToolId[] {
+  return orderApps(activeApps(), sanitizeRailOrder(prefs.get('railOrder'))[activeEcosystem().id]) as ToolId[];
+}
+function setRailOrder(order: readonly string[]) {
+  prefs.set('railOrder', { ...sanitizeRailOrder(prefs.get('railOrder')), [activeEcosystem().id]: [...order] });
+}
+
+/**
+ * Drag an app icon up or down to put it where you want it (mouse and pen; a finger uses Move up and Move down in the icon's menu,
+ * because a vertical swipe on the rail scrolls it). The icon follows the pointer, a line shows where it lands, and the order is kept
+ * per workspace. A click without moving still opens the app.
+ */
+function installRailDrag(nav: HTMLElement) {
+  let drag: { btn: HTMLElement; id: string; y0: number; started: boolean; pointerId: number; slot: number; line: HTMLElement | null } | null = null;
+  const others = () => [...nav.querySelectorAll<HTMLElement>('.act-btn[data-movable]')].filter((b) => b !== drag?.btn);
+  // The icon is an image: without this the browser starts its own image drag on the first move and the pointer events stop
+  nav.addEventListener('dragstart', (e) => e.preventDefault());
+  nav.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 || e.pointerType === 'touch') return;
+    const btn = (e.target as Element).closest<HTMLElement>('.act-btn[data-movable]');
+    if (!btn || !btn.dataset.tool) return;
+    drag = { btn, id: btn.dataset.tool, y0: e.clientY, started: false, pointerId: e.pointerId, slot: -1, line: null };
+  });
+  nav.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.pointerId) return;
+    if (!drag.started) {
+      if (Math.abs(e.clientY - drag.y0) < 6) return;
+      drag.started = true;
+      drag.btn.classList.add('is-dragging');
+      nav.classList.add('is-reordering');
+      nav.setPointerCapture(e.pointerId);
+      drag.line = h('span.act-drop');
+      nav.append(drag.line);
+    }
+    drag.btn.style.transform = `translateY(${e.clientY - drag.y0}px)`;
+    const list = others();
+    const centers = list.map((b) => {
+      const r = b.getBoundingClientRect();
+      return r.top + r.height / 2;
+    });
+    drag.slot = dropIndex(e.clientY, centers);
+    const ref = list[drag.slot] ?? list.at(-1);
+    if (ref && drag.line) {
+      const navTop = nav.getBoundingClientRect().top - nav.scrollTop;
+      const r = ref.getBoundingClientRect();
+      drag.line.style.top = `${(drag.slot >= list.length ? r.bottom + 2 : r.top - 3) - navTop}px`;
+    }
+  });
+  const finish = (e: PointerEvent, cancel: boolean) => {
+    if (!drag || e.pointerId !== drag.pointerId) return;
+    const d = drag;
+    drag = null;
+    if (!d.started) return;
+    d.btn.classList.remove('is-dragging');
+    d.btn.style.transform = '';
+    nav.classList.remove('is-reordering');
+    d.line?.remove();
+    // the click that ends a drag must not open the app
+    const swallow = (ev: Event) => (ev.stopImmediatePropagation(), ev.preventDefault());
+    addEventListener('click', swallow, { capture: true, once: true });
+    setTimeout(() => removeEventListener('click', swallow, true), 0);
+    if (cancel || d.slot < 0) return;
+    const order = railApps() as string[];
+    setRailOrder(moveApp(order, d.id, d.slot));
+  };
+  nav.addEventListener('pointerup', (e) => finish(e, false));
+  nav.addEventListener('pointercancel', (e) => finish(e, true));
 }
 
 function toggleSide(id: 'tree' | 'chat') {
@@ -420,6 +502,7 @@ function commands(): Command[] {
     { id: 'status', label: t('Status: backend, AI, panels, offline cache'), icon: 'info', keywords: 'version info', run: () => bus.emit('open-settings', 'status') },
     { id: 'copy-path', label: t('Copy the path of the focused file'), icon: 'copy', keywords: 'path file location clipboard', run: () => { const p = workspace.focused ? workspace.panel(workspace.focused)?.path : null; if (p) void copyProjectPath(p); } },
     ...(canLocate() ? [{ id: 'reveal-file', label: t('Show the focused file in the file manager'), icon: 'folderOpen', keywords: 'explorer finder open pc folder location', run: () => { const p = workspace.focused ? workspace.panel(workspace.focused)?.path : null; if (p) void revealInFileManager(p); } }] : []),
+    { id: 'cloud-guide', label: t('Save in the cloud'), icon: 'upload', keywords: 'google drive icloud onedrive dropbox mega proton sync backup zip', run: () => void import('./cloud-guide.js').then((m) => m.openCloudGuide()) },
     { id: 'project-new', label: t('New project'), icon: 'plus', keywords: 'project create', run: () => void projects.create() },
     { id: 'project-switch', label: t('Switch project'), icon: 'briefcase', run: () => void projects.openSwitcher(document.querySelector('.tree-project') || $('topbar')) },
     { id: 'project-export', label: t('Export project as ZIP (with chats)'), icon: 'archive', run: () => void projects.exportZip() },
@@ -628,17 +711,19 @@ function translateShell() {
 /** Set when this page is a separate window of one panel (?popout=1) instead of the workspace. */
 const popout = popoutParams();
 
-/** First run: the workspace picker opens once (src/ecosystems/ui.ts). Skipped in automated browsers and when a link
- *  chose one (?ecosystem=imaging). Closing it keeps the default, Office & Documents. */
-function maybeOnboard() {
-  if (popout || !needsChoice() || navigator.webdriver) return;
-  setTimeout(() => {
-    void import('../ecosystems/ui.js')
-      .then((m) => m.openEcosystemPicker({ first: true }))
-      .finally(() => {
-        if (needsChoice()) prefs.set('ecosystemChosen', true);
-      });
-  }, 700);
+/**
+ * First run: the onboarding page (src/app/onboarding.ts) runs BEFORE the workspace loads, so no project, project tree, chat or tool rail
+ * exists until the user has chosen. Skipped for a returning user, in automated browsers and when a link chose a workspace
+ * (/?ecosystem=imaging); /?onboarding=1 forces it.
+ */
+function onboardingNeeded(): boolean {
+  return needsOnboarding({
+    chosen: !needsChoice(),
+    linked: !!new URLSearchParams(location.search).get('ecosystem'),
+    popout: !!popout,
+    automated: !!navigator.webdriver,
+    forced: new URLSearchParams(location.search).get('onboarding') === '1',
+  });
 }
 
 async function boot() {
@@ -664,6 +749,9 @@ async function boot() {
     if (key === 'statusbar' || key === 'panelFooters' || key === 'focusMode' || key === 'topbarHidden' || key === 'railHidden' || key === 'iconsOnly') applyChrome();
   });
   bus.on('device:change', () => applyChrome());
+  // First start: the onboarding page comes first and nothing else is loaded or built yet (no top bar, rail, project, tree or chat)
+  let started: OnboardingResult | null = null;
+  if (onboardingNeeded()) started = await runOnboarding();
   const tabs = buildTopbar();
   buildActivity();
   buildStatusbar();
@@ -717,12 +805,13 @@ async function boot() {
   // Browser mode: a project kept in the cloud (Google Drive, a folder of the computer) syncs by itself, like on the desktop
   if (!popout && backend.browser) void Promise.all([import('./cloud-browser.js'), import('./offline.js')]).then(([c, o]) => c.installBrowserCloud(o.browserHelpers())).catch(() => {});
   document.documentElement.classList.add('is-ready');
-  maybeOnboard();
-  // A link that chose a workspace (/?ecosystem=imaging) also arranges the stage for it, once
-  if (!popout && new URLSearchParams(location.search).get('ecosystem')) {
+  // A link that chose a workspace (/?ecosystem=imaging) or the onboarding also arranges the stage for it, once
+  if (!popout && (started || new URLSearchParams(location.search).get('ecosystem'))) {
     enterEcosystem(activeEcosystem());
-    history.replaceState(null, '', location.pathname + location.hash);
+    if (new URLSearchParams(location.search).has('ecosystem') || new URLSearchParams(location.search).has('onboarding')) history.replaceState(null, '', location.pathname + location.hash);
   }
+  // The files question of the onboarding: a cloud was wanted, so its settings open now that the workspace is there
+  if (started?.files === 'connect') setTimeout(() => void import('./cloud-guide.js').then((m) => m.openCloudGuide()), 700);
 }
 
 boot().catch((e) => {

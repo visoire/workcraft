@@ -28,11 +28,11 @@
 </p>
 <p align="center"><sub>The sample project, the empty AI assistant (no model is set up yet) and two of the four office apps. Screenshots of the real workspace.</sub></p>
 
-> **Alpha software.** This is the first public alpha (`0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built but not proven on a physical iPad. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
+> **Alpha software.** This is an alpha (`0.1.0-alpha.2`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built but not proven on a physical iPad. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
 
 Developers have long had editors where code, a terminal and the file tree sit side by side in one window. Everyone else still juggles separate heavy applications, loose browser tabs and cloud accounts that keep their files hostage. WorkCraft brings the single-window way of working to documents, spreadsheets, presentations and PDFs. Your files live in a folder you own, an AI assistant you control works across all of them, and nothing leaves your computer unless you decide it should.
 
-Version **0.1.0-alpha.1** (the first public alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
+Version **0.1.0-alpha.2** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
 
 | | |
 | :--- | :--- |
@@ -98,12 +98,12 @@ a public collection of independent apps (see SOURCES.md), each with its own lice
 | **Explore & Build** | EarthCraft, Craft Anything |
 | **Your own** | any apps you choose (grouped by origin, with a search box) |
 
-A first-run picker asks where to start; the grid button on the rail opens the launcher (the apps of the workspace, your recent files,
+A first-run onboarding (a welcome, the workspace, and whether files also go to a cloud) asks where to start before anything loads; the grid button on the rail opens the launcher (the apps of the workspace, your recent files,
 Keep these apps offline) and lets you switch. The files stay in the project, so the same file opens in every app that reads its type
 (Open with in the tree). A link such as `/?ecosystem=imaging` opens a workspace directly. The four office apps ship with the
 repository; all 40 remaining apps have web builds installed and registered in `public/web-builds.json` (44 of 44 total), in `versions/`: the four office web builds at the top (the only ones in this repository), the installed web builds of the other apps in `versions/web-builds/`, Rust source trees in `versions/<origin>/` (`artcraft`, `community`, `independent`) and, in `versions/zip/<origin>/`, only archives that no folder holds (a previous version kept for rollback). Nothing is kept twice; [docs/UPDATING.md](docs/UPDATING.md) has the layout.
 `npm run versions` shows which version of every app is where and, with `--remote`, what GitHub has newer. `npm run apps:import` copies web builds from `versions/` into `public/<app>/`, patches known upstream browser issues (`scripts/patch-apps.mjs`), and writes `public/web-builds.json`.
-MailCraft 0.11.1 (0.12.0's web build panics in the browser), SubCraft 0.3.6, Honeydew 0.5.3 and Paint.RS 0.7.3 start cleanly with WorkCraft's runtime shims and WebGPU/WebGL2 fallback. Lemon Studio needs cross-origin isolation. Details, update steps and what is verified: [docs/ECOSYSTEMS.md](docs/ECOSYSTEMS.md).
+MailCraft 0.13.0 (0.12.0's web build panicked in the browser; 0.13.0 does not), SolidCraft 0.43.0, SubCraft 0.3.6, Honeydew 0.5.3 and Paint.RS 0.7.3 start cleanly with WorkCraft's runtime shims and WebGPU/WebGL2 fallback. Lemon Studio needs cross-origin isolation. Details, update steps and what is verified: [docs/ECOSYSTEMS.md](docs/ECOSYSTEMS.md).
 ## AI, built in
 
 The assistant is a core part of the workspace, not an add-on, and it follows the same rule as everything else: your data stays yours.

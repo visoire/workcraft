@@ -532,15 +532,18 @@ try {
   check('1f: exactly scaled after rotation', retinaOk(fi), fi.map((f) => `${f.app} ${f.canvasCss}/${f.box}`).join(' | '));
   // ---------- Picture in picture by finger and Apple Pencil ----------
   const gridP = (await panels(page)).find((p) => p.tool === 'gridcraft');
-  // The header keeps Maximize, Hide and Close; Picture in picture is in the More menu (a finger taps both)
-  await page.locator(`.panel[data-id="${gridP.id}"] [data-btn="more"]`).tap();
+  // The header keeps Maximize and X; Picture in picture is in the panel menu (a long press on the header opens it, a finger taps the entry)
+  await page.evaluate((id) => {
+    const r = document.querySelector(`.panel[data-id="${id}"] .panel-name`).getBoundingClientRect();
+    window.__workcraftWorkspace.panelMenu(id, r.left + 8, r.bottom + 4);
+  }, gridP.id);
   await page.locator('[role^="menuitem"]', { hasText: /Picture in picture/ }).first().tap();
   await page.waitForTimeout(500);
   const pipBox = () => page.evaluate((id) => {
     const el = document.querySelector(`.panel[data-id="${id}"]`);
     const r = el.getBoundingClientRect();
     const se = el.querySelector('.pip-h[data-dir="se"]');
-    return { pip: el.classList.contains('is-pip'), x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height), touch: getComputedStyle(se).touchAction, select: getComputedStyle(se).webkitUserSelect || getComputedStyle(se).userSelect, seW: Math.round(se.getBoundingClientRect().width), btn: Math.round(el.querySelector('[data-btn="more"]').getBoundingClientRect().width) };
+    return { pip: el.classList.contains('is-pip'), x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height), touch: getComputedStyle(se).touchAction, select: getComputedStyle(se).webkitUserSelect || getComputedStyle(se).userSelect, seW: Math.round(se.getBoundingClientRect().width), btn: Math.round(el.querySelector('[data-btn="max"]').getBoundingClientRect().width) };
   }, gridP.id);
   const q0 = await pipBox();
   check('4a: picture in picture by finger tap, handles without Scribble and touch scrolling, 44 px buttons', q0.pip && q0.touch === 'none' && q0.select === 'none' && q0.seW >= 32 && q0.btn >= 44, JSON.stringify(q0));
@@ -810,6 +813,8 @@ try {
   await bp.evaluate(() => window.dispatchEvent(new Event('noop')));
   await bp.evaluate(() => void window.__workcraftWorkspace.openPanel('settings'));
   await bp.waitForSelector('.sp-tab');
+  // iPad and network sits behind Developer options
+  if ((await bp.locator('.sp-dev-toggle').getAttribute('aria-expanded')) !== 'true') await bp.locator('.sp-dev-toggle').tap();
   await bp.locator('.sp-tab', { hasText: 'iPad and network' }).tap();
   await bp.waitForSelector('[data-card="files"]');
   const [chooser] = await Promise.all([bp.waitForEvent('filechooser'), bp.locator('[data-action="import-files"]').tap()]);
@@ -831,6 +836,7 @@ try {
   check('5c: import by file dialog, in the IndexedDB after reloading', persisted);
   // API keys: permanent storage only after a clear notice
   await bp.evaluate(() => void window.__workcraftWorkspace.openPanel('settings'));
+  if ((await bp.locator('.sp-dev-toggle').getAttribute('aria-expanded')) !== 'true') await bp.locator('.sp-dev-toggle').tap();
   await bp.locator('.sp-tab', { hasText: 'iPad and network' }).tap();
   await bp.waitForSelector('[data-keys-persist]');
   const warn = await bp.locator('[data-card="keys"] .sp-notice').innerText();

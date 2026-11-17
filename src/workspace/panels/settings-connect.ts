@@ -378,6 +378,13 @@ async function cloudSection(x: ExtraContext): Promise<HTMLElement> {
     h('p.muted', t('A project kept in the cloud syncs both ways: a few seconds after a change by you or the AI, every five minutes, and when you press Sync now. A file changed on both sides keeps both versions; nothing is overwritten silently, and files removed in Google Drive go to its trash. The apps and the AI keep working on the local copy.')),
     s.localOnly ? note(t('Local-only mode is on, so cloud storage is blocked. Switch it off in Settings, Privacy.'), true) : null,
     inBrowser ? note(t('Browser mode: this browser keeps your project itself (it works offline). Cloud storage keeps a second copy in Google Drive or in a folder that your computer syncs, and the two stay in step. Work local only, in the cloud as well, or open a cloud project on another device: it is your choice per project. One project syncs at a time, the one that is open.')) : null,
+    // The simple way first: pick the service, three steps, one button (src/app/cloud-guide.ts). The cards below are the details.
+    card(
+      t('Guided setup'),
+      t('the simple way'),
+      h('p.muted', t('Pick Google Drive, iCloud Drive, OneDrive, Dropbox, MEGA, Proton Drive or any other service. WorkCraft finds its folder, or saves a ZIP you put there (iPad, Safari).')),
+      h('div.sp-actions', btn(t('Open the guide'), 'upload', () => void import('../../app/cloud-guide.js').then((m) => m.openCloudGuide()), '.primary', 'cloud-guide'))
+    ),
     google,
     icloud,
     folders,

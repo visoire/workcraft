@@ -448,7 +448,7 @@ async function stateOf(h: BrowserHelpers) {
 }
 
 /** Chooses a folder of this computer (needs a click: call it from a button). kind icloud: the iCloud Drive folder. */
-export async function chooseCloudFolder(h: BrowserHelpers, name: string, kind: 'icloud' | 'folder'): Promise<void> {
+export async function chooseCloudFolder(h: BrowserHelpers, name: string, kind: 'icloud' | 'folder'): Promise<string> {
   const open = picker();
   if (!open) throw new Error(tr('This browser cannot keep a folder of the computer in sync (use Chrome or Edge on a computer). Google Drive works in every browser.'));
   const handle = await open({ id: kind === 'icloud' ? 'workcraft-icloud' : 'workcraft-cloud', mode: 'readwrite' });
@@ -456,11 +456,14 @@ export async function chooseCloudFolder(h: BrowserHelpers, name: string, kind: '
   if (kind === 'icloud') {
     s.folders = s.folders.filter((f) => f.kind !== 'icloud');
     s.folders.push({ id: 'icloud', name: handle.name || 'iCloud Drive', kind, handle });
-  } else {
-    const id = (name || handle.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'folder';
-    s.folders = [...s.folders.filter((f) => f.id !== id), { id, name: (name || handle.name).trim().slice(0, 60), kind, handle }];
+    await save(h, s);
+    return 'icloud';
   }
+  const id = (name || handle.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'folder';
+  s.folders = [...s.folders.filter((f) => f.id !== id), { id, name: (name || handle.name).trim().slice(0, 60), kind, handle }];
   await save(h, s);
+  // The provider id the project is bound to ("folder:<id>")
+  return `folder:${id}`;
 }
 
 // ---------------------------------------------------------------- routes
@@ -471,6 +474,8 @@ export async function handleCloud(p: string, method: string, init: RequestInit, 
   const sub = p.slice('/api/cloud'.length);
   try {
     if (sub === '' && method === 'GET') return h.json(await stateOf(h));
+    // A browser cannot look at the folders of the computer; the guide offers the folder picker or a ZIP instead
+    if (sub === '/detect' && method === 'GET') return h.json({ found: [] });
     if (sub === '/google' && method === 'PUT') {
       const b = await h.body<{ clientId?: string; scope?: 'file' | 'full' }>(init);
       const s = await load(h);

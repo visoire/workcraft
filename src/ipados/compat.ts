@@ -90,6 +90,14 @@ export const COMPAT: readonly CompatMeasure[] = [
     optOut: 'gesture-lock',
   },
   {
+    id: 'repaint-wake',
+    layer: 'frame',
+    where: 'public/craft-frame.js',
+    problem: 'The egui engines draw a frame only when something asks for one. When the first frames are lost at start (another canvas size, the GPU surface late), the page stays black or half drawn until the first click.',
+    fix: 'A few "pointer left the canvas" events (pointerout, pointerleave, mouseleave) in the first seconds after the start ask the engine for a frame. They cause no hover, click or key.',
+    optOut: 'native-repaint',
+  },
+  {
     id: 'gpu-loss-signal',
     layer: 'frame',
     where: 'public/craft-frame.js',

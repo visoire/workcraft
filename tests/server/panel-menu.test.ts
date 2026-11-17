@@ -12,7 +12,7 @@ const plan = (o: Partial<PanelFacts> = {}) => panelActions({ ...base, ...o });
 const clean = (list: (string)[]) => list.filter((x) => x !== '-');
 
 test('an app with a file offers every action of the roadmap, grouped, in order', () => {
-  assert.deepEqual(plan(), ['maximize', 'fullscreen', 'minimize', 'pip', 'popout', '-', 'desktop', 'tree', 'reveal', 'copy-path', '-', 'reload', 'unload', 'info', '-', 'close']);
+  assert.deepEqual(plan(), ['maximize', 'fullscreen', 'minimize', 'pip', 'popout', '-', 'desktop', 'tree', 'reveal', 'copy-path', '-', 'reload', 'unload', 'info', '-', 'hide', 'close']);
 });
 
 test('no group is empty, no separator is first, last or doubled, for every combination of facts', () => {
@@ -54,9 +54,11 @@ test('reload and unload belong to apps that are running or can be started again'
   assert.ok(!plan({ popped: true }).includes('reload'), 'the engine of a panel in its own window is reached from that window');
 });
 
-test('side panels are hidden, the others closed', () => {
+test('side panels are hidden, the others can be hidden or closed for good (a hidden one only closed)', () => {
   assert.equal(plan({ side: true }).at(-1), 'hide');
-  assert.equal(plan({ side: false }).at(-1), 'close');
+  assert.deepEqual(plan({ side: false }).slice(-2), ['hide', 'close']);
+  assert.equal(plan({ side: false, shown: false }).at(-1), 'close');
+  assert.ok(!plan({ side: false, shown: false }).includes('hide'), 'a hidden panel is not hidden again');
 });
 
 test('the info card lists app, state and window first, the file when there is one, then memory and what the engine reports (flat values only)', () => {

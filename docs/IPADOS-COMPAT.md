@@ -55,6 +55,7 @@ tokens are ignored so a newer engine can add tokens):
 | `threads` | the engine uses shared WebAssembly memory | (asks for `isolation-on-demand` at load, not at the first failed allocation) |
 | `native-audio` | the engine resumes its own Web Audio contexts after a tap | `audio-unlock` |
 | `native-sw` | the engine needs its own service worker even inside a panel | `nested-service-worker` |
+| `native-repaint` | the engine draws its first frames reliably without a pointer event | `repaint-wake` |
 
 **Signals** the frame layer posts to the workspace (`window.parent.postMessage`, same origin, `type` starts with
 `workcraft:`): `gpu-lost`, `gpu-restored`, `needs-isolation`, and `frame` (size information after every fit). An engine
@@ -92,6 +93,7 @@ No file of the iPadOS layer names the version. `public/sw.js` only changes its a
 | `window-modes` | frame | Stage Manager, Split View, Slide Over and rotation resize the window. | Re-fits on resize, `orientationchange` and `visualViewport` events, no reload. | none |
 | `forced-layout` | frame | WordCraft applies its theme option only at one panel size. | `window.__ocFrameForce` lays the engine out at a fixed size for a moment. | none |
 | `gesture-lock` | frame | iPadOS ignores `maximum-scale`: pinch and double tap zoom the page, a pan rubber-bands it. | Cancels `gesturestart`, `gesturechange`, `gestureend`; `touch-action: none` and `overscroll-behavior: none` on the page. | `gesture-lock` |
+| `repaint-wake` | frame | The egui engines draw only when asked: a lost first frame (other canvas size, GPU surface late) leaves the page black or half drawn until the first click. | A few `pointerout`, `pointerleave` and `mouseleave` events on the canvas in the first seconds after the start ask for a frame; no hover, click or key. | `native-repaint` |
 | `gpu-loss-signal` | frame | Safari can lose the GPU device or WebGL context of a tab; the canvas freezes silently. | Posts `workcraft:gpu-lost` and `workcraft:gpu-restored` (an intended `destroy()` is ignored). | none |
 | `shared-memory-signal` | frame | A multithreaded engine fails to start without cross-origin isolation. | Posts `workcraft:needs-isolation` before the first shared `WebAssembly.Memory` is built. | `threads` |
 | `resource-meter` | frame | The browser does not report the memory of an iframe. | Counts WebAssembly memory and estimates GPU buffers and textures (`window.__ocResources()`). | none |

@@ -1,6 +1,6 @@
 {
   "name": "workcraft",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "description": "WorkCraft: a unified local-first workspace for documents, spreadsheets, presentations and PDFs, with a private AI assistant (local models via Ollama, or your own API keys) that works across every file.",
   "license": "MIT OR Apache-2.0",
@@ -59,7 +59,7 @@
     "start:local": "node dist-server/server/index.js --open",
     "start:lan": "node dist-server/server/index.js --lan --open",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.server.json --noEmit",
-    "test": "tsx --test tests/server/backend.test.ts tests/server/windows.test.ts tests/server/lan.test.ts tests/server/usage.test.ts tests/server/features.test.ts tests/server/core.test.ts tests/server/projects.test.ts tests/server/releases.test.ts tests/server/brand.test.ts tests/server/blank.test.ts tests/server/updates.test.ts tests/server/qr.test.ts tests/server/export.test.ts tests/server/ollama.test.ts tests/server/ollama-chat.test.ts tests/server/loop-guard.test.ts tests/server/approval.test.ts tests/server/popout.test.ts tests/server/args-repair.test.ts tests/server/providers.test.ts tests/server/ai-workspace.test.ts tests/server/ipados.test.ts tests/server/tls.test.ts tests/server/pencil.test.ts tests/server/chat-ui.test.ts tests/server/voice.test.ts tests/server/economy.test.ts tests/server/team-ux.test.ts tests/server/polish.test.ts tests/server/ecosystems.test.ts tests/server/datahome.test.ts tests/server/versions.test.ts tests/server/mirror.test.ts tests/server/app-agents.test.ts tests/server/theme.test.ts tests/server/stage-plan.test.ts tests/server/touch-keys.test.ts tests/server/cloud-browser.test.ts tests/server/mcp-validator.test.ts tests/server/panel-menu.test.ts",
+    "test": "tsx --test tests/server/backend.test.ts tests/server/windows.test.ts tests/server/lan.test.ts tests/server/usage.test.ts tests/server/features.test.ts tests/server/core.test.ts tests/server/projects.test.ts tests/server/releases.test.ts tests/server/brand.test.ts tests/server/blank.test.ts tests/server/updates.test.ts tests/server/qr.test.ts tests/server/export.test.ts tests/server/ollama.test.ts tests/server/ollama-chat.test.ts tests/server/loop-guard.test.ts tests/server/approval.test.ts tests/server/popout.test.ts tests/server/args-repair.test.ts tests/server/providers.test.ts tests/server/ai-workspace.test.ts tests/server/ipados.test.ts tests/server/tls.test.ts tests/server/pencil.test.ts tests/server/chat-ui.test.ts tests/server/voice.test.ts tests/server/economy.test.ts tests/server/team-ux.test.ts tests/server/polish.test.ts tests/server/ecosystems.test.ts tests/server/datahome.test.ts tests/server/versions.test.ts tests/server/mirror.test.ts tests/server/app-agents.test.ts tests/server/theme.test.ts tests/server/stage-plan.test.ts tests/server/touch-keys.test.ts tests/server/cloud-browser.test.ts tests/server/mcp-validator.test.ts tests/server/panel-menu.test.ts tests/server/essentials.test.ts tests/server/onboarding.test.ts tests/server/cloud-providers.test.ts",
     "test:e2e": "node tests/e2e.mjs",
     "themes:sync": "node scripts/sync-themes.mjs",
     "apps:audit": "node scripts/audit-apps.mjs",

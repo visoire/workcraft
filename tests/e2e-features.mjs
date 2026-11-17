@@ -102,7 +102,10 @@ const settings = async (section) => {
     const id = ws.openPanel('settings');
     ws.focus(id);
   }, section);
-  await page.locator(`.sp-tab[data-section="${section}"]`).click();
+  // Sections other than the five main ones sit behind Developer options
+  const tab = page.locator(`.sp-tab[data-section="${section}"]`);
+  if (!(await tab.count())) await page.locator('.sp-dev-toggle').click();
+  await tab.click();
   await page.waitForTimeout(900);
 };
 
@@ -160,7 +163,9 @@ try {
   await page.waitForTimeout(600);
 
   // ---------- Search
-  await page.locator('[data-act="project-search"]').click();
+  // Project search is in the main menu (and the command palette), not a button of its own in the top bar
+  await page.locator('[data-act="menu"]').click();
+  await page.getByRole('menuitem', { name: /Search the project/ }).click();
   await page.fill('.gs-input', 'Umsatz');
   const hit = await page.waitForSelector('.gs .search-hit', { timeout: 10000 }).catch(() => null);
   const hits = await page.locator('.gs .search-hit').evaluateAll((els) => els.map((e) => e.getAttribute('data-source')));

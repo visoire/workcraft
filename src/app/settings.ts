@@ -70,9 +70,11 @@ export interface Prefs {
   ecosystemsCustom: import('../ecosystems/catalog.js').Ecosystem[];
   /** The first-run choice was made (or skipped), so the picker does not open again by itself */
   ecosystemChosen: boolean;
+  /** Order of the app icons in the tool rail per workspace (drag an icon; src/ecosystems/rail-order.ts) */
+  railOrder: Record<string, string[]>;
 }
 
-const DEFAULTS: Prefs = { theme: 'system', renderer: 'auto', appDownloads: 'project', sounds: false, autoOpenPanels: true, autoUnloadMinutes: 0, chatProvider: '', statusbar: false, panelFooters: false, focusMode: false, chatSide: 'right', effort: {}, remoteCount: false, chatMode: 'single', approvalMode: 'manual', autoAck: false, agentRounds: 8, memoryGovernor: 'auto', memoryAction: 'auto', memoryBudgetMb: 0, fingerTyping: 'auto', penBarrel: 'eraser', penScratch: true, touchKeys: 'auto', topbarHidden: false, railHidden: false, iconsOnly: 'auto', chatPet: true, chatPetTheme: 'blue', chatPetAccessory: '', chatPetAccent: false, voiceEngine: 'auto', voiceLang: '', ecosystem: 'office', ecosystemsCustom: [], ecosystemChosen: false };
+const DEFAULTS: Prefs = { theme: 'system', renderer: 'auto', appDownloads: 'project', sounds: false, autoOpenPanels: true, autoUnloadMinutes: 0, chatProvider: '', statusbar: false, panelFooters: false, focusMode: false, chatSide: 'right', effort: {}, remoteCount: false, chatMode: 'single', approvalMode: 'manual', autoAck: false, agentRounds: 8, memoryGovernor: 'auto', memoryAction: 'auto', memoryBudgetMb: 0, fingerTyping: 'auto', penBarrel: 'eraser', penScratch: true, touchKeys: 'auto', topbarHidden: false, railHidden: false, iconsOnly: 'auto', chatPet: true, chatPetTheme: 'blue', chatPetAccessory: '', chatPetAccent: false, voiceEngine: 'auto', voiceLang: '', ecosystem: 'office', ecosystemsCustom: [], ecosystemChosen: false, railOrder: {} };
 const KEY = 'workcraft.prefs';
 
 function load(): Prefs {

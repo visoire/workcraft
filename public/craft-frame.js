@@ -490,6 +490,42 @@
     applied('gesture-lock');
   } catch (_) {}
 
+  // ---------- 7a. Repaint wake ----------
+  // The egui engines draw a frame only when something asks for one. When the first frames are lost while the app starts (the
+  // canvas was laid out at another size, the GPU surface came up after the frame), the page stays black or half drawn until
+  // the first click. The apps listen to pointer events on the canvas and answer "the pointer left" with a new frame, so a few
+  // of those, early in the first seconds, wake an app that is waiting for input. They do nothing visible when it has drawn:
+  // no hover, no click, no key. Added only while the page is young; a real pointer takes over from the first move.
+  try {
+    if (!manifest()['native-repaint']) {
+      var wakeTimes = [300, 900, 2000, 4000, 7000, 12000];
+      var wake = function () {
+        var c = doc.querySelector('canvas');
+        if (!c) return;
+        try {
+          var opts = { bubbles: true, cancelable: false, pointerId: 1, pointerType: 'mouse', isPrimary: true, clientX: -1, clientY: -1 };
+          c.dispatchEvent(new w.PointerEvent('pointerout', opts));
+          c.dispatchEvent(new w.PointerEvent('pointerleave', Object.assign({}, opts, { bubbles: false })));
+          c.dispatchEvent(new w.MouseEvent('mouseleave', { bubbles: false, clientX: -1, clientY: -1 }));
+        } catch (_) {}
+        schedule();
+      };
+      var wakeStarted = false;
+      var wakeStart = function () {
+        if (wakeStarted) return;
+        wakeStarted = true;
+        wakeTimes.forEach(function (ms) {
+          setTimeout(wake, ms);
+        });
+      };
+      // After the module has started (Trunk builds announce it); the load event is the fallback for apps that do not
+      w.addEventListener('TrunkApplicationStarted', wakeStart, { once: true });
+      w.addEventListener('load', function () { setTimeout(wakeStart, 0); }, { once: true });
+      w.__ocWake = wake;
+      applied('repaint-wake');
+    }
+  } catch (_) {}
+
   // ---------- 7b. Audio unlock ----------
   // Safari and iPadOS start a Web Audio context suspended and resume it only inside a user gesture, and suspend it again
   // when the page is hidden ("interrupted"). An engine that plays or records sound (video, motion, audio apps) creates its

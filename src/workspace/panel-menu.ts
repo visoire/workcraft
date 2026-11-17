@@ -75,7 +75,8 @@ export function panelActions(f: PanelFacts): (PanelAction | '-')[] {
   engine.push('info');
   groups.push(engine);
 
-  groups.push([f.side ? 'hide' : 'close']);
+  // The X of the header only hides; Hide is here too, and Close (red) closes for good and frees the memory
+  groups.push(f.side ? ['hide'] : f.shown ? ['hide', 'close'] : ['close']);
 
   const out: (PanelAction | '-')[] = [];
   for (const g of groups) {
