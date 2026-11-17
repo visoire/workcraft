@@ -90,9 +90,15 @@ before(async () => {
   }
 });
 
-after(() => {
-  proc?.kill();
-  rmSync(HOME, { recursive: true, force: true });
+after(async () => {
+  // The server may still be writing into its data folder when it is told to stop: wait for it to exit, then remove the folder with retries
+  // (an ENOTEMPTY or EPERM race made this hook fail on CI and on Windows although every test had passed)
+  if (proc && proc.exitCode === null) {
+    const exited = new Promise<void>((resolve) => proc!.once('exit', () => resolve()));
+    proc.kill();
+    await Promise.race([exited, new Promise((resolve) => setTimeout(resolve, 5000))]);
+  }
+  rmSync(HOME, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 });
 
 const token = () => (JSON.parse(readFileSync(join(HOME, 'config.json'), 'utf8')) as { lan: { token: string } }).lan.token;
