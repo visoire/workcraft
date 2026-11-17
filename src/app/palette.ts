@@ -1,6 +1,7 @@
 // Command palette (Ctrl K or Cmd K): commands, files and MCP tools. Free text goes to the chat.
 
-import { h, modKey } from './util.js';
+import { h, modKey, basename } from './util.js';
+import { loadRecent, recentFor } from '../storage/recent.js';
 import { icon } from './icons.js';
 import { bus } from './bus.js';
 import { fs } from '../project/fs.js';
@@ -77,7 +78,9 @@ export function openPalette(initial = ''): void {
           .sort((a, b) => b.s - a.s)
           .slice(0, 6)
       : [];
-    items = [...cmd.sort((a, b) => b.s - a.s).slice(0, q ? 8 : 16).map((x) => x.c), ...files.map((x) => x.c), ...tools.map((x) => x.c)];
+    // Without a query the search opens on what you worked on last (the apps are in the + menu and the rail, not here)
+    const recent: Command[] = q ? [] : recentFor(loadRecent(), fs.project, (p) => fs.exists(p), 6).map((e) => ({ id: 'recent:' + e.path, label: basename(e.path), mark: e.tool as ToolId, group: t('Recent'), mono: true, run: () => void workspace.openFile(e.path, e.tool as ToolId) }));
+    items = [...recent, ...cmd.sort((a, b) => b.s - a.s).slice(0, q ? 8 : 16).map((x) => x.c), ...files.map((x) => x.c), ...tools.map((x) => x.c)];
     if (q) items.push({ id: 'ai', label: t('Ask the AI: {q}', { q }), icon: 'spark', group: t('AI'), run: () => bus.emit('chat:insert', q) });
     active = Math.max(0, Math.min(active, items.length - 1));
     list.replaceChildren();

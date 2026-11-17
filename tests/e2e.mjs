@@ -192,6 +192,12 @@ page.on('response', (r) => r.status() >= 500 && errors.push(`${r.status()} ${r.r
 await page.addInitScript(() => localStorage.setItem('workcraft.prefs', JSON.stringify({ renderer: 'webgl' })));
 
 const ws = (fn, arg) => page.evaluate(fn, arg);
+// Model and Base URL are dropdowns (Settings, AI models): choose Other and type into the field that appears. n: 0 = the first dropdown of the card
+const fillChoice = async (card, n, value) => {
+  await card.locator('.sp-choice select').nth(n).selectOption('__other__');
+  await card.locator('.sp-choice input').nth(n).fill(value);
+};
+
 const panels = () => ws(() => window.__workcraftWorkspace.panels());
 const panelOf = async (tool) => (await panels()).find((p) => p.tool === tool);
 const waitFor = async (fn, ms = 20000, step = 200) => {
@@ -289,7 +295,7 @@ try {
   const ds = page.locator('.sp-card[data-provider="deepseek"]');
   await ds.locator('input[type="password"]').fill('sk-deepseek-test');
   // Base URL pointing at the test endpoint, so DeepSeek can be checked without internet
-  await ds.locator('input').nth(2).fill(`http://127.0.0.1:${MOCK_PORT}/v1`);
+  await fillChoice(ds, 1, `http://127.0.0.1:${MOCK_PORT}/v1`);
   await ds.getByRole('button', { name: 'Test connection' }).click();
   await page.waitForSelector('.sp-card[data-provider="deepseek"] .sp-test[data-state="ok"]', { timeout: 15000 });
   await ds.getByRole('button', { name: 'Save' }).click();
@@ -299,9 +305,9 @@ try {
 
   const nc = page.locator('.sp-card[data-provider="custom-new"]');
   await nc.locator('input').nth(0).fill('Local test model');
-  await nc.locator('input').nth(1).fill(`http://127.0.0.1:${MOCK_PORT}/v1`);
-  await nc.locator('input').nth(2).fill('sk-custom');
-  await nc.locator('input').nth(3).fill('mock-1');
+  await fillChoice(nc, 0, `http://127.0.0.1:${MOCK_PORT}/v1`);
+  await nc.locator('input[type="password"]').fill('sk-custom');
+  await fillChoice(nc, 1, 'mock-1');
   await nc.getByRole('button', { name: 'Test connection' }).click();
   await page.waitForSelector('.sp-card[data-provider="custom-new"] .sp-test[data-state="ok"]', { timeout: 15000 });
   await nc.getByRole('button', { name: 'Add' }).click();
@@ -928,6 +934,13 @@ try {
   });
   check('9e: command palette results scroll inside the modal', pal.items > 15 && pal.scrollable && pal.overflow === 'auto' && pal.scrolled && pal.max !== 'none' && pal.inView, JSON.stringify(pal));
   await shot('14-palette');
+  const apps = await ws(() => [...document.querySelectorAll('.pal-item')].map((i) => i.textContent.trim()).filter((x) => /^Open (WordCraft|GridCraft|DeckCraft|PdfCraft|PhotoCraft|SoundCraft)/.test(x)));
+  check('9f: the search does not list the apps (the + menu and the rail do): no "Open <app>" entries', apps.length === 0, JSON.stringify(apps));
+  await page.keyboard.press('Escape');
+  await ws(() => document.querySelector('[data-act="add"]').click());
+  await page.waitForSelector('.ctx-menu .ctx-item');
+  const plus = await ws(() => [...document.querySelectorAll('.ctx-menu .ctx-item')].map((i) => i.textContent.trim()));
+  check('9g: the + menu offers Upload files on a computer (Scan a document only on an iPad)', plus.some((x) => /^Upload files/.test(x)) && !plus.some((x) => /^Scan a document/.test(x)), JSON.stringify(plus));
 
   // ---------------------------------------------------------------- 10. New files, main menu
   await page.keyboard.press('Escape');
@@ -1149,15 +1162,15 @@ try {
     await op.waitForSelector('.ctx-menu .ctx-item');
     const red = await op.evaluate(() => [...document.querySelectorAll('.ctx-menu .ctx-item.danger')].map((b) => b.textContent.trim()));
     check('12h: the panel menu has a red Close and free memory', red.some((x) => /^Close and free memory/.test(x)), JSON.stringify(red));
-    // The cloud guide: every service as a tile; a service opens three steps and one button (a ZIP is always the way out)
+    // The cloud guide: Proton Drive first and larger; a service that was found is one row with one button; every other service is one ZIP button
     await op.evaluate(() => void import('/src/app/cloud-guide.ts').then((m) => m.openCloudGuide()));
-    await op.waitForSelector('.cg .cg-tile', { timeout: 20000 });
-    const tiles = await op.locator('.cg .cg-tile').evaluateAll((els) => els.map((e) => e.getAttribute('data-provider')));
-    check('12i: the cloud guide lists Google Drive, iCloud, OneDrive, Dropbox, MEGA, Proton Drive and another service', ['gdrive', 'icloud', 'onedrive', 'dropbox', 'mega', 'proton', 'other'].every((id) => tiles.includes(id)), tiles.join(','));
-    await op.locator('.cg .cg-tile[data-provider="dropbox"]').click();
+    await op.waitForSelector('.cg .cg-hero', { timeout: 20000 });
+    const first = await op.evaluate(() => ({ hero: document.querySelector('.cg-hero')?.getAttribute('data-provider'), tiles: document.querySelectorAll('.cg-tile').length, zip: !!document.querySelector('[data-action="cg-zip"]'), badge: document.querySelector('.cg-badge')?.textContent }));
+    check('12i: the cloud guide puts Proton Drive first and large, offers one ZIP button for every other service and has no wall of tiles', first.hero === 'proton' && first.tiles === 0 && first.zip && /Recommended/.test(first.badge || ''), JSON.stringify(first));
+    await op.locator('.cg .cg-hero [data-action="cg-proton"]').click();
     await op.waitForSelector('.cg .cg-steps');
     const guide = await op.evaluate(() => ({ steps: document.querySelectorAll('.cg-steps li').length, zip: !!document.querySelector('[data-action="cg-zip"]'), get: document.querySelector('.cg-get')?.getAttribute('href') }));
-    check('12j: a service shows three steps, a button for its folder, a ZIP as the other way and a link to get its app', guide.steps === 3 && guide.zip && /dropbox\.com/.test(guide.get || ''), JSON.stringify(guide));
+    check('12j: Proton Drive shows three steps, a button for its folder, a ZIP as the other way and a link to get its app', guide.steps === 3 && guide.zip && /proton\.me/.test(guide.get || ''), JSON.stringify(guide));
     await op.keyboard.press('Escape');
     await octx.close();
   }

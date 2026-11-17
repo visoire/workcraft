@@ -1,6 +1,6 @@
-<!-- page: introduction | Get started | Introduction | WorkCraft is a unified local-first workspace for documents, spreadsheets, presentations and PDFs, with a private AI assistant that works across every file. -->
+<!-- page: introduction | Get started | Introduction | WorkCraft is a unified local-first workspace for real work: documents, spreadsheets, presentations, PDFs, photos, video, audio, music, design and 3D, with a private AI assistant that works across every file. -->
 
-WorkCraft is a unified local-first workspace for real work. Documents, spreadsheets, presentations and PDFs open side by side in one window, next to a project tree, a code editor, a terminal and an AI assistant works across all of them through the Model Context Protocol (MCP). The four office panels are the open-source apps **WordCraft**, **GridCraft**, **DeckCraft** and **PdfCraft**, and 40 more apps (44 in all: imaging, paint, video and audio, music, design, 3D and CAD and more) run in ready-made [workspaces](#workspaces). You can use WorkCraft in two ways. In the **browser**, at [workcraft.cc/app](https://workcraft.cc/app/), with nothing to install: your projects stay in your browser. Or **on your computer**, where a small Node.js backend on `127.0.0.1` keeps your projects, your keys and your history, and adds the terminal, local models and the desktop apps.
+WorkCraft is a unified local-first workspace for real work. Apps for every kind of work open side by side in one window, next to a project tree, a code editor, a terminal and an AI assistant that works across all of them through the Model Context Protocol (MCP). The office apps (**WordCraft**, **GridCraft**, **DeckCraft** and **PdfCraft**) are four of dozens of open-source apps (44 at the time of writing: imaging, paint, video and audio, music, design, 3D and CAD and more) that run in ready-made [workspaces](#workspaces). You can use WorkCraft in two ways. In the **browser**, at [workcraft.cc/app](https://workcraft.cc/app/), with nothing to install: your projects stay in your browser. Or **on your computer**, where a small Node.js backend on `127.0.0.1` keeps your projects, your keys and your history, and adds the terminal, local models and the desktop apps.
 
 :::cards
 - [Quickstart](#quickstart) Install, start and open WorkCraft in two minutes.
@@ -29,7 +29,7 @@ WorkCraft is a unified local-first workspace for real work. Documents, spreadshe
 
 <!-- page: quickstart | Get started | Quickstart | Install WorkCraft, start the backend and open the workspace. -->
 
-Do you only want to try it? Open [workcraft.cc/app](https://workcraft.cc/app/): all 44 apps and every workspace are there, nothing is installed, and your files stay in your browser (no terminal and no local models there). To run it on your computer:
+Do you only want to try it? Open [workcraft.cc/app](https://workcraft.cc/app/): every app and every workspace is there, nothing is installed, and your files stay in your browser (no terminal and no local models there). To run it on your computer:
 
 :::steps
 1. **Install Node.js 22 or newer and Git.** On Windows, macOS and Linux.
@@ -37,7 +37,7 @@ Do you only want to try it? Open [workcraft.cc/app](https://workcraft.cc/app/): 
 3. **Start WorkCraft.** `npm run dev` for development or `npm run build` and `npm start` for production.
 4. **Open WorkCraft.** Go to `http://localhost:5175/`. Your own empty project opens. Import your files, or press **Load sample data** to open a separate sample project with a document, a spreadsheet, slides and a PDF.
 5. **Pick a model.** Settings, AI models: add an API key, your own endpoint, or start Ollama for fully local work.
-6. **Install the other apps (optional).** The repository holds the four office apps. `npm run apps:fetch` lists the other 40 and `npm run apps:fetch -- --yes` installs their official web builds (about 1.5 GB; they come from their own repositories under their own licences). Until then their panels say "No web build here yet".
+6. **Install the other apps (optional).** The repository holds the four office apps. `npm run apps:fetch` lists the other apps and `npm run apps:fetch -- --yes` installs their official web builds (about 1.5 GB; they come from their own repositories under their own licences). Until then their panels say "No web build here yet".
 :::
 
 ```sh
@@ -125,6 +125,36 @@ The website has its own switch, separate from the workspace.
 > An app that styles its dark mode with a CSS `prefers-color-scheme` rule used to follow the operating system instead of the switch. WorkCraft now rewrites those rules, so such an app (Align) follows the switch too.
 
 For people who add apps: the guide `docs/THEMING.md` explains how an app is classified (`media`, `switch`, `css`, `own`, `fixed`), how to measure it (`npm run apps:audit`) and what to change.
+
+<!-- page: speed | Get started | Make it faster | The panels you keep open, the browser, the memory guard, the AI and the iPad: what helps when WorkCraft feels slow. -->
+
+WorkCraft runs many apps as panels of one window, which is more than a normal web page asks of a computer, and it is still alpha. These are the things that help, most effective first. The long version, with the advanced browser and Ollama settings, is [docs/OPTIMIZATION.md](https://github.com/visoire/workcraft/blob/main/docs/OPTIMIZATION.md) and [workcraft.cc/docs/optimization](https://workcraft.cc/docs/optimization/).
+
+## Open fewer panels
+
+- Keep 2 to 4 panels open. Every app costs memory and CPU, the heavy ones (photo, video, 3D, CAD, music) the most.
+- **The X only hides a panel.** The app stays loaded and keeps its state. To free the memory, open the panel menu (right-click its header, a long press on iPad, or its icon in the rail) and choose **Close and free memory** (red). Save first.
+- Opening a workspace starts nothing by itself. A heavy app pauses the apps you are not looking at, and on an iPad it opens with fewer apps around it.
+
+## The memory guard
+
+WorkCraft watches its memory use and how responsive it is. When memory gets tight or the page is slow, a badge appears in the top bar: click it to open **Settings, Overview, Memory and GPU**. The guard can free hidden, saved apps by itself, offer to do it, or only warn, and it never frees an app with unsaved work on its own.
+
+## Browser and device
+
+- **iPad:** Safari, and add WorkCraft to the Home Screen. **Computer:** Chrome or Edge (Chromium) usually run the canvas and WebGL apps best; Brave is Chromium with more tracker blocking.
+- Turn on hardware acceleration (Settings, System, graphics acceleration), keep the graphics driver up to date, close other tabs, and plug a laptop in.
+- 8 GB of RAM is a practical minimum on a computer, 16 GB is comfortable. A recent iPad (M series) is clearly better than an old one.
+
+## The AI
+
+- A single assistant first; use Team Mode only when a task has several parts.
+- A cloud model with your own key is usually quicker on long tool chains than a small local one.
+- For Ollama, a context of 4096 to 8192 tokens is often a good balance: a very large context can push the model out of graphics memory into slow system RAM (Settings, AI models shows how much of the model sits on the GPU). A 4-bit model (Q4_K_M) is lighter than Q8 or FP16.
+
+## Report it
+
+If it is still slow, report the device and system, the browser, how many panels and which apps were open, whether the assistant was running, and what the memory badge showed, at [github.com/visoire/workcraft/issues](https://github.com/visoire/workcraft/issues/new/choose).
 
 <!-- page: shortcuts | Get started | Keyboard shortcuts | Every shortcut of the workspace, the code editor and the chat. -->
 

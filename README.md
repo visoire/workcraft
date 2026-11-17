@@ -28,19 +28,19 @@
 </p>
 <p align="center"><sub>The sample project, the empty AI assistant (no model is set up yet) and two of the four office apps. Screenshots of the real workspace.</sub></p>
 
-> **Alpha software.** This is an alpha (`0.1.0-alpha.2`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built but not proven on a physical iPad. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
+> **Alpha software.** This is an alpha (`0.1.0-alpha.3`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built but not proven on a physical iPad. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
 
-Developers have long had editors where code, a terminal and the file tree sit side by side in one window. Everyone else still juggles separate heavy applications, loose browser tabs and cloud accounts that keep their files hostage. WorkCraft brings the single-window way of working to documents, spreadsheets, presentations and PDFs. Your files live in a folder you own, an AI assistant you control works across all of them, and nothing leaves your computer unless you decide it should.
+Developers have long had editors where code, a terminal and the file tree sit side by side in one window. Everyone else still juggles separate heavy applications, loose browser tabs and cloud accounts that keep their files hostage. WorkCraft brings the single-window way of working to every kind of work: documents, spreadsheets, presentations and PDFs, but also photos, vector art, video, audio, music, design, 3D and CAD, in ready-made workspaces with dozens of open-source apps (44 at the time of writing). Your files live in a folder you own, an AI assistant you control works across all of them, and nothing leaves your computer unless you decide it should.
 
-Version **0.1.0-alpha.2** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
+Version **0.1.0-alpha.3** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
 
 | | |
 | :--- | :--- |
-| **One workspace** | Write, calculate, present and sign in one window. Split it, maximize a panel, float one on top of the others or send it to the dock. Every panel keeps its state while you rearrange it. |
-| **AI built in** | An assistant that reads and edits your documents, sheets, slides and PDFs, and shows each step so you can check and undo it. Private by default, local with Ollama, or your own key for DeepSeek, Claude, ChatGPT, Gemini and more. |
+| **One workspace** | Write, calculate, present, edit photos, cut video, make music or model in 3D, all in one window. Split it, maximize a panel, float one on top of the others or send it to the dock. Every panel keeps its state while you rearrange it. |
+| **AI built in** | An assistant that reads and edits your files in every app of the workspace (it has a specialist for each app), and shows each step so you can check and undo it. Private by default, local with Ollama, or your own key for DeepSeek, Claude, ChatGPT, Gemini and more. |
 | **Private by default** | No account, no telemetry, no CDN, no upload. Files stay in a folder on your machine, API keys stay on the local server, and Local-only mode blocks every cloud provider with one switch. |
 | **Every device** | Windows, macOS and Linux, and iPadOS with Apple Pencil, Magic Keyboard and sharp Retina rendering. Pair an iPad with your desktop over the home network, or work on the iPad alone. |
-| **Open and growing** | Open source under MIT or Apache-2.0. The roadmap is open: more apps join the same workspace and the same assistant. |
+| **Open and growing** | Open source under MIT or Apache-2.0. The catalog grows: new apps join the same workspaces and the same assistant, and the site and these docs read the count from the catalog instead of repeating it. |
 
 ---
 
@@ -56,11 +56,11 @@ Every GitHub repository the projects build on or learned from is listed in [SOUR
 
 ## Why WorkCraft
 
-Real work is rarely one file. A report needs numbers from a spreadsheet, a chart for a slide, a signed PDF for the client. Today that means four applications, a dozen tabs, copies of copies, and an account somewhere that you must trust with all of it.
+Real work is rarely one file. A report needs numbers from a spreadsheet, a chart for a slide, a photo, a signed PDF for the client. Today that means a handful of applications, a dozen tabs, copies of copies, and an account somewhere that you must trust with all of it.
 
 WorkCraft puts those pieces in one place:
 
-- **One project, one folder.** Documents, sheets, slides and PDFs sit in a project on your own disk, with one file tree, one search and one undo history.
+- **One project, one folder.** Documents, sheets, slides, PDFs, pictures, audio and models sit in a project on your own disk, with one file tree, one search and one undo history.
 - **One window.** Panels sit side by side, so the numbers, the slide and the contract are visible together.
 - **One assistant.** The same AI chat works in every panel, so "chart the Q3 numbers from the sheet on slide 3 and attach it to the contract" is one request.
 - **No lock-in.** The files are standard formats (`.docx`, `.xlsx`, `.pptx`, `.pdf`, `.md`, `.csv`). Take them anywhere, any time.
@@ -74,6 +74,7 @@ WorkCraft puts those pieces in one place:
 | **Slides** (DeckCraft) | presentations and decks | `.pptx`, PDF export |
 | **PDFs** (PdfCraft) | reading, organizing, local signing, redaction | PDF |
 | **Files, search and history** | one tree for the whole project, snapshots, undo | any |
+| **Photos, vector, video, audio, music, 3D and CAD** | the other apps of the catalog, in their own workspaces (see below) | their own formats |
 | **Code and terminal** | for the moments you need them: scripts and data prep | any |
 
 The four office panels are the open-source apps WordCraft, GridCraft, DeckCraft and PdfCraft, running as WebAssembly (WebGPU, with WebGL2 as a fallback). The other 40 apps of the catalog run the same way (see [Workspaces for every kind of work](#workspaces-for-every-kind-of-work)).
@@ -103,7 +104,7 @@ Keep these apps offline) and lets you switch. The files stay in the project, so 
 (Open with in the tree). A link such as `/?ecosystem=imaging` opens a workspace directly. The four office apps ship with the
 repository; all 40 remaining apps have web builds installed and registered in `public/web-builds.json` (44 of 44 total), in `versions/`: the four office web builds at the top (the only ones in this repository), the installed web builds of the other apps in `versions/web-builds/`, Rust source trees in `versions/<origin>/` (`artcraft`, `community`, `independent`) and, in `versions/zip/<origin>/`, only archives that no folder holds (a previous version kept for rollback). Nothing is kept twice; [docs/UPDATING.md](docs/UPDATING.md) has the layout.
 `npm run versions` shows which version of every app is where and, with `--remote`, what GitHub has newer. `npm run apps:import` copies web builds from `versions/` into `public/<app>/`, patches known upstream browser issues (`scripts/patch-apps.mjs`), and writes `public/web-builds.json`.
-MailCraft 0.13.0 (0.12.0's web build panicked in the browser; 0.13.0 does not), SolidCraft 0.43.0, SubCraft 0.3.6, Honeydew 0.5.3 and Paint.RS 0.7.3 start cleanly with WorkCraft's runtime shims and WebGPU/WebGL2 fallback. Lemon Studio needs cross-origin isolation. Details, update steps and what is verified: [docs/ECOSYSTEMS.md](docs/ECOSYSTEMS.md).
+MailCraft 0.13.0 (0.12.0's web build panicked in the browser; 0.13.0 does not), SolidCraft 0.44.1, SubCraft 0.4.3, TraceDraw 0.48.0, NoteCraft 0.0.14, Honeydew 0.5.3 and Paint.RS 0.7.3 start cleanly with WorkCraft's runtime shims and WebGPU/WebGL2 fallback. Lemon Studio needs cross-origin isolation. Details, update steps and what is verified: [docs/ECOSYSTEMS.md](docs/ECOSYSTEMS.md).
 ## AI, built in
 
 The assistant is a core part of the workspace, not an add-on, and it follows the same rule as everything else: your data stays yours.

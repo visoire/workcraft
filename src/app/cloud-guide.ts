@@ -78,39 +78,63 @@ export async function openCloudGuide(opt: { provider?: string } = {}): Promise<v
     const provider = await chooseCloudFolder(browserHelpers(), p.id === 'other' ? '' : p.name, p.id === 'icloud' ? 'icloud' : 'folder');
     return keepIn(p, provider);
   }
-  async function saveZip(p: Provider) {
+  async function saveZip(p?: Provider) {
     const bytes = await api.bytes(`/api/projects/${encodeURIComponent(project!.id)}/export`);
     const how = await shareOrDownload(new Blob([bytes], { type: 'application/zip' }), zipName(project!.name));
     if (how === 'cancelled') return;
-    toast(how === 'shared' ? t('ZIP ready: choose {name} in the list.', { name: p.name }) : t('ZIP saved: put it in your {name} folder.', { name: p.name }), 'success');
+    const where = p ? p.name : t('your cloud app');
+    toast(how === 'shared' ? t('ZIP ready: choose {name} in the list.', { name: where }) : t('ZIP saved: put it in your {name} folder.', { name: where }), 'success');
     if (how === 'shared') close();
   }
   const run = (fn: () => Promise<unknown>) => () => void fn().catch((e: Error) => e.name !== 'AbortError' && notifyError(e));
 
-  const tile = (p: Provider) => {
-    const ctx = ctxFor(p);
-    const first = routesFor(p, ctx)[0]!;
-    const note = first === 'folder-found' ? t('Found on this computer') : first === 'zip' ? (p.builtIn ? t('Built in') : t('Save a ZIP')) : t('Choose its folder');
-    return h(
-      'button.cg-tile',
-      { type: 'button', 'data-provider': p.id, 'data-found': first === 'folder-found' ? '1' : '0', onclick: () => detail(p) },
+  /** A service whose folder was found on this computer: one button, no steps to read. */
+  const foundRow = (p: Provider, hit: Found) =>
+    h(
+      'div.cg-row',
+      { 'data-provider': p.id },
       markOf(p),
-      h('strong', t(p.name)),
-      h('small' + (first === 'folder-found' ? '.is-found' : '.muted'), note)
+      h('span.cg-row-text', h('strong', t(p.name)), h('small.is-found', t('Found on this computer'))),
+      h('button.btn.primary', { type: 'button', 'data-action': 'cg-use', onclick: run(() => useFolder(p, hit.path)), html: icon('check', { size: 16 }) + `<span>${t('Connect')}</span>` })
     );
-  };
 
   function list() {
-    body.replaceChildren(
-      h('p.cg-lead', t('Keep a copy of your project in the cloud. Pick the service you already use.')),
-      h('div.cg-tiles', ...PROVIDERS.map(tile)),
+    const proton = providerById('proton')!;
+    const hits = PROVIDERS.filter((p) => p.id !== 'proton' && p.id !== 'other')
+      .map((p) => ({ p, hit: found.find((f) => f.id === p.id) }))
+      .filter((x): x is { p: Provider; hit: Found } => !!x.hit && routesFor(x.p, ctxFor(x.p))[0] === 'folder-found');
+    const protonRoute = routesFor(proton, ctxFor(proton))[0]!;
+    const canPickAny = backend.browser && base.canPick;
+    const parts: (Node | null)[] = [
+      // Proton Drive first and larger: private by design (end-to-end encrypted), the one we recommend
+      h(
+        'div.cg-hero',
+        { 'data-provider': 'proton' },
+        h('span.cg-badge', t('Recommended')),
+        h('div.cg-hero-main', markOf(proton), h('div.cg-hero-text', h('strong', t('Proton Drive')), h('p', t('End-to-end encrypted: your files are locked before they leave this device, so not even the cloud can read them.')))),
+        h('button.btn.primary', { type: 'button', 'data-provider': 'proton', 'data-action': 'cg-proton', onclick: () => detail(proton), html: icon(protonRoute === 'zip' ? 'archive' : 'cloud', { size: 16 }) + `<span>${protonRoute === 'folder-found' ? t('Connect Proton Drive') : protonRoute === 'zip' ? t('Use Proton Drive') : t('Set up Proton Drive')}</span>` })
+      ),
+      // Anything else that can be connected right now (its folder is on this computer)
+      hits.length ? h('div.cg-found', h('p.cg-sub', t('Also found on this computer')), ...hits.map((x) => foundRow(x.p, x.hit))) : null,
+      // Every other service: nothing to pick, no steps. A browser can connect any folder it is allowed to open; the rest saves a ZIP.
+      h(
+        'div.cg-other',
+        h('p.cg-sub', t('Google Drive, iCloud, OneDrive, Dropbox, MEGA and every other service')),
+        h(
+          'div.cg-other-actions',
+          canPickAny ? h('button.btn', { type: 'button', 'data-action': 'cg-pick-any', onclick: run(() => pickFolder(providerById('other')!)), html: icon('folderOpen', { size: 16 }) + `<span>${t('Choose the folder of your cloud app')}</span>` }) : null,
+          h('button.btn', { type: 'button', 'data-action': 'cg-zip', onclick: run(() => saveZip()), html: icon('archive', { size: 16 }) + `<span>${t('Save a ZIP')}</span>` })
+        ),
+        h('small.muted', t('Put the ZIP in the app of your service. Do it again whenever you want a fresh copy.'))
+      ),
       h(
         'p.cg-foot.muted',
         t('No password is typed into WorkCraft: the app of your service does the syncing, WorkCraft only writes into its folder. Without a folder, the project goes out as a ZIP.'),
         ' ',
         h('button.link', { type: 'button', 'data-action': 'cg-advanced', onclick: () => (close(), bus.emit('open-settings', 'cloud')) }, t('Advanced: sign in to Google Drive directly'))
       )
-    );
+    ];
+    body.replaceChildren(...parts.filter((n): n is Node => !!n));
   }
 
   function detail(p: Provider) {

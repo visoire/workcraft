@@ -101,7 +101,7 @@ export async function runOnboarding(): Promise<OnboardingResult> {
           { type: 'button', 'data-choice': 'connect', onclick: () => finish('connect') },
           h('span.onb-choice-ic', { html: icon('upload', { size: 22 }), 'aria-hidden': 'true' }),
           h('strong', t('Also in the cloud')),
-          h('span.muted', t('Google Drive, iCloud, OneDrive, Dropbox, MEGA, Proton Drive and more. A short guide opens right after the start.'))
+          h('span.muted', t('Proton Drive is recommended. Any other cloud app works through its folder or a ZIP. A short guide opens right after the start.'))
         )
       ),
     ];

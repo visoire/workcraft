@@ -14,6 +14,27 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
+## [0.1.0-alpha.3] - 2026-11-18
+
+### Added
+
+- **Bring a file in from the + menu.** Under the apps of the workspace and your recent files the menu now has **Upload files** (any device except an iPad: the file picker, files go to `/Uploads` and the first one opens in its app) or, on an iPad only, **Scan a document** (the picker sheet of iPadOS, which offers Scan Documents, Take Photo and the Files app; a scan lands in `/Scans`, a picture without a useful name becomes "Scan 2026-11-18 14-05.jpg"). `src/project/add-files.ts`, the pure rules in `add-files-rules.ts`. The scan path is built for iPadOS and not tried on a real iPad.
+- **Make WorkCraft faster** (`docs/OPTIMIZATION.md`, an in-app page of the same name, and the same guide on workcraft.cc/docs/optimization): panels, the memory guard and its badge, browsers, hardware acceleration, the AI (single assistant, token economy, Ollama context, quantization), iPad, device sizes and what to put in a performance report.
+- **Dropdowns for Model and Base URL** in Settings, AI models (`src/chat/model-choices.ts`, `src/workspace/panels/choice-field.ts`): the suggested models and the known addresses of each provider, the models the endpoint reports after Test connection (a local runtime is asked on its own), and "Other ..." for a name or an address that is not listed. An own endpoint offers the usual local servers (LM Studio, Ollama, llama.cpp, vLLM, Jan, LiteLLM) and a few hosted ones.
+
+### Changed
+
+- **The cloud guide is simpler.** Proton Drive comes first and larger (end-to-end encrypted, recommended, one button); a service whose folder was found on this computer is one row with a **Connect** button; every other service (Google Drive, iCloud, OneDrive, Dropbox, MEGA and the rest) is one line and one **Save a ZIP** button, plus **Choose the folder of your cloud app** where the browser can open a folder. The wall of seven tiles is gone. The first-start page says the same in one sentence.
+- **The search lists no apps.** The command palette no longer has an "Open <app>" entry for every app (the + menu, the rail and the launcher do that, and they follow the workspace); with nothing typed it opens on your recent files.
+- **Settings, AI models:** the red and yellow key icon on a provider without a key is gone (the empty key field says it).
+- **The documentation speaks of every app, not of an office suite.** README, AGENTS.md, the in-app documentation and the docs describe a workspace for every kind of work with dozens of apps; counts are named as "44 at the time of writing" where one is needed.
+
+### Apps
+
+- **Newer builds installed:** SolidCraft 0.44.1, SubCraft 0.4.3 and TraceDraw 0.48.0 (from their releases and GitHub Pages) and NoteCraft 0.0.14 (the web build and the source tree you supplied).
+- **Versions that were wrong.** Fifteen apps imported from a local folder carried the placeholder 0.1.0 (a bug report said the website showed OxiGuitar at 0.11 while the repository was at 0.19). They now carry the version of the source tree they were built from: Align 0.3.3, EarthCraft 0.2.0, HumanMotionCraft 0.3.0, MixStudio 0.30.0-beta, OxiGuitar 0.19.1, OxyBrush 4.0.0-beta.4, PaintCraft 0.2.0, Picasso Suite 0.7.0, PixelCraft 0.4.1, ProCraft 0.0.1, Pro Wave 0.2.2, Retake 0.24.0, Suhina 0.0.1, TextCraft 0.0.0 and Transit 0.7.0 (MatCraft and ClothCraft really are 0.1.0). This is read from the source trees, not measured on the builds.
+- **Not updated, and why.** These apps have no web build upstream, so a newer version needs a build from their source: OxiGuitar 0.21.1, Retake 0.38.0, Picasso Suite 0.8.0, Transit 0.7.3, OxyBrush 4.0.0-beta.16, ProCraft 0.0.7-beta. Honeydew 0.5.4 has a 1.36 GB web zip and is not installed (0.5.3 stays). `npm run versions -- --remote` shows the full picture.
+
 ## [0.1.0-alpha.2] - 2026-11-17
 
 ### Added

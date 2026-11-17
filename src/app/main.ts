@@ -19,7 +19,9 @@ import { openPalette, registerCommands, type Command } from './palette.js';
 import { fs } from '../project/fs.js';
 import { loadRecent, recentFor } from '../storage/recent.js';
 import { projects } from '../project/manager.js';
-import { TOOLS, APP_IDS, toolMark, type ToolId } from '../workspace/registry.js';
+import { TOOLS, APP_IDS, CRAFT_APP_IDS, toolMark, type ToolId } from '../workspace/registry.js';
+import { addKindFor, pickFiles } from '../project/add-files.js';
+import { isIPadOS } from './device.js';
 import { activeApps, activeEcosystem, initEcosystems, needsChoice, allEcosystems, setEcosystem } from '../ecosystems/ecosystems.js';
 import { enterEcosystem } from '../ecosystems/enter.js';
 import { dropIndex, moveApp, orderApps, sanitizeRailOrder, stepApp } from '../ecosystems/rail-order.js';
@@ -210,6 +212,9 @@ function buildTopbar(): HTMLElement {
       .slice(0, 5);
     const items: MenuEntry[] = mine.map((id) => ({ label: TOOLS[id].name, html: toolMark(id, 16), run: () => void workspace.openPanel(id) }));
     if (recent.length) items.push('-', { heading: t('Recent') }, ...recent.map((e) => ({ label: basename(e.path), html: toolMark(e.tool as ToolId, 16), run: () => void workspace.openFile(e.path, e.tool as ToolId) })));
+    // Bring a file in from this device: a scan on an iPad (its document scanner), an upload everywhere else. Not every app, only what belongs to the workspace.
+    const kind = addKindFor({ ipad: isIPadOS() });
+    items.push('-', kind === 'scan' ? { label: t('Scan a document'), icon: 'camera', run: () => pickFiles('scan') } : { label: t('Upload files'), icon: 'upload', run: () => pickFiles('upload') });
     menu(items, r.left, r.bottom + 6, { anchor: add });
   };
   const search = h('button.icon-btn', { type: 'button', 'data-act': 'search', title: t('Search commands, files and tools ({key} K)', { key: modKey }), 'aria-label': t('Open command palette'), html: icon('search', { size: 18 }), onclick: () => openPalette() });
@@ -469,7 +474,8 @@ function buildStatusbar() {
 // ---------------------------------------------------------------- Commands
 function commands(): Command[] {
   const list: Command[] = [];
-  for (const x of Object.values(TOOLS)) list.push({ id: 'open-' + x.id, label: t('Open {name}', { name: x.name }), mark: x.id, keywords: x.blurb, run: () => (x.zone === 'stage' ? void workspace.openPanel(x.id) : workspace.show(x.id)) });
+  // The search does not list the apps (the + menu and the tool rail do, and they follow the workspace); the tools of the window stay.
+  for (const x of Object.values(TOOLS)) if (!(CRAFT_APP_IDS as readonly string[]).includes(x.id)) list.push({ id: 'open-' + x.id, label: t('Open {name}', { name: x.name }), mark: x.id, keywords: x.blurb, run: () => (x.zone === 'stage' ? void workspace.openPanel(x.id) : workspace.show(x.id)) });
   list.push(
     { id: 'layout-grid', label: t('Layout: grid'), icon: 'layoutGrid', run: () => workspace.applyPreset('grid') },
     { id: 'layout-columns', label: t('Layout: columns'), icon: 'layoutColumns', run: () => workspace.applyPreset('columns') },

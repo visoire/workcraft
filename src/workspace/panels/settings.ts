@@ -37,6 +37,8 @@ import { connectSections, type ConnectSection } from './settings-connect.js';
 import { updates, checkNow, appVersionState, appVersionTitle } from '../../app/updates.js';
 import { providerMark } from '../../chat/provider-logos.js';
 import { qrSvg } from '../../core/qr.js';
+import { choiceField, otherAddress, otherModel } from './choice-field.js';
+import { baseChoices, modelChoices, ENDPOINT_PRESETS } from '../../chat/model-choices.js';
 
 type Section = 'status' | 'updates' | 'ai' | 'usage' | 'mcp' | 'view' | 'device' | ExtraSection | ConnectSection;
 
@@ -455,10 +457,6 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
     };
   }
 
-  function modelInput(value: string, list: string): HTMLInputElement {
-    return h<'input'>('input.input.mono', { value, list, placeholder: t('Model name (free text)'), autocomplete: 'off', spellcheck: 'false' });
-  }
-
   /** Context window of Ollama models: Ollama itself starts every model with 4096 tokens, so WorkCraft asks for more. */
   function ollamaContextRow(): HTMLElement {
     const choices = [-1, 8192, 16384, 32768, 65536, 131072, 262144, 0];
@@ -492,18 +490,19 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
   }
 
   function providerCard(p: PublicProvider): HTMLElement {
-    const listId = uid('models');
-    const datalist = h('datalist', { id: listId });
     const key = h<'input'>('input.input.mono', { type: 'password', placeholder: p.hasKey ? t('saved {hint}', { hint: p.keyHint }) : p.needsKey ? t('API key') : t('no key needed'), autocomplete: 'off', spellcheck: 'false', disabled: !p.needsKey && !p.local ? true : false });
-    const model = modelInput(p.model, listId);
-    const base = h<'input'>('input.input.mono', { value: p.baseUrl, placeholder: t('Base URL'), spellcheck: 'false' });
+    // Dropdowns, not free text: the suggested models and addresses of this provider, the models its endpoint reports, and an Other entry
+    const model = choiceField({ value: p.model, choices: modelChoices(p.id), otherLabel: otherModel(), placeholder: t('Model name'), label: t('Model') });
+    const base = choiceField({ value: p.baseUrl, choices: baseChoices(p.id, p.baseUrl), otherLabel: otherAddress(), placeholder: 'https://host/v1', label: p.local ? t('Address') : t('Base URL') });
     const test = testLine();
     const active = cfg.ai.active === p.id;
+    // A local runtime answers without a key: ask it which models it has, so the list is the real one
+    if (p.local) void api.send<TestResult>('POST', '/api/ai/test', { id: p.id, baseUrl: p.baseUrl }).then((r) => r.models?.length && model.setLive(r.models)).catch(() => undefined);
     const runTest = async () => {
       test.show(null, true);
       const r = await api.send<TestResult>('POST', '/api/ai/test', { id: p.id, apiKey: key.value.trim() || undefined, baseUrl: base.value.trim() || undefined, model: model.value.trim() || undefined }).catch((e: Error) => ({ ok: false, models: [], error: { code: 'BACKEND_DOWN', message: e.message } }));
       test.show(r);
-      datalist.replaceChildren(...r.models.map((m) => h('option', { value: m })));
+      model.setLive(r.models);
     };
     const save = async () => {
       try {
@@ -525,15 +524,15 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
           'div.sp-card-head',
           h('span.sp-pmark', { html: providerMark(p.id, 20) || icon(p.local ? 'cpu' : 'spark', { size: 18 }) }),
           h('h3', p.name),
-          p.local ? statusChip('local', t('Local'), 'cpu', t('Runs on this computer, no key needed')) : p.hasKey ? statusChip('ok', t('Ready'), 'check', t('Key saved')) : statusChip('warn', t('No key'), 'key', t('No API key yet. Paste one below and save.')),
+          p.local ? statusChip('local', t('Local'), 'cpu', t('Runs on this computer, no key needed')) : p.hasKey ? statusChip('ok', t('Ready'), 'check', t('Key saved')) : null,
           h('span.spacer'),
           active ? statusChip('ok', t('Default'), 'check', t('Used for new chats')) : h('button.btn.sm', { type: 'button', onclick: () => void setActive(p.id) }, t('Make default'))
         ),
         h(
           'div.sp-grid',
           p.needsKey ? h('label.field', h('span', t('API key')), key) : null,
-          h('label.field', h('span', t('Model')), model, datalist),
-          h('label.field', h('span', p.local ? t('Address') : t('Base URL')), base)
+          h('div.field', h('span', t('Model')), model.el),
+          h('div.field', h('span', p.local ? t('Address') : t('Base URL')), base.el)
         ),
         p.id === 'ollama' ? ollamaContextRow() : null,
         test.el,
@@ -562,12 +561,10 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
   }
 
   function customCard(c: PublicCustom | null): HTMLElement {
-    const listId = uid('models');
-    const datalist = h('datalist', { id: listId });
     const name = h<'input'>('input.input', { value: c?.name || '', placeholder: t('for example LM Studio, OpenRouter, vLLM') });
-    const base = h<'input'>('input.input.mono', { value: c?.baseUrl || '', placeholder: 'https://host/v1', spellcheck: 'false' });
+    const base = choiceField({ value: c?.baseUrl || '', choices: ENDPOINT_PRESETS, otherLabel: otherAddress(), placeholder: 'https://host/v1', label: t('Base URL') });
     const key = h<'input'>('input.input.mono', { type: 'password', placeholder: c?.hasKey ? t('saved {hint}', { hint: c.keyHint }) : t('optional'), autocomplete: 'off' });
-    const model = modelInput(c?.model || '', listId);
+    const model = choiceField({ value: c?.model || '', choices: [], otherLabel: otherModel(), placeholder: t('Model name'), label: t('Model') });
     const test = testLine();
     const active = c && cfg.ai.active === c.id;
     const runTest = async () => {
@@ -577,7 +574,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
         .send<TestResult>('POST', '/api/ai/test', { id: c?.id || 'custom-new', apiKey: key.value.trim() || undefined, baseUrl: base.value.trim(), model: model.value.trim() || undefined })
         .catch((e: Error) => ({ ok: false, models: [], error: { code: 'BACKEND_DOWN', message: e.message } }));
       test.show(r);
-      datalist.replaceChildren(...r.models.map((m) => h('option', { value: m })));
+      model.setLive(r.models);
     };
     const save = async () => {
       const b = { name: name.value.trim(), baseUrl: base.value.trim(), model: model.value.trim(), apiKey: key.value.trim() || undefined };
@@ -608,7 +605,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
           h('span.spacer'),
           c ? (active ? statusChip('ok', t('Default'), 'check', t('Used for new chats')) : h('button.btn.sm', { type: 'button', onclick: () => void setActive(c.id) }, t('Make default'))) : null
         ),
-        h('div.sp-grid', h('label.field', h('span', t('Name')), name), h('label.field', h('span', t('Base URL')), base), h('label.field', h('span', t('API key')), key), h('label.field', h('span', t('Model')), model, datalist)),
+        h('div.sp-grid', h('label.field', h('span', t('Name')), name), h('div.field', h('span', t('Base URL')), base.el), h('label.field', h('span', t('API key')), key), h('div.field', h('span', t('Model')), model.el)),
         test.el,
         h(
           'div.sp-actions',

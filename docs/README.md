@@ -11,6 +11,7 @@ Start here. Pick the line that matches you.
 | use it on an iPad or with the Apple Pencil | [IPADOS-GUIDE.md](IPADOS-GUIDE.md) |
 | connect an AI model (Ollama, Claude, ChatGPT, Gemini, DeepSeek and more) | [AI-PROVIDERS.md](AI-PROVIDERS.md) |
 | use voice input | [VOICE.md](VOICE.md) |
+| make WorkCraft faster (browser, memory, AI, iPad) | [OPTIMIZATION.md](OPTIMIZATION.md) |
 | learn every feature | the in-app documentation: the WorkCraft menu, Documentation, or `http://localhost:5175/docs/` (source: [src/docs/content.md](../src/docs/content.md)) |
 | host the browser version for my team, or run the server at home | [SELF-HOSTING.md](SELF-HOSTING.md) |
 

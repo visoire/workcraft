@@ -3,11 +3,12 @@
   "builds": [
     {
       "app": "align",
-      "version": "0.1.0",
-      "dir": "align-web-0.1.0",
+      "version": "0.3.3",
+      "dir": "align-web-0.3.3",
       "bytes": 3057370,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "anicraft",
@@ -51,11 +52,12 @@
     },
     {
       "app": "earthcraft",
-      "version": "0.1.0",
-      "dir": "earthcraft-web-0.1.0",
+      "version": "0.2.0",
+      "dir": "earthcraft-web-0.2.0",
       "bytes": 16058247,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "effectcraft",
@@ -102,11 +104,12 @@
     },
     {
       "app": "humanmotioncraft",
-      "version": "0.1.0",
-      "dir": "humanmotioncraft-web-0.1.0",
+      "version": "0.3.0",
+      "dir": "humanmotioncraft-web-0.3.0",
       "bytes": 62164933,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "lemon-studio",
@@ -158,43 +161,47 @@
     },
     {
       "app": "mixstudio",
-      "version": "0.1.0",
-      "dir": "mixstudio-web-0.1.0",
+      "version": "0.30.0-beta",
+      "dir": "mixstudio-web-0.30.0-beta",
       "bytes": 6304521,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "notecraft",
-      "version": "0.1.0",
-      "dir": "notecraft-web-0.1.0",
-      "bytes": 37980861,
+      "version": "0.0.14",
+      "dir": "notecraft-web-0.0.14",
+      "bytes": 53335761,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-17"
     },
     {
       "app": "oxiguitar",
-      "version": "0.1.0",
-      "dir": "oxiguitar-web-0.1.0",
+      "version": "0.19.1",
+      "dir": "oxiguitar-web-0.19.1",
       "bytes": 25170646,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "oxybrush",
-      "version": "0.1.0",
-      "dir": "oxybrush-web-0.1.0",
+      "version": "4.0.0-beta.4",
+      "dir": "oxybrush-web-4.0.0-beta.4",
       "bytes": 11357617,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "paintcraft",
-      "version": "0.1.0",
-      "dir": "paintcraft-web-0.1.0",
+      "version": "0.2.0",
+      "dir": "paintcraft-web-0.2.0",
       "bytes": 33978331,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "paintrs",
@@ -217,50 +224,55 @@
     },
     {
       "app": "picasso-suite",
-      "version": "0.1.0",
-      "dir": "picasso-suite-web-0.1.0",
+      "version": "0.7.0",
+      "dir": "picasso-suite-web-0.7.0",
       "bytes": 9320010,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "pixelcraft",
-      "version": "0.1.0",
-      "dir": "pixelcraft-web-0.1.0",
+      "version": "0.4.1",
+      "dir": "pixelcraft-web-0.4.1",
       "bytes": 6623216,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "procraft",
-      "version": "0.1.0",
-      "dir": "procraft-web-0.1.0",
+      "version": "0.0.1",
+      "dir": "procraft-web-0.0.1",
       "bytes": 27472850,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "prowave",
-      "version": "0.1.0",
-      "dir": "prowave-web-0.1.0",
+      "version": "0.2.2",
+      "dir": "prowave-web-0.2.2",
       "bytes": 15154207,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "retake",
-      "version": "0.1.0",
-      "dir": "retake-web-0.1.0",
+      "version": "0.24.0",
+      "dir": "retake-web-0.24.0",
       "bytes": 7413419,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "solidcraft",
-      "version": "0.43.0",
-      "dir": "solidcraft-web-0.43.0",
-      "bytes": 59946448,
-      "source": "https://github.com/tangency-labs/solidcraft/releases/tag/v0.43.0",
+      "version": "0.44.1",
+      "dir": "solidcraft-web-0.44.1",
+      "bytes": 61634177,
+      "source": "https://github.com/tangency-labs/solidcraft/releases/tag/v0.44.1",
       "fetched": "2026-11-17"
     },
     {
@@ -273,27 +285,29 @@
     },
     {
       "app": "subcraft",
-      "version": "0.3.6",
-      "dir": "subcraft-web-0.3.6",
-      "bytes": 29282872,
-      "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "version": "0.4.3",
+      "dir": "subcraft-web-0.4.3",
+      "bytes": 17708676,
+      "source": "https://aalzard.github.io/subcraft/",
+      "fetched": "2026-11-17"
     },
     {
       "app": "suhina",
-      "version": "0.1.0",
-      "dir": "suhina-web-0.1.0",
+      "version": "0.0.1",
+      "dir": "suhina-web-0.0.1",
       "bytes": 31340885,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "textcraft",
-      "version": "0.1.0",
-      "dir": "textcraft-web-0.1.0",
+      "version": "0.0.0",
+      "dir": "textcraft-web-0.0.0",
       "bytes": 6391110,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "texturecraft",
@@ -305,19 +319,20 @@
     },
     {
       "app": "tracedraw",
-      "version": "0.44.2",
-      "dir": "tracedraw-web-0.44.2",
-      "bytes": 32942197,
+      "version": "0.48.0",
+      "dir": "tracedraw-web-0.48.0",
+      "bytes": 36776710,
       "source": "https://tracedraw.github.io/tracedraw/",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-17"
     },
     {
       "app": "transit",
-      "version": "0.1.0",
-      "dir": "transit-web-0.1.0",
+      "version": "0.7.0",
+      "dir": "transit-web-0.7.0",
       "bytes": 21671951,
       "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "fetched": "2026-11-12",
+      "note": "Version corrected on 2026-11-18 from the placeholder 0.1.0 to the version of the source tree this build belongs to."
     },
     {
       "app": "vectorcraft",

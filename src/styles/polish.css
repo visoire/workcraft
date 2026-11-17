@@ -291,3 +291,24 @@ html.is-ipad .onb .eco-grid, html.is-touch .onb .eco-grid { grid-template-column
 html.is-ipad .cg-tile, html.is-touch .cg-tile { min-height: 56px; }
 @media (max-width: 560px) { .cg-tiles { grid-template-columns: 1fr 1fr; } }
 .cg-mark img { display: block; width: 24px; height: 24px; }
+
+/* Model and Base URL: a dropdown, and a text field only when Other is chosen */
+.sp-choice { display: grid; gap: 6px; min-width: 0; }
+.sp-choice select, .sp-choice input { width: 100%; min-width: 0; }
+
+/* Cloud guide: Proton Drive first and larger, what can be connected as one row each, everything else as one ZIP button */
+.cg-hero { position: relative; display: grid; gap: 14px; padding: 18px 18px 16px; border: 1.5px solid #6D4AFF; border-radius: 16px; background: color-mix(in srgb, #6D4AFF 7%, var(--surface, transparent)); }
+.cg-hero-main { display: flex; gap: 14px; align-items: flex-start; }
+.cg-hero .cg-mark { flex: none; width: 48px; height: 48px; border-radius: 12px; }
+.cg-hero .cg-mark img { width: 30px; height: 30px; }
+.cg-hero-text strong { display: block; font-size: 16px; }
+.cg-hero-text p { margin: 4px 0 0; color: var(--ink2, inherit); font-size: 13.5px; line-height: 1.5; }
+.cg-badge { position: absolute; top: -10px; left: 16px; padding: 2px 10px; border-radius: 999px; background: #6D4AFF; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+.cg-hero .btn { justify-self: start; }
+.cg-sub { margin: 18px 0 8px; font-size: 13px; font-weight: 600; }
+.cg-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; }
+.cg-row + .cg-row { margin-top: 6px; }
+.cg-row-text { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.cg-other { display: grid; gap: 8px; }
+.cg-other .cg-sub { margin-bottom: 0; }
+.cg-other-actions { display: flex; flex-wrap: wrap; gap: 8px; }

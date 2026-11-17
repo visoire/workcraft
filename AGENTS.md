@@ -7,8 +7,9 @@ this file in the same change.
 ## What this repository is
 
 The open-source WorkCraft workspace (MIT OR Apache-2.0): a unified local-first workspace in the browser
-for documents, spreadsheets, presentations and PDFs (the engines WordCraft, GridCraft, DeckCraft and
-PdfCraft as WebAssembly panels), next to a code editor, a terminal and an AI assistant that drives
+for every kind of work: documents, spreadsheets, presentations and PDFs (WordCraft, GridCraft, DeckCraft and
+PdfCraft) and dozens more open-source apps for photos, vector art, video, audio, music, design and 3D (all as WebAssembly
+panels, in ready-made workspaces; the catalog in `src/ecosystems/catalog.json` is the one list), next to a code editor, a terminal and an AI assistant that drives
 every tool over MCP and runs local (Ollama) or with the user's own API keys. A Node.js server (Hono) on
 `127.0.0.1` serves files, projects, the terminal, the AI router and the MCP server.
 
@@ -96,7 +97,7 @@ src/workspace/
                            playgroundFiles bridge (window.__workcraftFiles); makes room first for a heavy app (launch-relief)
   panels/unavailable.ts    the panel of an app that has no web build in this installation (explains, opens the desktop app if installed)
   panels/code.ts, terminal.ts, settings.ts, settings-extra.ts, common.ts
-src/ecosystems/            ecosystems (workspaces) of the 44 apps (ArtCraft, community, independent). Read docs/ECOSYSTEMS.md first.
+src/ecosystems/            ecosystems (workspaces) of the apps of the catalog (44 at the time of writing: ArtCraft, community, independent). Read docs/ECOSYSTEMS.md first.
   catalog.json             THE list of apps (file types, iPad traits, repo, folder) and the built-in ecosystems. No version numbers
                            (public/releases.json and public/web-builds.json own them); read by catalog.ts and the scripts
   theme.ts                 pure: what each app does with the light/dark switch (catalog.json "theme": modes, via, look): themeOf, lookIn, kindOf, scriptMap (tests/server/theme.test.ts)
@@ -134,6 +135,7 @@ src/ipados/                iPadOS support layer between the workspace and the en
                            Rules: no engine version numbers anywhere (a test checks); never block an engine, report a failed
                            measure instead; keep compat.ts, craft-frame.js and docs/IPADOS-COMPAT.md in step (tests check)
 src/chat/
+  model-choices.ts         pure: what the Model and Base URL dropdowns of Settings > AI models offer (suggested models per provider, alternative addresses, the server presets of an own endpoint; mergeChoices keeps a saved value); the DOM part is src/workspace/panels/choice-field.ts (tests/server/model-choices.test.ts)
   sidebar.ts               chat UI: sidebar, Full Chat Mode, history drawer, tool cards, footer
   agent.ts                 the tool loop of one agent (validation, self-correction, approvals)
   app-roles.ts             pure: one specialist per catalog app (`@<app>-agent`), generated from catalog.json; office apps keep grid/word/deck/pdf
@@ -177,6 +179,7 @@ src/server/                Hono backend (Node 22+)
 src/core/                  no DOM, no Node: search ranking, three-way sync, Markdown, defaults,
                            JSON repair, BPE tokenizer
 src/project/desktop.ts      the installed desktop Craft apps next to the panels: Open in the desktop app (tree menu, panel menu)
+src/project/add-files.ts   the + menu: Upload files (every device but an iPad) or Scan a document (iPad: the picker sheet that offers Scan Documents); files go to /Uploads or /Scans and open; the pure rules are in add-files-rules.ts (tests/server/add-files.test.ts)
 src/styles/                polish.css (loaded last: consistency pass, (i) tips, status chips, window header, Team Mode without glow), tokens.css (colors, fonts, radii), base.css, workspace.css, tools.css, chat-ui.css (chat polish,
                            loaded after tools.css), blip.css (the companion)
 src/docs/                  content.md, main.ts (renderer, search, docs assistant), docs.css
@@ -190,7 +193,7 @@ public/
   sw.js                    service worker (offline cache; APPS cache name per release; COOP/COEP on demand)
   releases.json            single source of release data of the four office apps; web-builds.json is the same for the other apps (written by apps:fetch / apps:import)
   assets/                  icons, logos (.webp), sounds, tokenizers/deepseek-v4.bin
-versions/                  organized by origin: artcraft/, community/, independent/ (Rust source trees), web-builds/<app>-web-<ver>/ (all 44 installed web builds),
+versions/                  organized by origin: artcraft/, community/, independent/ (Rust source trees), web-builds/<app>-web-<ver>/ (every installed web build),
                            and zip/{artcraft,community,independent}/ (source and web release archives). Only the four office web builds
                            (wordcraft-web-*, gridcraft-web-*, deckcraft-web-*, pdfcraft-web-*) are tracked in git, byte for byte (.gitattributes -text)
 scripts/

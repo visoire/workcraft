@@ -63,6 +63,8 @@ browser runs), not duplicates.
 
 A local folder always works too: put `<id>-web-<version>/` into `versions/` and run `npm run apps:import -- --yes --app <id>`.
 
+**Name the folder with the real version, never a placeholder.** The version of an imported build is its folder name, and it is what the workspace, the website tiles and the update check show. Read it from the source the build belongs to (`Cargo.toml` `[workspace.package]` or `[package]`, `tauri.conf.json`, `package.json`), name the web folder `<id>-web-<that version>` and the source tree `<id>-<that version>`. Fifteen apps once carried the placeholder 0.1.0, and the website showed OxiGuitar at a version that was long behind the repository. Two more traps: the importer takes the **newest** version per app, so an older version you want to install (a downgrade) needs the newer installed folder and its manifest entry removed first; and `npm run versions -- --remote` compares the registered version with the newest GitHub release, which for an app without web releases is only a hint that a build from source is due.
+
 ### What the install changes (so an upstream build works unmodified in a panel)
 
 Applied by `scripts/fetch-apps.mjs`, recorded per app in `public/web-builds.json` under `fixes`:

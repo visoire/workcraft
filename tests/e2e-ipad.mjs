@@ -859,9 +859,11 @@ try {
   await bp.locator('.sp-tab', { hasText: 'AI models' }).tap();
   const nc = bp.locator('.sp-card[data-provider="custom-new"]');
   await nc.locator('input').nth(0).fill('Mock iPad');
-  await nc.locator('input').nth(1).fill(`http://127.0.0.1:${MOCK_PORT}/v1`);
-  await nc.locator('input').nth(2).fill('sk-ipad-test');
-  await nc.locator('input').nth(3).fill('mock-ipad');
+  await nc.locator('.sp-choice select').nth(0).selectOption('__other__');
+  await nc.locator('.sp-choice input').nth(0).fill(`http://127.0.0.1:${MOCK_PORT}/v1`);
+  await nc.locator('input[type="password"]').fill('sk-ipad-test');
+  await nc.locator('.sp-choice select').nth(1).selectOption('__other__');
+  await nc.locator('.sp-choice input').nth(1).fill('mock-ipad');
   await nc.getByRole('button', { name: 'Test connection' }).tap();
   await bp.waitForSelector('.sp-card[data-provider="custom-new"] .sp-test[data-state="ok"]', { timeout: 15000 });
   await nc.getByRole('button', { name: 'Add' }).tap();
