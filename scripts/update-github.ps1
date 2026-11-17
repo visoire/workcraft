@@ -54,6 +54,8 @@ function Run {
   & $Exe @CmdArgs
   if ($LASTEXITCODE -ne 0) { throw "$Exe $($CmdArgs -join ' ') failed with exit code $LASTEXITCODE" }
 }
+# Exit code of a command whose failure is an answer, not an error (PowerShell 5.1 turns text on stderr into an exception under 'Stop')
+function Code { param([string]$Exe, [string[]]$CmdArgs) $p = $ErrorActionPreference; $ErrorActionPreference = 'Continue'; try { & $Exe @CmdArgs 2>$null | Out-Null; return $LASTEXITCODE } finally { $ErrorActionPreference = $p } }
 # A read-only command: output as lines, no error on failure
 function Peek { param([string]$Exe, [string[]]$CmdArgs) $o = & $Exe @CmdArgs 2>$null; if ($null -eq $o) { @() } else { @($o) } }
 
@@ -61,8 +63,7 @@ Step 'Tools and sign-in'
 Need git; Need gh; Need node; Need npm
 $cfg = Get-Content -Raw -Encoding UTF8 (Join-Path $root '.github/repo.json') | ConvertFrom-Json
 $repo = $cfg.repo
-& gh auth status *> $null
-if ($LASTEXITCODE -ne 0) { throw 'GitHub CLI is not signed in. Run: gh auth login (browser sign-in, no token is pasted anywhere).' }
+if ((Code gh @('auth', 'status')) -ne 0) { throw 'GitHub CLI is not signed in. Run: gh auth login (browser sign-in, no token is pasted anywhere).' }
 Ok "gh is signed in; repository $repo"
 $origin = (Peek git @('remote', 'get-url', 'origin')) -join ''
 if ($origin -notmatch [regex]::Escape($repo)) { throw "origin is '$origin', expected github.com/$repo. Fix it: git remote set-url origin https://github.com/$repo.git" }
@@ -126,8 +127,7 @@ $deadline = (Get-Date).AddSeconds($WaitSeconds)
 $found = $false
 Say "Waiting for the release workflow (up to $WaitSeconds s) ..."
 while ((Get-Date) -lt $deadline) {
-  & gh release view $tag --repo $repo *> $null
-  if ($LASTEXITCODE -eq 0) { $found = $true; break }
+  if ((Code gh @('release', 'view', $tag, '--repo', $repo)) -eq 0) { $found = $true; break }
   Start-Sleep -Seconds 8
 }
 if ($found) { Ok 'the workflow published the release' }

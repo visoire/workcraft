@@ -117,6 +117,13 @@ Contributors and agents add their changes under `## [Unreleased]` in `CHANGELOG.
 4. Keep the website in step: the same version in its `public/workspace.json` and a new release in `public/changelog.json`.
 5. `check`, `push -Execute`, `release -Execute`. Then build the workspace and the website and upload the website, so `workcraft.cc/app` runs the new release.
 
+### One command for steps 5 to 7
+
+`scripts/update-github.ps1` (or `scripts\update-github.cmd` from cmd) does the GitHub half in one go: it reads the version from `package.json`, refuses to go on when the tag already exists
+(a release is never replaced, moved or deleted), runs typecheck, tests, `check:clean`, `check:docs`, the build and `publish.ps1 check`, commits, pushes `main`, tags `v<version>` and waits for
+`release.yml` to publish the new pre-release (it creates the release itself with `gh` when the workflow does not within four minutes). Older releases are only listed. Dry run by default;
+`-Execute` really does it, `-SkipChecks` skips the project checks, `-Meta` also refreshes description, topics and labels. The website (private repository) is updated by hand as in step 4 above.
+
 ## 8. If a secret was committed
 
 Revoke or rotate the key at the provider first. That is the only fix that counts. Then remove it from the files, commit, and consider a fresh history. GitHub push protection blocks most keys before they leave your computer.

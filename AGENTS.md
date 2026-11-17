@@ -49,7 +49,7 @@ of this repository used `1.0.0-alpha.N` numbers and carries a `v1.0.0` tag, whic
 ## Publishing
 
 Community files (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`), issue forms, labels, `.github/repo.json` (description and topics), CI and release workflows and
-`scripts/publish.ps1` / `publish.sh` (check, init, push, meta, labels, changelog, release; a dry run unless told `-Execute`) are in place; the guide is `docs/PUBLISHING.md`.
+`scripts/publish.ps1` / `publish.sh` (check, init, push, meta, labels, changelog, release; a dry run unless told `-Execute`) and `scripts/update-github.ps1` / `.cmd` (checks, commit, push, tag and a new pre-release in one go; never replaces a release) are in place; the guide is `docs/PUBLISHING.md`.
 **An agent never pushes, tags or publishes unless the maintainer asks for it in the same conversation**, never puts a key or a personal path in a file, and runs
 `scripts/publish.ps1 check` before it says the repository is ready. Keep these files in step with the monorepo (`workcraft-monorepo`).
 
