@@ -226,6 +226,12 @@ WorkCraft runs on iPad mini, Air and Pro in Safari, or as a full-screen app from
 
 **Add to Home Screen.** On the first visit in Safari WorkCraft shows a short notice with the steps: tap Share, choose **Add to Home Screen**, tap Add, then open WorkCraft from the new icon. It runs full screen and keeps its storage. The same guide is in the main menu. It shows once per fortnight and goes away by itself; **Do not remind me** in the guide stops it for good.
 
+**Back up everything.** The project menu has **Back up everything (ZIP)**: every project, with files, chats and layout, in one file (`workcraft-backup-DATE.zip`; on an iPad through the share sheet, so Save to Files and iCloud Drive work). **Restore from a backup** only adds: a project whose name is already in use comes back as a copy, nothing is overwritten or deleted.
+
+**Voice input in the browser and on the iPad.** Settings, Voice input has a **Speech server**: a Whisper server of your own or Groq and OpenAI with your key. It makes the microphone work where Handy cannot run. See the voice guide.
+
+**Setting WorkCraft up by itself.** Download the workcraft-local file of a release, then double-click **Start WorkCraft.cmd** (Windows) or **Start WorkCraft.command** (macOS), or run `sh start-workcraft.sh` (Linux): it sets everything up, starts WorkCraft, opens the browser and can start it when you sign in, without administrator rights. An AI assistant can do the same when you tell it "set up WorkCraft" (SETUP-AI.md).
+
 **Scan a document.** The **+** menu has **Upload files** (the Apple picker: Choose Files, Photo Library, Take Photo, and Scan Documents under the three dots) and **Scan a document**, WorkCraft's own scanner. It finds the page, lets you drag the corners, offers Grey, Black and white or Colour, collects several pages and saves one PDF in `/Scans`. Safari cannot start the Scan Documents of iPadOS directly, so the scanner is built in.
 
 ## Pair the iPad with your desktop

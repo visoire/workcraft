@@ -8,7 +8,8 @@ import { CRAFT_APPS, craftReport, discover, openApp } from './craft.js';
 import { installBundledSkills, skillIndex, skills } from './skills.js';
 import { bridgeConfigs } from './bridge.js';
 import { registerCloudRoutes } from './cloud-routes.js';
-import { transcribe, voiceStatus, VoiceError } from './voice.js';
+import { transcribe, voiceStatus, VoiceError, MAX_WAV_BYTES } from './voice.js';
+import { checkSpeechUrl, transcribeWith } from '../core/speech-endpoint.js';
 
 export interface AiRouteDeps {
   port: number;
@@ -81,6 +82,23 @@ export function registerAi(api: Hono, deps: AiRouteDeps): void {
     } catch (e) {
       if (e instanceof VoiceError) return c.json({ error: { code: e.code, message: e.message } }, e.code === 'TOO_LARGE' ? 413 : e.code === 'BAD_AUDIO' ? 400 : e.code === 'FAILED' || e.code === 'TIMEOUT' ? 502 : 409);
       throw e;
+    }
+  });
+
+  // A speech server the person entered (a local Whisper server, or Groq and OpenAI with their key): the backend forwards the recording, so a server
+  // without CORS headers works too. The key comes with the request and is not stored.
+  api.post('/voice/remote', async (c) => {
+    const url = c.req.header('x-speech-url') || '';
+    const bad = checkSpeechUrl(url);
+    if (bad) return c.json({ error: { code: 'BAD_ADDRESS', message: bad } }, 400);
+    const bytes = new Uint8Array(await c.req.arrayBuffer());
+    if (bytes.length > MAX_WAV_BYTES) return c.json({ error: { code: 'TOO_LARGE', message: 'The recording is too long. Keep it under about ten minutes.' } }, 413);
+    try {
+      const text = await transcribeWith(bytes, { url, model: c.req.header('x-speech-model') || 'whisper-1', key: c.req.header('x-speech-key') || undefined, language: c.req.header('x-speech-language') || undefined });
+      return c.json({ text });
+    } catch (e) {
+      const err = e as { message?: string; status?: number };
+      return c.json({ error: { code: 'SPEECH_SERVER', message: err.message || 'The speech server could not be reached. Is it running?' } }, 502);
     }
   });
 

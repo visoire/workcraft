@@ -4,6 +4,8 @@
 //   handy     the microphone is recorded here (AudioWorklet, 16 kHz mono WAV) and sent to the Handy program on the
 //             computer that runs WorkCraft (src/server/voice.ts): Whisper, Parakeet or Nemotron models, offline, nothing
 //             goes to a cloud. The text arrives when you stop. An iPad uses the Handy of its desktop PC.
+//   server    a speech server the person entered (OpenAI transcription API: a local Whisper server, or Groq/OpenAI with their key).
+//             The recording is sent straight to it; this is what works in browser mode and on an iPad on its own.
 //   browser   the speech recognition of the browser (Web Speech API): words appear while you speak. Chrome and
 //             Edge send the audio to the browser maker's service, Safari to Apple's; Settings says so.
 // Which one runs is the setting Voice engine; automatic prefers Handy (private), then the browser.
@@ -13,6 +15,8 @@ import { api, backend } from '../app/backend.js';
 import { prefs } from '../app/settings.js';
 import { ROOT } from '../app/util.js';
 import { device } from '../app/device.js';
+import { speechKey } from './voice-endpoint.js';
+import { transcribeWith, checkSpeechUrl, type SpeechServer } from '../core/speech-endpoint.js';
 import { TARGET_RATE, concat, encodeWav16, levelOf, measure, prepareForSpeech, resampleTo16k, resolveEngine, voiceErrorText, VoiceLevels, type SpeechEngine } from './voice-audio.js';
 
 export type VoiceState = 'idle' | 'listening' | 'processing' | 'error';
@@ -80,6 +84,14 @@ export async function voiceStatus(fresh = false): Promise<VoiceServerStatus | nu
 
 export const browserSpeechSupported = () => !!recognitionCtor();
 
+/** The speech server of the settings (address, model, the key of this session), or null when none is entered or the address is unusable. */
+export function speechServer(): SpeechServer | null {
+  const url = prefs.get('voiceServerUrl').trim();
+  if (!url || checkSpeechUrl(url, { pageSecure: window.isSecureContext && location.protocol === 'https:' })) return null;
+  const lang = (prefs.get('voiceLang') || '').trim();
+  return { url, model: prefs.get('voiceServerModel').trim() || 'whisper-1', key: speechKey.value || undefined, language: lang ? lang.slice(0, 2) : undefined };
+}
+
 export class VoiceInput {
   state: VoiceState = 'idle';
   engine: SpeechEngine | null = null;
@@ -124,11 +136,11 @@ export class VoiceInput {
     // The first status check runs Handy (version + model list) and can take several seconds; a cached answer is instant.
     // Giving up after 3 s used to pick the browser engine although Handy was ready, so wait for the real answer.
     const server = await Promise.race([voiceStatus(), new Promise<null>((r) => setTimeout(() => r(null), statusCache ? 3000 : 15000))]);
-    const pick = resolveEngine(prefs.get('voiceEngine'), { handyAvailable: !!server?.installed, handyReady: !!server?.ready, browserSpeech: browserSpeechSupported() });
+    const pick = resolveEngine(prefs.get('voiceEngine'), { handyAvailable: !!server?.installed, handyReady: !!server?.ready, browserSpeech: browserSpeechSupported(), serverConfigured: !!speechServer() });
     this.engine = pick.engine;
     if (!pick.engine) return this.set('error', server && !server.ready && server.message ? server.message : pick.reason);
     try {
-      if (pick.engine === 'handy') await this.startRecording();
+      if (pick.engine === 'handy' || pick.engine === 'server') await this.startRecording();
       else this.startRecognition();
     } catch (e) {
       this.cleanup();
@@ -218,15 +230,25 @@ export class VoiceInput {
     try {
       // Level raised and silence around it (see prepareForSpeech): a quiet microphone no longer ends as "no speech"
       const wav = encodeWav16(prepareForSpeech(resampleTo16k(samples, this.rate)));
-      const r = await api.send<{ text: string }>('POST', '/api/voice/transcribe', wav, { 'content-type': 'audio/wav' });
+      let text: string;
+      if (this.engine === 'server') text = await this.viaServer(wav);
+      else text = ((await api.send<{ text: string }>('POST', '/api/voice/transcribe', wav, { 'content-type': 'audio/wav' }))?.text || '').trim();
       if (this.discard) return;
-      const text = (r?.text || '').trim();
       if (!text) return this.set('error', voiceErrorText(loud < 0.03 ? 'quiet' : 'not-recognized'));
       this.ev.final(text);
       this.set('idle');
     } catch (e) {
       if (!this.discard) this.fail(e);
     }
+  }
+
+  /** The recording to the speech server: from the browser itself, or (on the desktop) through the backend, which has no CORS rules. */
+  private async viaServer(wav: Uint8Array): Promise<string> {
+    const cfg = speechServer();
+    if (!cfg) throw Object.assign(new Error('Enter the address of a speech server in Settings, Voice input.'), { code: 'SPEECH_SERVER' });
+    if (backend.browser) return (await transcribeWith(wav, cfg)).trim();
+    const r = await api.send<{ text: string }>('POST', '/api/voice/remote', wav, { 'content-type': 'audio/wav', 'x-speech-url': cfg.url, 'x-speech-model': cfg.model, ...(cfg.key ? { 'x-speech-key': cfg.key } : {}), ...(cfg.language ? { 'x-speech-language': cfg.language } : {}) });
+    return (r?.text || '').trim();
   }
 
   // ---------------------------------------------------------------- Browser: Web Speech API

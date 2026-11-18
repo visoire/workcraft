@@ -5,7 +5,7 @@ you can edit it first, and `@gridcraft`, `/read-sheet`, Team Mode and the other 
 
 ## Handy 0.10 and quiet microphones
 
-- WorkCraft is built for Handy **0.10** (November 2026: GGUF models, language detection, long recordings with voice activity detection). 0.9.8 still works. WorkCraft reads the installed version from the program file (it never starts Handy just to ask) and Settings says when a newer release exists. It does not download or install Handy.
+- WorkCraft is built for Handy **0.10.1** (November 2026: GGUF models, language detection, long recordings with voice activity detection). A real transcription through the command line (`--list-models --json`, `--transcribe-file --json`) was run with 0.10.1 on Windows and the answers parse; 0.10.1 only adds options (`--device-index`, `--list-devices`) that WorkCraft does not need. 0.9.8 still works. WorkCraft reads the installed version from the program file (it never starts Handy just to ask) and Settings says when a newer release exists. It does not download or install Handy.
 - Before a recording goes to Handy it is brought to a healthy level (at most 16 times) and padded with half a second of silence on each side. Handy's voice activity detection drops quiet speech and the first syllable of a recording that starts at once; that showed up as No speech was heard.
 - The messages say what happened: too short, the microphone picked up almost nothing, or the recording was heard but no words came out. While you speak, a hint appears when the microphone delivers silence for a few seconds.
 - Blip listens (headset, sound arcs) while the microphone is open and shows the error face when a recording fails.
@@ -29,11 +29,25 @@ and **"slash read sheet"** at the start of a sentence for `/read-sheet`. Only na
 | Engine | Where the speech is understood | Words while speaking | Languages | Needs |
 | :--- | :--- | :--- | :--- | :--- |
 | **Handy** (default when ready) | on your computer, offline, with the models of [Handy](https://github.com/cjpais/Handy) | no, when you stop | the model's (Parakeet: English; Nemotron Streaming 3.5: 28 languages; Whisper: many) | the desktop version of WorkCraft, Handy installed, one model downloaded in Handy |
+| **Speech server** (OpenAI transcription API) | on the server you entered: a Whisper server on your computer or network, or Groq and OpenAI with your key | no, when you stop | those of the model | an address in Settings, Voice input. Works in browser mode and on an iPad on its own |
 | **Browser speech** (Web Speech API) | in the browser maker's service (Chrome and Edge: Google or Microsoft; Safari: Apple) | yes | those of the browser | a browser that has it (Chrome, Edge, Safari) |
 
 Settings, Interface, *Voice input* chooses: automatic (Handy when it has a model, otherwise the browser), Handy only, or browser
 only. The same block shows whether Handy was found, which models it has, and lets you enter the path of the program or pick a
 model. The browser engine takes a language such as `de-DE`; Handy uses the language of its model.
+
+### Speech server: voice input in the browser and on an iPad
+
+Handy is a program on the computer, so it cannot run in a browser tab or on an iPad that works alone. For those, Settings, Voice input has a **Speech server**: any service that
+speaks the OpenAI transcription API (`POST <address>/audio/transcriptions`, multipart with the recording, the model and an optional language, answer `{"text": "..."}`).
+
+- **A Whisper server of your own** (faster-whisper-server, Speaches, LocalAI, whisper.cpp started with an OpenAI compatible path) on your computer or network: the recording goes only there. Preset "A server on this computer or network".
+- **Groq or OpenAI** with your own key (presets): the recording goes to that service. The key is kept in memory until you reload the page and is never saved.
+- The same recording that goes to Handy is sent (16 kHz mono WAV, made louder if it is quiet). **Test the speech server** sends half a second of silence and says whether the address, the model and the key work.
+- On the desktop version the backend forwards the request (`POST /api/voice/remote`), so a server without CORS headers works. In browser mode the page calls the server itself: the server must allow it (CORS), and a page on https cannot call plain http on another machine (the field says so).
+- Automatic picks: Handy when it is ready, then the speech server if one is entered, otherwise the browser's recognizer. Choose "Speech server" to force it.
+
+The microphone itself needs a secure page (https or localhost). On an iPad paired with a desktop over plain http, serve HTTPS (`npm run lan:cert`, see the [iPadOS guide](IPADOS-GUIDE.md)).
 
 ### Why Handy
 

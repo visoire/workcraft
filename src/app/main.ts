@@ -528,6 +528,8 @@ function commands(): Command[] {
     { id: 'project-switch', label: t('Switch project'), icon: 'briefcase', run: () => void projects.openSwitcher(document.querySelector('.tree-project') || $('topbar')) },
     { id: 'project-export', label: t('Export project as ZIP (with chats)'), icon: 'archive', run: () => void projects.exportZip() },
     { id: 'project-import', label: t('Import project from ZIP'), icon: 'upload', run: () => projects.pickZip() },
+    { id: 'backup-all', label: t('Back up everything (ZIP)'), icon: 'archive', keywords: 'backup export all projects zip icloud files', run: () => void import('../project/backup.js').then((m) => m.backupEverything()) },
+    { id: 'backup-restore', label: t('Restore from a backup'), icon: 'upload', keywords: 'backup restore import all projects zip', run: () => void import('../project/backup.js').then((m) => m.pickBackup()) },
     { id: 'theme', label: t('Switch color scheme'), icon: 'moon', keywords: 'dark light theme', run: toggleTheme },
     ...LANGS.filter((l) => l.id !== lang).map((l) => ({ id: 'lang-' + l.id, label: t('Language: {name}', { name: l.name }), icon: 'globe', keywords: 'language sprache', run: () => setLang(l.id) })),
     {

@@ -20,7 +20,10 @@ import { orchestrator } from '../../mcp/orchestrator.js';
 import { backend } from '../../app/backend.js';
 import { device } from '../../app/device.js';
 import { allowScribble } from '../pencil.js';
-import { voiceStatus } from '../../chat/voice.js';
+import { voiceStatus, speechServer } from '../../chat/voice.js';
+import { speechKey } from '../../chat/voice-endpoint.js';
+import { encodeWav16 } from '../../chat/voice-audio.js';
+import { SPEECH_PRESETS, checkSpeechUrl, transcribeWith } from '../../core/speech-endpoint.js';
 import { wantsWebgl } from './craftapp.js';
 import { projects } from '../../project/manager.js';
 import { fs } from '../../project/fs.js';
@@ -874,7 +877,7 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
 
   // ---------------------------------------------------------------- Appearance and layout
 
-  function choice<K extends 'theme' | 'renderer' | 'appDownloads' | 'chatSide' | 'iconsOnly' | 'fingerTyping' | 'penBarrel' | 'touchKeys' | 'voiceEngine' | 'chatPetTheme' | 'chatPetAccessory'>(key: K, label: string, options: [string, string][], hint?: string): HTMLElement {
+  function choice<K extends 'theme' | 'renderer' | 'appDownloads' | 'chatSide' | 'iconsOnly' | 'fingerTyping' | 'penBarrel' | 'touchKeys' | 'voiceEngine' | 'voiceServerPreset' | 'chatPetTheme' | 'chatPetAccessory'>(key: K, label: string, options: [string, string][], hint?: string): HTMLElement {
     const sel = h<'select'>('select.input', { 'data-pref': key }, ...options.map(([v, l]) => h('option', { value: v, selected: prefs.get(key) === v }, l)));
     sel.onchange = () => prefs.set(key, sel.value as never);
     return h('label.field', h('span', label), sel, hint ? h('small.muted', hint) : null);
@@ -926,15 +929,79 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
           [
             ['auto', t('Automatic')],
             ['handy', t('Handy (offline)')],
+            ['server', t('Speech server')],
             ['browser', t('Browser')],
           ],
-          t('Automatic: Handy (offline) when it is there, otherwise the browser. Handy runs the speech models of your computer and sends nothing to a cloud. The browser recognizer shows words live, but Chrome and Edge send the audio to the browser maker and Safari to Apple.')
+          t('Automatic: Handy (offline) when it is there, then the speech server you entered, otherwise the browser. Handy runs the speech models of your computer and sends nothing to a cloud. The browser recognizer shows words live, but Chrome and Edge send the audio to the browser maker and Safari to Apple.')
         ),
         h('label.field', h('span', t('Browser speech language')), lang, h('small.muted', t('For example de-DE or en-GB. Handy uses the language of its model.')))
       ),
       h('div.sp-grid', h('label.field', h('span', t('Handy program')), path), h('label.field', h('span', t('Handy model')), model)),
       status,
-      h('button.btn.sm', { type: 'button', onclick: () => void paint(true) }, t('Check again'))
+      h('button.btn.sm', { type: 'button', onclick: () => void paint(true) }, t('Check again')),
+      speechServerBlock()
+    );
+  }
+  /** A speech server for voice input: works in the browser and on an iPad on its own, where Handy cannot run. */
+  function speechServerBlock(): HTMLElement {
+    const preset = h<'select'>('select.input', { 'data-pref': 'voiceServerPreset', 'aria-label': t('Speech server') }, ...SPEECH_PRESETS.map((p) => h('option', { value: p.id, selected: prefs.get('voiceServerPreset') === p.id }, t(p.label))));
+    const url = h<'input'>('input.input.mono', { value: prefs.get('voiceServerUrl'), placeholder: 'http://127.0.0.1:8000/v1', 'aria-label': t('Address of the speech server'), spellcheck: 'false', autocapitalize: 'off' });
+    const model = h<'input'>('input.input.mono', { value: prefs.get('voiceServerModel'), placeholder: 'whisper-1', 'aria-label': t('Speech model'), spellcheck: 'false', autocapitalize: 'off' });
+    const key = h<'input'>('input.input.mono', { type: 'password', value: speechKey.value, placeholder: t('Only for a hosted service'), 'aria-label': t('Key of the speech server (kept until you reload)'), autocomplete: 'off', spellcheck: 'false' });
+    const note = h('p.muted.mono', { role: 'status' });
+    const where = () => {
+      const p = SPEECH_PRESETS.find((x) => x.id === preset.value);
+      const bad = url.value.trim() ? checkSpeechUrl(url.value, { pageSecure: location.protocol === 'https:' }) : '';
+      note.textContent = bad || (p?.where === 'cloud' ? t('The recording goes to this hosted service with your key. The key is kept in memory until you reload this page and is never saved.') : t('The recording goes to the server you entered, nothing else. Leave it empty to use Handy or the browser.'));
+      note.dataset.state = bad ? 'warn' : '';
+    };
+    preset.onchange = () => {
+      const p = SPEECH_PRESETS.find((x) => x.id === preset.value);
+      prefs.set('voiceServerPreset', preset.value);
+      if (p && p.id !== 'custom') {
+        url.value = p.url;
+        model.value = p.model;
+        prefs.set('voiceServerUrl', p.url);
+        prefs.set('voiceServerModel', p.model);
+      }
+      where();
+    };
+    url.onchange = () => {
+      prefs.set('voiceServerUrl', url.value.trim());
+      where();
+    };
+    model.onchange = () => prefs.set('voiceServerModel', model.value.trim());
+    key.oninput = () => (speechKey.value = key.value.trim());
+    const test = h<'button'>('button.btn.sm', { type: 'button' }, t('Test the speech server'));
+    test.onclick = async () => {
+      const cfg = speechServer();
+      if (!cfg) return void (note.textContent = t('Enter a usable address first.'));
+      test.disabled = true;
+      try {
+        // Half a second of silence: a working server answers with an empty text, a wrong address or key answers with an error
+        const silent = encodeWav16(new Float32Array(8000));
+        if (backend.browser) await transcribeWith(silent, cfg);
+        else await api.send('POST', '/api/voice/remote', silent, { 'content-type': 'audio/wav', 'x-speech-url': cfg.url, 'x-speech-model': cfg.model, ...(cfg.key ? { 'x-speech-key': cfg.key } : {}) });
+        note.textContent = t('The speech server answered.');
+        note.dataset.state = 'ok';
+      } catch (e) {
+        const err = e as Error & { code?: string };
+        note.textContent = err.code === 'SPEECH_SERVER' || err.message ? err.message : t('The speech server could not be reached. Is it running?');
+        if (err.name === 'TypeError') note.textContent = t('The speech server could not be reached. Is it running, and does it allow this page (CORS)? The desktop version of WorkCraft has no CORS limit.');
+        note.dataset.state = 'warn';
+      } finally {
+        test.disabled = false;
+      }
+    };
+    where();
+    return h(
+      'div',
+      h('p.eyebrow.sp-sub', t('Speech server (browser, iPad, or a Whisper server of your own)')),
+      h('p.muted', t('Any server with the OpenAI transcription API: a local Whisper server on your computer or network, or Groq and OpenAI with your key. It makes voice input work in the browser and on an iPad on its own, where Handy cannot run.')),
+      h('div.sp-grid', h('label.field', h('span', t('Server')), preset), h('label.field', h('span', t('Address')), url)),
+      h('div.sp-grid', h('label.field', h('span', t('Speech model')), model), h('label.field', h('span', t('Key')), key)),
+      note,
+      test
     );
   }
   /** What each app does with the color scheme switch: follows it, has a setting of its own, or is always light or dark (src/ecosystems/theme.ts). */

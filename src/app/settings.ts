@@ -61,7 +61,11 @@ export interface Prefs {
   /** The accent of the chat (send button, active switch, links) follows Blip's color */
   chatPetAccent: boolean;
   /** Voice input (src/chat/voice.ts): auto = Handy (offline) when it is ready, otherwise the browser's recognizer */
-  voiceEngine: 'auto' | 'handy' | 'browser';
+  voiceEngine: 'auto' | 'handy' | 'browser' | 'server';
+  /** A speech server for voice input (OpenAI transcription API): address and model. The key is never saved. */
+  voiceServerUrl: string;
+  voiceServerModel: string;
+  voiceServerPreset: string;
   /** Language for the browser's recognizer, for example de-DE. Empty: the language of the browser. */
   voiceLang: string;
   /** The ecosystem (workspace) in use: a built-in id of src/ecosystems/catalog.json or a custom one (custom-...) */
@@ -74,7 +78,7 @@ export interface Prefs {
   railOrder: Record<string, string[]>;
 }
 
-const DEFAULTS: Prefs = { theme: 'system', renderer: 'auto', appDownloads: 'project', sounds: false, autoOpenPanels: true, autoUnloadMinutes: 0, chatProvider: '', statusbar: false, panelFooters: false, focusMode: false, chatSide: 'right', effort: {}, remoteCount: false, chatMode: 'single', approvalMode: 'manual', autoAck: false, agentRounds: 8, memoryGovernor: 'auto', memoryAction: 'auto', memoryBudgetMb: 0, fingerTyping: 'auto', penBarrel: 'eraser', penScratch: true, touchKeys: 'auto', topbarHidden: false, railHidden: false, iconsOnly: 'auto', chatPet: true, chatPetTheme: 'blue', chatPetAccessory: '', chatPetAccent: false, voiceEngine: 'auto', voiceLang: '', ecosystem: 'office', ecosystemsCustom: [], ecosystemChosen: false, railOrder: {} };
+const DEFAULTS: Prefs = { theme: 'system', renderer: 'auto', appDownloads: 'project', sounds: false, autoOpenPanels: true, autoUnloadMinutes: 0, chatProvider: '', statusbar: false, panelFooters: false, focusMode: false, chatSide: 'right', effort: {}, remoteCount: false, chatMode: 'single', approvalMode: 'manual', autoAck: false, agentRounds: 8, memoryGovernor: 'auto', memoryAction: 'auto', memoryBudgetMb: 0, fingerTyping: 'auto', penBarrel: 'eraser', penScratch: true, touchKeys: 'auto', topbarHidden: false, railHidden: false, iconsOnly: 'auto', chatPet: true, chatPetTheme: 'blue', chatPetAccessory: '', chatPetAccent: false, voiceEngine: 'auto', voiceServerUrl: '', voiceServerModel: 'whisper-1', voiceServerPreset: 'local', voiceLang: '', ecosystem: 'office', ecosystemsCustom: [], ecosystemChosen: false, railOrder: {} };
 const KEY = 'workcraft.prefs';
 
 function load(): Prefs {

@@ -14,6 +14,22 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
+## [0.1.0-alpha.5] - 2026-11-18
+
+### Added
+
+- **Set it up with one double-click, or with your AI assistant.** `Start WorkCraft.cmd` (Windows), `Start WorkCraft.command` (macOS) and `start-workcraft.sh` (Linux) set WorkCraft up, start it, open the browser and offer to start it when you sign in: a Startup entry, a LaunchAgent or an autostart file of your own user, never a system service and never administrator rights (`scripts/setup.mjs`, `scripts/launcher/`, `npm run setup`). Without Node 22 they fetch a private copy from nodejs.org into `.runtime/` and check it against nodejs.org's checksums. `--status --json`, `--stop`, `--remove-autostart`, `--lan`, `--dry-run`. [SETUP-AI.md](SETUP-AI.md) is the page for an AI assistant: tell it "set up WorkCraft". Verified on Windows (started in 4 seconds, stopped, autostart written and removed, no hanging pipes when an agent runs it); the macOS and Linux scripts are written the same way and tested only through their generated files.
+- **Voice input in the browser and on an iPad: a Speech server.** Settings, Voice input accepts the address of any server with the OpenAI transcription API (a Whisper server of your own, or Groq and OpenAI with your key, kept in memory only) and sends the recording there. The desktop version forwards the request, so servers without CORS headers work. Automatic: Handy, then the speech server, then the browser (`src/core/speech-endpoint.ts`, `POST /api/voice/remote`, tests/server/speech-endpoint.test.ts). Not tried: a real Groq or OpenAI key, a Whisper server, Safari on an iPad.
+- **Back up everything (ZIP) and Restore from a backup** (project menu and command palette): one file with every project, files, chats and layout, and a manifest; a restore only adds, a name that is taken comes back as a copy. On an iPad it goes through the share sheet (Save to Files, iCloud Drive). The idea is from OwlLuna (see SOURCES.md).
+- **Sync safeguards from OwlLuna's iCloud sync:** a file that iCloud has not downloaded yet (`.name.icloud`) or a half written upload is never copied and never counts as deleted, and a pass that would delete more than 20 files or more than half of a project at once deletes nothing and asks ("Let the deletions through" or "Keep the files").
+- **`docs/IPAD-TEST-LIST.md`:** the list of what to try on a real iPad, section by section, with what you should see.
+
+### Changed
+
+- **Handy 0.10.1** is the version WorkCraft is built and tested for: a real transcription through `--list-models --json` and `--transcribe-file --json` ran with it.
+- **Blip's color and the accent.** Changing Blip's color now reaches every Blip on screen at once (the big one on the empty chat stayed on the old color). "Blue" is the color of the workspace itself and changes nothing when the accent follows Blip (it used to switch to a lighter blue); Indigo and Ice have accents of their own.
+- **Releases:** each release carries the browser build (`workcraft-web`), the run-it-yourself bundle (`workcraft-local`) and checksums, and links workcraft.cc/app for the full browser version with every app.
+
 ## [0.1.0-alpha.4] - 2026-11-18
 
 ### Added

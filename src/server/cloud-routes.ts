@@ -187,9 +187,9 @@ export function registerCloudRoutes(api: Hono, deps: Deps): void {
       return fail(c, e);
     }
   });  api.post('/cloud/sync', async (c) => {
-    const b = z.object({ project: z.string(), dryRun: z.boolean().optional() }).parse(await c.req.json());
+    const b = z.object({ project: z.string(), dryRun: z.boolean().optional(), letDeletesGo: z.boolean().optional() }).parse(await c.req.json());
     try {
-      return c.json({ result: await syncProject(b.project, { dryRun: b.dryRun }), ...state() });
+      return c.json({ result: await syncProject(b.project, { dryRun: b.dryRun, letDeletesGo: b.letDeletesGo }), ...state() });
     } catch (e) {
       return fail(c, e);
     }

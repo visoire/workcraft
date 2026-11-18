@@ -6,6 +6,9 @@
 //                                        is kept on both sides as "name (conflict <side> <date>).ext"
 //   deleted on one side, unchanged other delete on the other side (into its trash)
 //   deleted on one side, changed other   the changed file wins and comes back
+// Two safeguards learned from the iCloud sync of OwlLuna (see SOURCES.md): a file that is only a placeholder (iCloud has not
+// downloaded it yet: ".name.icloud") or a half written upload is never copied and never counts as deleted, and a pass that would
+// delete a large part of a project at once deletes nothing until the person lets it through.
 // No DOM, no Node: used by the backend (desktop to desktop) and by browser mode (iPad).
 
 export interface SyncFile {
@@ -37,14 +40,38 @@ export interface SyncResult {
   pulled: number;
   conflicts: number;
   deleted: number;
+  /** Deletions that were held back (see holdDeletes) and files skipped because they are still arriving */
+  held: number;
+  arriving: number;
   errors: { path: string; message: string }[];
   base: Record<string, string>;
   dryRun: boolean;
 }
 
+/** ".name.icloud" is what iCloud leaves where "name" is online only; "name.uploading" is a copy that is not finished. */
+export function placeholderTarget(path: string): string | null {
+  const m = /^(.*\/)?\.([^/]+)\.icloud$/.exec(path);
+  return m ? `${m[1] || ''}${m[2]}` : null;
+}
+export const isTransient = (path: string): boolean => placeholderTarget(path) !== null || /\.(uploading|crdownload)$/i.test(path);
+
+/** How many files a pass may delete at once before it asks: more than 20, or more than half of the project (and at least 5). */
+export function tooManyDeletes(deletes: number, total: number): boolean {
+  return deletes > 20 || (deletes >= 5 && deletes * 2 > total);
+}
+
+/** Splits the actions into what runs and the deletions that are held back. letGo lets everything through. */
+export function holdDeletes(actions: SyncAction[], total: number, letGo = false): { run: SyncAction[]; held: SyncAction[] } {
+  const dels = actions.filter((a) => a.op === 'delete-local' || a.op === 'delete-remote');
+  if (letGo || !tooManyDeletes(dels.length, total)) return { run: actions, held: [] };
+  return { run: actions.filter((a) => !dels.includes(a)), held: dels };
+}
+
 export function planSync(local: SyncFile[], remote: SyncFile[], base: Record<string, string> | null): SyncAction[] {
-  const L = new Map(local.map((f) => [f.path, f]));
-  const R = new Map(remote.map((f) => [f.path, f]));
+  // A placeholder means the real file exists but is not here yet: leave that path alone on both sides
+  const arriving = new Set([...local, ...remote].map((f) => placeholderTarget(f.path)).filter((p): p is string => !!p));
+  const L = new Map(local.filter((f) => !isTransient(f.path) && !arriving.has(f.path)).map((f) => [f.path, f]));
+  const R = new Map(remote.filter((f) => !isTransient(f.path) && !arriving.has(f.path)).map((f) => [f.path, f]));
   const B = base || {};
   const out: SyncAction[] = [];
   for (const path of [...new Set([...L.keys(), ...R.keys()])].sort()) {
@@ -73,10 +100,12 @@ export function conflictName(path: string, side: string, date = new Date()): str
 }
 
 /** Plans and runs a sync. dryRun only plans. */
-export async function runSync(local: SyncAdapter, remote: SyncAdapter, base: Record<string, string> | null, opt: { dryRun?: boolean; hash: (d: Uint8Array) => Promise<string> }): Promise<SyncResult> {
+export async function runSync(local: SyncAdapter, remote: SyncAdapter, base: Record<string, string> | null, opt: { dryRun?: boolean; hash: (d: Uint8Array) => Promise<string>; guardDeletes?: boolean; letDeletesGo?: boolean }): Promise<SyncResult> {
   const [lm, rm] = await Promise.all([local.manifest(), remote.manifest()]);
-  const actions = planSync(lm, rm, base);
-  const res: SyncResult = { actions, pushed: 0, pulled: 0, conflicts: 0, deleted: 0, errors: [], base: {}, dryRun: !!opt.dryRun };
+  const planned = planSync(lm, rm, base);
+  const total = new Set([...lm, ...rm].filter((f) => !isTransient(f.path)).map((f) => f.path)).size;
+  const { run: actions, held } = opt.guardDeletes ? holdDeletes(planned, total, opt.letDeletesGo) : { run: planned, held: [] as SyncAction[] };
+  const res: SyncResult = { actions, pushed: 0, pulled: 0, conflicts: 0, deleted: 0, held: held.length, arriving: [...lm, ...rm].filter((f) => placeholderTarget(f.path)).length, errors: [], base: {}, dryRun: !!opt.dryRun };
   const state = new Map<string, string>();
   for (const f of lm) state.set(f.path, f.hash);
   for (const f of rm) if (!state.has(f.path)) state.set(f.path, f.hash);

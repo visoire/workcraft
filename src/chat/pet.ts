@@ -20,13 +20,25 @@ export interface ChatPet {
   look(theme: BlipTheme, accessory: BlipAccessory): void;
 }
 
+/** Every Blip on screen (the one in the header, the big one on the empty chat): a change of color or accessory reaches all of them. */
+const pets = new Set<{ el: HTMLElement; look: (theme: BlipTheme, accessory: BlipAccessory) => void }>();
+export function lookAllPets(theme: BlipTheme, accessory: BlipAccessory): void {
+  for (const p of [...pets]) {
+    if (!p.el.isConnected) {
+      pets.delete(p);
+      continue;
+    }
+    p.look(theme, accessory);
+  }
+}
+
 export function createPet(opt: { size: number; interactive?: boolean; label: string; state?: BlipState; theme?: BlipTheme; accessory?: BlipAccessory }): ChatPet {
   const blip: BlipInstance = createBlip({ size: opt.size, theme: opt.theme || 'blue', accessory: opt.accessory || '', state: opt.state || 'idle', interactive: opt.interactive ?? true, label: opt.label });
   const el = document.createElement('div');
   el.className = 'chat-pet';
   el.append(blip.el);
   let last: BlipState = blip.getState();
-  return {
+  const self: ChatPet = {
     el,
     update(s) {
       const next = petStateFor(s);
@@ -44,4 +56,6 @@ export function createPet(opt: { size: number; interactive?: boolean; label: str
       blip.setAccessory(accessory);
     },
   };
+  pets.add(self);
+  return self;
 }

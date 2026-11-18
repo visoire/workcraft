@@ -131,17 +131,20 @@ export class VoiceLevels {
   }
 }
 
-export type SpeechEngine = 'handy' | 'browser';
+export type SpeechEngine = 'handy' | 'browser' | 'server';
 
 /**
  * Which recognizer to use. auto: Handy when the computer has it with a model (offline, private), otherwise the
  * browser's own recognizer, otherwise none. A fixed choice is honoured and says why it cannot work.
  */
-export function resolveEngine(pref: 'auto' | SpeechEngine, o: { handyReady: boolean; handyAvailable: boolean; browserSpeech: boolean }): { engine: SpeechEngine | null; reason: string } {
+export function resolveEngine(pref: 'auto' | SpeechEngine, o: { handyReady: boolean; handyAvailable: boolean; browserSpeech: boolean; serverConfigured?: boolean }): { engine: SpeechEngine | null; reason: string } {
   const handy = o.handyAvailable && o.handyReady;
+  if (pref === 'server') return o.serverConfigured ? { engine: 'server', reason: '' } : { engine: null, reason: 'Enter the address of a speech server in Settings, Voice input.' };
   if (pref === 'handy') return handy ? { engine: 'handy', reason: '' } : { engine: null, reason: o.handyAvailable ? 'Handy has no speech model yet.' : 'Handy needs the desktop version of WorkCraft with Handy installed.' };
   if (pref === 'browser') return o.browserSpeech ? { engine: 'browser', reason: '' } : { engine: null, reason: 'This browser has no speech recognition.' };
   if (handy) return { engine: 'handy', reason: '' };
+  // A server the person entered (a local Whisper server, or a hosted one with their key) comes before the browser's own cloud recognizer
+  if (o.serverConfigured) return { engine: 'server', reason: '' };
   if (o.browserSpeech) return { engine: 'browser', reason: '' };
   return { engine: null, reason: o.handyAvailable ? 'Handy has no speech model yet, and this browser has no speech recognition.' : 'No speech recognition is available. Install Handy on the computer that runs WorkCraft.' };
 }

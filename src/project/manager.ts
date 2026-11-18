@@ -209,6 +209,8 @@ export const projects = {
       '-',
       { label: tr('New project'), icon: 'plus', run: () => void this.create() },
       { label: tr('Import project (ZIP)'), icon: 'upload', run: () => this.pickZip() },
+      { label: tr('Back up everything (ZIP)'), icon: 'archive', run: () => void import('./backup.js').then((m) => m.backupEverything()) },
+      { label: tr('Restore from a backup'), icon: 'upload', run: () => void import('./backup.js').then((m) => m.pickBackup()) },
       { label: tr('Load sample data'), icon: 'spark', run: () => void this.openSample() }
     );
     menu(items, r.left, r.bottom + 6, { anchor });

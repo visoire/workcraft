@@ -6,3 +6,6 @@
 # Git must keep them byte for byte, otherwise Windows (core.autocrlf=true) turns LF into
 # CRLF on checkout, the checksums stop matching and the browser blocks the app scripts.
 /versions/** -text
+*.command text eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf

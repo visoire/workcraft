@@ -1058,6 +1058,35 @@ try {
     check('11i: a short touch on the header opens no menu', (await menuItems()).length === 0);
   }
 
+  // ---------------------------------------------------------------- 13. Blip's color reaches every Blip; blue is the workspace blue; the speech server settings
+  {
+    const sid = await ws(() => window.__workcraftWorkspace.openPanel('settings'));
+    await page.waitForSelector('.sp-tab');
+    await page.locator('.sp-tab', { hasText: 'Appearance and layout' }).click();
+    await page.waitForSelector('select[data-pref="chatPetTheme"]');
+    const setPref = (key, value) => ws(([k, v]) => { const s = document.querySelector(`select[data-pref="${k}"]`); s.value = v; s.dispatchEvent(new Event('change', { bubbles: true })); }, [key, value]);
+    const toggleAccent = (on) => ws((v) => { const c = document.querySelector('input[data-pref="chatPetAccent"]'); c.checked = v; c.dispatchEvent(new Event('change', { bubbles: true })); }, on);
+    const look = () => ws(() => ({ pets: [...document.querySelectorAll('.chat .blip')].map((b) => b.dataset.theme), accent: getComputedStyle(document.querySelector('.chat')).getPropertyValue('--accent').trim(), root: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), petTheme: document.querySelector('.chat').dataset.petTheme || '' }));
+    await setPref('chatPetTheme', 'coral');
+    await toggleAccent(true);
+    await page.waitForTimeout(300);
+    const coral = await look();
+    check('13a: a Blip color change reaches every Blip on screen and the chat accent follows', coral.pets.length >= 1 && coral.pets.every((t) => t === 'coral') && coral.accent.toUpperCase() === '#E11D48', JSON.stringify(coral));
+    await setPref('chatPetTheme', 'blue');
+    await page.waitForTimeout(300);
+    const blue = await look();
+    check('13b: Blue is the color of the workspace: the accent follows Blip and nothing changes', blue.pets.every((t) => t === 'blue') && blue.petTheme === '' && blue.accent === blue.root, JSON.stringify(blue));
+    await toggleAccent(false);
+    // the Speech server block of voice input: presets fill address and model
+    await page.waitForSelector('select[data-pref="voiceServerPreset"]');
+    await setPref('voiceServerPreset', 'groq');
+    const speech = await ws(() => ({ url: document.querySelector('input[aria-label="Address of the speech server"]')?.value, model: document.querySelector('input[aria-label="Speech model"]')?.value, key: document.querySelector('input[type="password"][aria-label^="Key of the speech server"]')?.type }));
+    check('13c: Speech server preset fills the address and the model, the key field is a password field', speech.url === 'https://api.groq.com/openai/v1' && speech.model === 'whisper-large-v3-turbo' && speech.key === 'password', JSON.stringify(speech));
+    await setPref('voiceServerPreset', 'custom');
+    await ws(() => { const u = document.querySelector('input[aria-label="Address of the speech server"]'); u.value = ''; u.dispatchEvent(new Event('change', { bubbles: true })); });
+    await ws((id) => window.__workcraftWorkspace.close(id), sid);
+  }
+
   // ---------------------------------------------------------------- 8. Two independent themes (oc-ide-theme, oc-home-theme) and English default
   const store = (pg) => pg.evaluate(() => ({ ide: localStorage.getItem('oc-ide-theme'), home: localStorage.getItem('oc-home-theme'), lang: localStorage.getItem('oc-ide-lang') }));
   const htmlTheme = (pg) => pg.evaluate(() => document.documentElement.dataset.theme);

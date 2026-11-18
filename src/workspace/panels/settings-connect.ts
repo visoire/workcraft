@@ -6,7 +6,7 @@ import { h, ROOT } from '../../app/util.js';
 import { icon } from '../../app/icons.js';
 import { api, backend } from '../../app/backend.js';
 import { projects } from '../../project/manager.js';
-import { toast, notifyError } from '../../app/notifications.js';
+import { toast, notify, notifyError } from '../../app/notifications.js';
 import { confirmDanger } from '../../app/ui.js';
 import { t, locale } from '../../app/i18n.js';
 import { AVAILABLE, TOOLS, type ToolId } from '../registry.js';
@@ -286,8 +286,22 @@ async function cloudSection(x: ExtraContext): Promise<HTMLElement> {
         sw(b.auto, t('Automatic'), (v) => call<CloudState>('PUT', `/bind/${p.id}`, { auto: v }).then(apply).catch(notifyError)),
         btn(t('Sync now'), 'refresh', async () => {
           try {
-            const r = await call<CloudState & { result: { pushed?: number; pulled?: number; conflicts?: number; skipped?: boolean } }>('POST', '/sync', { project: p.id });
+            const r = await call<CloudState & { result: { pushed?: number; pulled?: number; conflicts?: number; held?: number; arriving?: number; skipped?: boolean } }>('POST', '/sync', { project: p.id });
             toast(r.result.skipped ? t('A sync is already running') : t('{up} up, {down} down, {c} conflicts', { up: r.result.pushed ?? 0, down: r.result.pulled ?? 0, c: r.result.conflicts ?? 0 }), 'success');
+            // A large delete is never carried out on its own: say so and let the person decide (idea from the iCloud sync of OwlLuna)
+            if (r.result.held) {
+              notify({
+                level: 'warning',
+                title: t('{n} deletions were held back', { n: r.result.held }),
+                message: t('This sync would delete a large part of “{name}”. Nothing was deleted. If you did this on purpose, let the deletions through.', { name: p.name }),
+                timeout: 0,
+                actions: [
+                  { label: t('Let the deletions through'), primary: true, run: () => void call<CloudState>('POST', '/sync', { project: p.id, letDeletesGo: true }).then(apply).catch(notifyError) },
+                  { label: t('Keep the files'), run: () => {} },
+                ],
+              });
+            }
+            if (r.result.arriving) toast(t('{n} files are still arriving from the cloud and were left alone', { n: r.result.arriving }), 'info');
             apply(r);
           } catch (e) {
             notifyError(e);

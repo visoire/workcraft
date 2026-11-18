@@ -22,8 +22,8 @@ export interface HandyModel {
   languages: string[];
 }
 
-/** The Handy release WorkCraft is built and tested for (v0.10: GGUF models, language detection, long recordings with VAD). */
-export const HANDY_LATEST = '0.10.0';
+/** The Handy release WorkCraft is built and tested for (0.10.1: GGUF models, language detection, long recordings with VAD; a real transcription through the command line was run with it). */
+export const HANDY_LATEST = '0.10.1';
 /** The oldest Handy that can transcribe a file from the command line. */
 export const HANDY_MIN = '0.9.8';
 

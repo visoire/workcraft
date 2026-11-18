@@ -27,18 +27,15 @@
   <img src="docs/images/workspace-office-dark.png" alt="The same workspace in dark mode with GridCraft and a sheet" width="860">
 </p>
 <p align="center">
-  <img src="docs/images/workspace-imaging-light.png" alt="The Imaging and Photography workspace with PhotoCraft" width="860">
-</p>
-<p align="center">
   <img src="docs/images/workspace-welcome-light.png" alt="The welcome page of a workspace: nothing starts by itself, you choose the app" width="860">
 </p>
-<p align="center"><sub>The sample project and the empty AI assistant (no model is set up yet), one app at a time: WordCraft, GridCraft and PhotoCraft in three workspaces, and the welcome page. Screenshots of the real workspace (0.1.0-alpha.4).</sub></p>
+<p align="center"><sub>The sample project and the empty AI assistant (no model is set up yet), one app at a time: WordCraft and GridCraft, and the welcome page. Screenshots of the real workspace.</sub></p>
 
-> **Alpha software.** This is an alpha (`0.1.0-alpha.4`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built and lightly tried on a real iPad (touch and tap and hold work), but not verified widely. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
+> **Alpha software.** This is an alpha (`0.1.0-alpha.5`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built and lightly tried on a real iPad (touch and tap and hold work), but not verified widely. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
 
 Developers have long had editors where code, a terminal and the file tree sit side by side in one window. Everyone else still juggles separate heavy applications, loose browser tabs and cloud accounts that keep their files hostage. WorkCraft brings the single-window way of working to every kind of work: documents, spreadsheets, presentations and PDFs, but also photos, vector art, video, audio, music, design, 3D and CAD, in ready-made workspaces with dozens of open-source apps (44 at the time of writing). Your files live in a folder you own, an AI assistant you control works across all of them, and nothing leaves your computer unless you decide it should.
 
-Version **0.1.0-alpha.4** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
+Version **0.1.0-alpha.5** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
 
 | | |
 | :--- | :--- |
@@ -123,6 +120,8 @@ The assistant is a core part of the workspace, not an add-on, and it follows the
 - **Open tools, both directions.** The same tools are served at `/mcp`, so Antigravity, Trae, Cursor, Claude Code or any MCP client can work in your projects too (ready snippets under Settings, Connect other IDEs). WorkCraft is also an MCP client: it connects the Craft apps on your computer (photos, vector art, video, audio, CAD and more) and your own servers, and reads the 13 skills that explain how to drive them.
 - **Fewer tokens.** The model gets the tools the question needs (an app's tools when the question is about that app, the rest one `find-tools` call away), older tool results and attachments shrink behind the question, a team reviews with the leader model only what the checks doubt, and a short request about one app goes straight to that specialist. Every answer shows what was saved; the cache of each provider keeps hitting because the prompt prefix stays stable ([docs/AI-TOKENS.md](docs/AI-TOKENS.md)).
 - **Voice input.** A microphone next to Send turns speech into text in the draft, offline with [Handy](https://github.com/cjpais/Handy) on your computer (Whisper, Parakeet, Nemotron models) or with the speech recognition of the browser; "at gridcraft" becomes @gridcraft ([docs/VOICE.md](docs/VOICE.md)).
+- **Voice input that works where you are.** A microphone next to Send: offline with [Handy](https://github.com/cjpais/Handy) 0.10.1 on your computer, with a speech server of your choice in the browser and on an iPad (a Whisper server of your own, or Groq and OpenAI with your key), or the speech of the browser ([docs/VOICE.md](docs/VOICE.md)).
+- **Backups in one file.** Project menu, **Back up everything (ZIP)** writes every project, with chats and layout, to one ZIP (on an iPad through the share sheet, so Save to Files and iCloud Drive work); **Restore from a backup** only adds, it never overwrites.
 - **Cloud when you want it, on this computer or only in the browser.** Keep a project local only, in Google Drive (your own OAuth client), in iCloud Drive or any synced folder, or in both places with two-way sync and conflict copies, and open a cloud project on another device; the AI opens and saves Google Docs, Sheets and Slides. Browser mode (the iPad alone) has the same Settings page: Google Drive from the browser, and a folder of the computer in Chrome and Edge. Local-only mode blocks it.
 
 Details: [docs/AI-SUPPORT-REFERENCE.md](docs/AI-SUPPORT-REFERENCE.md) (the working reference for providers, teams, skills, MCP, IDE bridge and cloud), [docs/AI-PROVIDERS.md](docs/AI-PROVIDERS.md) and [docs/MCP-TOOLS.md](docs/MCP-TOOLS.md).
@@ -139,6 +138,20 @@ The roadmap is open and expanding. Documents, sheets, slides, PDFs, the assistan
 ---
 
 ## Quick start
+
+### The easy way: one double-click
+
+No terminal, no account, no administrator rights. Download the **workcraft-local** file from the [latest release](https://github.com/visoire/workcraft/releases), unpack it and:
+
+- **Windows:** double-click **Start WorkCraft.cmd**.
+- **macOS:** double-click **Start WorkCraft.command** (the first time: right-click, Open).
+- **Linux:** run `sh start-workcraft.sh`.
+
+The first start sets everything up (a few minutes, the internet is needed once; if the computer has no Node it fetches a private copy into the folder, checked against nodejs.org's checksums), starts WorkCraft, opens your browser and asks whether it should start by itself when you sign in (a Startup entry, a LaunchAgent or an autostart file of your own user, never a system service). The same is `node scripts/setup.mjs` (`--status`, `--stop`, `--remove-autostart`, `--lan` for an iPad).
+
+### Let your AI assistant do it
+
+Using Claude Code, Codex, Cursor, Gemini, Antigravity or another assistant that can run commands? Tell it **"set up WorkCraft"** and give it [SETUP-AI.md](SETUP-AI.md) (or the address `https://raw.githubusercontent.com/visoire/workcraft/main/SETUP-AI.md`). It downloads, sets up, starts and checks WorkCraft for you and tells you the result.
 
 ### In your browser
 
@@ -172,6 +185,7 @@ On Windows, PowerShell and Command Prompt both work, and the terminal panel lets
 
 | Command | What it does |
 | :--- | :--- |
+| `npm run setup` | Sets up and starts WorkCraft from a release or a clone (the easy way above); `-- --yes` asks nothing. |
 | `npm run dev` | Backend (Hono, port 5176) and Vite (port 5175) with hot reload. The workspace is at `http://localhost:5175/`. It also shares WorkCraft on your home network: the output prints the pairing address for the iPad (`http://192.168.x.x:5175/pair?token=...`). `npm run dev:local` listens on this computer only. |
 | `npm run dev:lan` | The same as `npm run dev`. Add `-- --https` for HTTPS. |
 | `npm run lan:cert` | Makes the HTTPS certificate for the home network with [mkcert](https://github.com/FiloSottile/mkcert), see the iPadOS guide. |

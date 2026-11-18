@@ -25,6 +25,11 @@ It is the main project of three:
 Changes usually start in the monorepo and are mirrored here. A pull request against this repository
 is welcome and gets carried back. Every GitHub repository the project uses or learned from is listed in `SOURCES.md`.
 
+## If the user says "set up WorkCraft"
+
+Read [SETUP-AI.md](SETUP-AI.md) and do it: get the `workcraft-local` release (or use this clone), run `node scripts/setup.mjs --yes` (or `Start WorkCraft.cmd --yes` / `sh start-workcraft.sh --yes` when
+Node 22 is missing), check with `node scripts/setup.mjs --status --json`, and tell the user the address, the data folder and how to stop it. No administrator rights, no keys in files, no push.
+
 ## Versioning, changelog and docs: do this with every change
 
 The project is in its **alpha phase**: versions look like `0.1.0-alpha.N`, the first public one is `0.1.0-alpha.1`, and there is no stable release
@@ -180,6 +185,9 @@ src/core/                  no DOM, no Node: search ranking, three-way sync, Mark
                            JSON repair, BPE tokenizer
 src/project/desktop.ts      the installed desktop Craft apps next to the panels: Open in the desktop app (tree menu, panel menu)
 src/project/add-files.ts   the + menu: Upload files (every device; on an iPad it is Apple's picker sheet) and, on an iPad only, Scan a document (doc-scanner.ts: the camera scanner of WorkCraft, a PDF in /Scans); files go to /Uploads or /Scans and open; the pure rules are in add-files-rules.ts (tests/server/add-files.test.ts)
+src/core/backup.ts, src/project/backup.ts   Back up everything (one ZIP of every project, manifest, restore only adds) and Restore; menu entries in the project switcher and the palette (tests/server/backup.test.ts)
+src/core/speech-endpoint.ts  the Speech server of voice input (OpenAI transcription API): address checks, multipart request, answer parsing; src/chat/voice-endpoint.ts keeps its key in memory; the backend forwards for the desktop (POST /api/voice/remote)
+scripts/setup.mjs, scripts/launcher/   one command to set up, start, stop and autostart WorkCraft (setup.mjs); autostart-lib.mjs writes the Startup, LaunchAgent and autostart files (pure, tests/server/launcher.test.ts); bootstrap.ps1 and ../start-workcraft.sh fetch a private Node into .runtime/ when none is installed; Start WorkCraft.cmd / .command are the double-click entries; SETUP-AI.md is the page for AI assistants
 src/project/doc-scanner.ts the scanner overlay (getUserMedia, draggable corners, looks, pages, Save as PDF); the maths (Otsu, page finder, homography, enhance, PDF writer) is src/core/scan.ts (tests/server/scan.test.ts)
 src/app/install-tip.ts     Add to Home Screen on an iPad: the notice, the four-step guide and the main menu entry; the pure rules (who is offered it, 14 day snooze, never again) are in install-tip-rules.ts (tests/server/install-tip.test.ts)
 src/workspace/trail.ts     TrailLayer: the smooth Pencil trail over an app (tests/server/trail.test.ts)

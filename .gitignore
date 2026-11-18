@@ -68,3 +68,7 @@ desktop.ini
 # Private scratch scripts of the maintainer (they hold personal documents): never published
 /scripts/gen-fahrschule.mjs
 /scripts/read-all-pdfs.mjs
+
+# The private copy of Node that the launchers fetch when the computer has none (scripts/setup.mjs)
+/.runtime/
+/release-assets/

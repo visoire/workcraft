@@ -44,7 +44,7 @@ import { fs } from '../project/fs.js';
 import type { ToolApp } from './types.js';
 import { allowScribble } from '../workspace/pencil.js';
 import { openKeyboard } from '../ipados/finger-keyboard.js';
-import { createPet } from './pet.js';
+import { createPet, lookAllPets } from './pet.js';
 import { VoiceInput, voiceStatus } from './voice.js';
 import { normalizeDictation, insertDictation, type KnownNames } from './voice-text.js';
 import { toolGlyph, summarizeArgs } from './tool-icons.js';
@@ -299,8 +299,9 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
   function paintPetPref() {
     root.classList.toggle('no-pet', !prefs.get('chatPet'));
     pet.look(prefs.get('chatPetTheme'), prefs.get('chatPetAccessory'));
-    // The chat accent follows Blip's color when the setting is on (see the --blip-accent rules in polish.css)
-    root.dataset.petTheme = prefs.get('chatPetAccent') ? prefs.get('chatPetTheme') : '';
+    lookAllPets(prefs.get('chatPetTheme'), prefs.get('chatPetAccessory'));
+    // The chat accent follows Blip's color when the setting is on (see the --pet-accent rules in polish.css). Blue is the color of the workspace itself: it changes nothing.
+    root.dataset.petTheme = prefs.get('chatPetAccent') && prefs.get('chatPetTheme') !== 'blue' ? prefs.get('chatPetTheme') : '';
   }
   /** Blip follows the chat: what runs now, whether the last answer failed, how long nothing happened. */
   function petSync() {

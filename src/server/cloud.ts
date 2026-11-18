@@ -471,7 +471,7 @@ export function unbindProject(projectId: string) {
 const running = new Set<string>();
 
 /** Two-way sync of a bound project. Safe to call often: a second call while one runs is skipped. */
-export async function syncProject(projectId: string, opt: { dryRun?: boolean } = {}) {
+export async function syncProject(projectId: string, opt: { dryRun?: boolean; letDeletesGo?: boolean } = {}) {
   const b = config().cloud.bindings[projectId];
   if (!b) throw new CloudError('NOT_BOUND', 'This project is not kept in the cloud.');
   if (running.has(projectId)) return { skipped: true as const };
@@ -480,7 +480,7 @@ export async function syncProject(projectId: string, opt: { dryRun?: boolean } =
     assertCloudAllowed();
     const { root, meta } = getProject(projectId);
     const key = `cloud-${b.provider}-${b.remote}`;
-    const res = await runSync(localAdapter(projectId, 'this computer'), adapterFor(b.provider, b.remote), readBase(root, key), { dryRun: opt.dryRun, hash: async (d) => sha(d) });
+    const res = await runSync(localAdapter(projectId, 'this computer'), adapterFor(b.provider, b.remote), readBase(root, key), { dryRun: opt.dryRun, hash: async (d) => sha(d), guardDeletes: true, letDeletesGo: opt.letDeletesGo });
     if (!opt.dryRun) {
       saveBase(root, key, res.base);
       updateConfig((c) => {

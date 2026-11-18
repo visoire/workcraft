@@ -141,9 +141,11 @@ html.is-touch .tree-filter .tree-search, html.is-ipad .tree-filter .tree-search 
 .team-member-fields .oc-select-wrap, .team-member-fields .input { min-width: 0; }
 .team-member-head { align-items: center; }
 /* ---------- Blip: the chat accent can follow Blip's color (Settings, Companion) ---------- */
-.chat[data-pet-theme='blue'] { --pet-accent: #2C84FC; --pet-accent-h: #1E64D0; }
-.chat[data-pet-theme='indigo'] { --pet-accent: #335CFF; --pet-accent-h: #2447D9; }
-.chat[data-pet-theme='ice'] { --pet-accent: #2C84FC; --pet-accent-h: #1E64D0; }
+.chat[data-pet-theme='blue'] { --pet-accent: #335CFF; --pet-accent-h: #2447D9; }
+.chat[data-pet-theme='indigo'] { --pet-accent: #4F46E5; --pet-accent-h: #3730A3; }
+:root[data-theme='dark'] .chat[data-pet-theme='indigo'] { --pet-accent: #818CF8; --pet-accent-h: #A5B4FC; }
+.chat[data-pet-theme='ice'] { --pet-accent: #0284C7; --pet-accent-h: #0369A1; }
+:root[data-theme='dark'] .chat[data-pet-theme='ice'] { --pet-accent: #38BDF8; --pet-accent-h: #7DD3FC; }
 .chat[data-pet-theme='teal'] { --pet-accent: #0E9A82; --pet-accent-h: #088573; }
 .chat[data-pet-theme='amber'] { --pet-accent: #D97706; --pet-accent-h: #B45309; }
 .chat[data-pet-theme='coral'] { --pet-accent: #E11D48; --pet-accent-h: #BE123C; }

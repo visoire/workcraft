@@ -33,7 +33,8 @@ test('Token comparison and cookie reading', () => {
   const t = newToken();
   assert.ok(t.length >= 30);
   assert.ok(tokenMatches(t, t));
-  assert.ok(!tokenMatches(t, t.slice(0, -1) + 'x'));
+  // the last character is replaced by one that differs (a fixed 'x' was equal to the token one time in 32)
+  assert.ok(!tokenMatches(t, t.slice(0, -1) + (t.endsWith('x') ? 'y' : 'x')));
   assert.ok(!tokenMatches('', t));
   assert.ok(!tokenMatches(t, undefined));
   assert.equal(readCookie('a=1; oc_lan=abc%3D; b=2', 'oc_lan'), 'abc=');
