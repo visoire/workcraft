@@ -14,6 +14,11 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
+### Changed
+
+- **docs/PUBLISHING.md** describes the files of a release (`workcraft-local`, `workcraft-web`, `SHA256SUMS.txt`, `npm run pack:release`) and the private website release (`npm run release:site`, `scripts/vps-update.sh`).
+- **A flaky test:** `tests/server/lan.test.ts` compared a token with itself one time in 32.
+
 ## [0.1.0-alpha.5] - 2026-11-18
 
 ### Added

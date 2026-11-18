@@ -122,7 +122,21 @@ Contributors and agents add their changes under `## [Unreleased]` in `CHANGELOG.
 `scripts/update-github.ps1` (or `scripts\update-github.cmd` from cmd) does the GitHub half in one go: it reads the version from `package.json`, refuses to go on when the tag already exists
 (a release is never replaced, moved or deleted), runs typecheck, tests, `check:clean`, `check:docs`, the build and `publish.ps1 check`, commits, pushes `main`, tags `v<version>` and waits for
 `release.yml` to publish the new pre-release (it creates the release itself with `gh` when the workflow does not within four minutes). Older releases are only listed. Dry run by default;
-`-Execute` really does it, `-SkipChecks` skips the project checks, `-Meta` also refreshes description, topics and labels. The website (private repository) is updated by hand as in step 4 above.
+`-Execute` really does it, `-SkipChecks` skips the project checks, `-Meta` also refreshes description, topics and labels.
+
+### The files of a release (like the Structorizer releases)
+
+Every release carries files next to the source archives, made by `npm run pack:release` (after `npm run build`) into `release-assets/`:
+
+| File | What it is |
+| :--- | :--- |
+| `workcraft-local-<version>.zip` | run it on your own computer: the built server and browser version, `Start WorkCraft.cmd` / `Start WorkCraft.command` / `start-workcraft.sh`, `scripts/setup.mjs`, `SETUP-AI.md`. No `node_modules` (the first start runs `npm ci --omit=dev`) |
+| `workcraft-web-<version>.zip` | the browser version as static files for your own web server (the four office apps; the other apps are not redistributed, <https://workcraft.cc/app/> has them all) |
+| `SHA256SUMS.txt` | checksums of both |
+
+After `update-github.ps1 -Execute` has created the release, add them: `gh release upload v<version> release-assets/* --repo visoire/workcraft`. Release notes link <https://workcraft.cc/app/> for the full browser version.
+
+**The website** (private repository `visoire/workcraft-home`) is released from its own checkout with `npm run release:site` (a private pre-release that carries the site zip). The server updates itself from it with `scripts/vps-update.sh` (its SETUP.md, "Update from GitHub"). Build the workspace first, so the site contains the new `/app/`.
 
 ## 8. If a secret was committed
 
