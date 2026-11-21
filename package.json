@@ -90,7 +90,7 @@
     "exceljs": "^4.4.0",
     "fflate": "^0.8.3",
     "gpt-tokenizer": "4.1.2",
-    "hono": "^4.13.18",
+    "hono": "^4.13.19",
     "mammoth": "^1.13.0",
     "pdf-lib": "^1.17.1",
     "pptxgenjs": "^4.0.1",
