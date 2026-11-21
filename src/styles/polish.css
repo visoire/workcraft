@@ -140,23 +140,23 @@ html.is-touch .tree-filter .tree-search, html.is-ipad .tree-filter .tree-search 
 .team-member-fields { align-items: center; }
 .team-member-fields .oc-select-wrap, .team-member-fields .input { min-width: 0; }
 .team-member-head { align-items: center; }
-/* ---------- Blip: the chat accent can follow Blip's color (Settings, Companion) ---------- */
-.chat[data-pet-theme='blue'] { --pet-accent: #335CFF; --pet-accent-h: #2447D9; }
-.chat[data-pet-theme='indigo'] { --pet-accent: #4F46E5; --pet-accent-h: #3730A3; }
-:root[data-theme='dark'] .chat[data-pet-theme='indigo'] { --pet-accent: #818CF8; --pet-accent-h: #A5B4FC; }
-.chat[data-pet-theme='ice'] { --pet-accent: #0284C7; --pet-accent-h: #0369A1; }
-:root[data-theme='dark'] .chat[data-pet-theme='ice'] { --pet-accent: #38BDF8; --pet-accent-h: #7DD3FC; }
-.chat[data-pet-theme='teal'] { --pet-accent: #0E9A82; --pet-accent-h: #088573; }
-.chat[data-pet-theme='amber'] { --pet-accent: #D97706; --pet-accent-h: #B45309; }
-.chat[data-pet-theme='coral'] { --pet-accent: #E11D48; --pet-accent-h: #BE123C; }
-.chat[data-pet-theme='emerald'] { --pet-accent: #059669; --pet-accent-h: #047857; }
-.chat[data-pet-theme='mono'] { --pet-accent: #4B5563; --pet-accent-h: #374151; }
-:root[data-theme='dark'] .chat[data-pet-theme='mono'] { --pet-accent: #9CA3AF; --pet-accent-h: #D1D5DB; }
-:root[data-theme='dark'] .chat[data-pet-theme='teal'] { --pet-accent: #21CEB2; --pet-accent-h: #5EEAD4; }
-:root[data-theme='dark'] .chat[data-pet-theme='emerald'] { --pet-accent: #34D399; --pet-accent-h: #6EE7B7; }
-:root[data-theme='dark'] .chat[data-pet-theme='coral'] { --pet-accent: #FB7185; --pet-accent-h: #FDA4AF; }
-:root[data-theme='dark'] .chat[data-pet-theme='amber'] { --pet-accent: #FBBF24; --pet-accent-h: #FCD34D; }
-.chat[data-pet-theme]:not([data-pet-theme='']) {
+/* ---------- Color: one accent for the whole workspace (Settings, Interface, Color); Blip takes it too. Blue is the default and sets nothing. ---------- */
+:root[data-accent='blue'] { --pet-accent: #335CFF; --pet-accent-h: #2447D9; }
+:root[data-accent='indigo'] { --pet-accent: #4F46E5; --pet-accent-h: #3730A3; }
+:root[data-theme='dark'][data-accent='indigo'] { --pet-accent: #818CF8; --pet-accent-h: #A5B4FC; }
+:root[data-accent='ice'] { --pet-accent: #0284C7; --pet-accent-h: #0369A1; }
+:root[data-theme='dark'][data-accent='ice'] { --pet-accent: #38BDF8; --pet-accent-h: #7DD3FC; }
+:root[data-accent='teal'] { --pet-accent: #0E9A82; --pet-accent-h: #088573; }
+:root[data-accent='amber'] { --pet-accent: #D97706; --pet-accent-h: #B45309; }
+:root[data-accent='coral'] { --pet-accent: #E11D48; --pet-accent-h: #BE123C; }
+:root[data-accent='emerald'] { --pet-accent: #059669; --pet-accent-h: #047857; }
+:root[data-accent='mono'] { --pet-accent: #4B5563; --pet-accent-h: #374151; }
+:root[data-theme='dark'][data-accent='mono'] { --pet-accent: #9CA3AF; --pet-accent-h: #D1D5DB; }
+:root[data-theme='dark'][data-accent='teal'] { --pet-accent: #21CEB2; --pet-accent-h: #5EEAD4; }
+:root[data-theme='dark'][data-accent='emerald'] { --pet-accent: #34D399; --pet-accent-h: #6EE7B7; }
+:root[data-theme='dark'][data-accent='coral'] { --pet-accent: #FB7185; --pet-accent-h: #FDA4AF; }
+:root[data-theme='dark'][data-accent='amber'] { --pet-accent: #FBBF24; --pet-accent-h: #FCD34D; }
+:root[data-accent]:not([data-accent='']) {
   --ide-primary: var(--pet-accent);
   --accent: var(--pet-accent);
   --accent-h: var(--pet-accent-h);

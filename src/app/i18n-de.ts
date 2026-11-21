@@ -2419,4 +2419,5 @@ export const DE: Record<string, string> = {
   "Groq (Whisper, your key)": "Groq (Whisper, Ihr Schlüssel)",
   "OpenAI (your key)": "OpenAI (Ihr Schlüssel)",
   "Another server": "Ein anderer Server",
+  "The accent of the whole workspace: buttons, switches and highlights. Blue is the default.": "Die Akzentfarbe des ganzen Arbeitsbereichs: Schaltflächen, Schalter und Hervorhebungen. Blau ist die Vorgabe.",
 };

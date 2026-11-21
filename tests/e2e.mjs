@@ -1065,18 +1065,15 @@ try {
     await page.locator('.sp-tab', { hasText: 'Appearance and layout' }).click();
     await page.waitForSelector('select[data-pref="chatPetTheme"]');
     const setPref = (key, value) => ws(([k, v]) => { const s = document.querySelector(`select[data-pref="${k}"]`); s.value = v; s.dispatchEvent(new Event('change', { bubbles: true })); }, [key, value]);
-    const toggleAccent = (on) => ws((v) => { const c = document.querySelector('input[data-pref="chatPetAccent"]'); c.checked = v; c.dispatchEvent(new Event('change', { bubbles: true })); }, on);
-    const look = () => ws(() => ({ pets: [...document.querySelectorAll('.chat .blip')].map((b) => b.dataset.theme), accent: getComputedStyle(document.querySelector('.chat')).getPropertyValue('--accent').trim(), root: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), petTheme: document.querySelector('.chat').dataset.petTheme || '' }));
+    const look = () => ws(() => ({ pets: [...document.querySelectorAll('.chat .blip')].map((b) => b.dataset.theme), accent: getComputedStyle(document.querySelector('.chat')).getPropertyValue('--accent').trim(), root: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), petTheme: document.documentElement.dataset.accent || '', topbar: getComputedStyle(document.querySelector('.top-actions .btn.primary, .btn.primary') || document.body).backgroundColor }));
     await setPref('chatPetTheme', 'coral');
-    await toggleAccent(true);
     await page.waitForTimeout(300);
     const coral = await look();
-    check('13a: a Blip color change reaches every Blip on screen and the chat accent follows', coral.pets.length >= 1 && coral.pets.every((t) => t === 'coral') && coral.accent.toUpperCase() === '#E11D48', JSON.stringify(coral));
+    check('13a: the Color setting changes the accent of the whole workspace (the root) and every Blip', coral.pets.length >= 1 && coral.pets.every((t) => t === 'coral') && coral.accent.toUpperCase() === '#E11D48' && coral.root.toUpperCase() === '#E11D48' && coral.petTheme === 'coral', JSON.stringify(coral));
     await setPref('chatPetTheme', 'blue');
     await page.waitForTimeout(300);
     const blue = await look();
-    check('13b: Blue is the color of the workspace: the accent follows Blip and nothing changes', blue.pets.every((t) => t === 'blue') && blue.petTheme === '' && blue.accent === blue.root, JSON.stringify(blue));
-    await toggleAccent(false);
+    check('13b: Blue is the color of the workspace again: nothing is set on the root', blue.pets.every((t) => t === 'blue') && blue.petTheme === '' && blue.root.toUpperCase() === '#335CFF', JSON.stringify(blue));
     // the Speech server block of voice input: presets fill address and model
     await page.waitForSelector('select[data-pref="voiceServerPreset"]');
     await setPref('voiceServerPreset', 'groq');

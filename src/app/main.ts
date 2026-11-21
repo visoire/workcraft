@@ -49,6 +49,13 @@ const $ = (id: string) => document.getElementById(id)!;
 const darkQuery = matchMedia('(prefers-color-scheme: dark)');
 const resolvedTheme = () => (prefs.get('theme') === 'system' ? (darkQuery.matches ? 'dark' : 'light') : prefs.get('theme'));
 
+/** The color of the workspace (Settings, Color): the accent of the whole interface, set on the root. Blue is the default and changes nothing. */
+function applyAccent() {
+  const c = prefs.get('chatPetTheme');
+  if (c === 'blue') delete document.documentElement.dataset.accent;
+  else document.documentElement.dataset.accent = c;
+}
+
 function applyTheme(broadcast = true) {
   const pref = prefs.get('theme');
   const th = resolvedTheme();
@@ -762,6 +769,7 @@ async function boot() {
   installSelects(document);
   trackInput();
   applyTheme(false);
+  applyAccent();
   applyChrome();
   watchSharedTheme();
   installGlobalHandlers();
@@ -769,6 +777,7 @@ async function boot() {
   translateShell();
   bus.on('settings:change', ({ key }) => {
     if (key === 'theme') applyTheme();
+    if (key === 'chatPetTheme') applyAccent();
     if (key === 'statusbar' || key === 'panelFooters' || key === 'focusMode' || key === 'topbarHidden' || key === 'railHidden' || key === 'iconsOnly') applyChrome();
   });
   bus.on('device:change', () => applyChrome());

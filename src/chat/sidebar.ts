@@ -300,8 +300,6 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
     root.classList.toggle('no-pet', !prefs.get('chatPet'));
     pet.look(prefs.get('chatPetTheme'), prefs.get('chatPetAccessory'));
     lookAllPets(prefs.get('chatPetTheme'), prefs.get('chatPetAccessory'));
-    // The chat accent follows Blip's color when the setting is on (see the --pet-accent rules in polish.css). Blue is the color of the workspace itself: it changes nothing.
-    root.dataset.petTheme = prefs.get('chatPetAccent') && prefs.get('chatPetTheme') !== 'blue' ? prefs.get('chatPetTheme') : '';
   }
   /** Blip follows the chat: what runs now, whether the last answer failed, how long nothing happened. */
   function petSync() {

@@ -1146,11 +1146,12 @@ export async function mount(el: HTMLElement, ctx: PanelContext): Promise<PanelIn
       voiceBlock(),
       h('p.eyebrow.sp-sub', t('Behavior')),
       h('div.sp-toggles', toggle('autoOpenPanels', t('Open panels when the AI edits a file')), roundSwitch(), toggle('sounds', t('Sounds'))),
+      h('p.eyebrow.sp-sub', t('Color')),
+      h('div.sp-grid', choice('chatPetTheme', t('Color'), ['blue', 'indigo', 'ice', 'teal', 'amber', 'coral', 'emerald', 'mono'].map((c): [string, string] => [c, t(c[0]!.toUpperCase() + c.slice(1))]), t('The accent of the whole workspace: buttons, switches and highlights. Blue is the default.'))),
       h('p.eyebrow.sp-sub', t('Companion (Blip)')),
-      h('div.sp-toggles', toggle('chatPet', t('Show Blip in the chat'), t('(a small animated helper that thinks, works, listens and celebrates with the AI)')), toggle('chatPetAccent', t('Chat accent follows Blip'), t('(the send button and active switches take Blip color)'))),
+      h('div.sp-toggles', toggle('chatPet', t('Show Blip in the chat'), t('(a small animated helper that thinks, works, listens and celebrates with the AI)'))),
       h(
         'div.sp-grid',
-        choice('chatPetTheme', t('Color'), ['blue', 'indigo', 'ice', 'teal', 'amber', 'coral', 'emerald', 'mono'].map((c): [string, string] => [c, t(c[0]!.toUpperCase() + c.slice(1))])),
         choice('chatPetAccessory', t('Accessory'), [['', t('None')], ['glasses', t('Glasses')], ['headset', t('Headset')], ['crown', t('Crown')], ['coffee', t('Coffee')], ['hardhat', t('Hardhat')]], t('What Blip wears. The headset also appears by itself while Blip listens to the microphone.'))
       )
     );

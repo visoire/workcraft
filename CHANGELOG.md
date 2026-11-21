@@ -14,6 +14,12 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
+## [0.1.0-alpha.6] - 2026-11-18
+
+### Changed
+
+- **One setting for color.** Settings, **Color** (Blue, Indigo, Ice, Teal, Amber, Coral, Emerald, Mono) now sets the accent of the whole workspace (buttons, switches, highlights, the send button), not only of the chat, and the little helper in the chat takes the same color. Blue is the default and sets nothing, so it is exactly the workspace blue. The extra switch "Chat accent follows Blip" is gone. Apps inside panels keep their own colors. Verified in a desktop browser (accent on the root, Blip, back to Blue); not looked at app by app.
+
 ### Changed
 
 - **docs/PUBLISHING.md** describes the files of a release (`workcraft-local`, `workcraft-web`, `SHA256SUMS.txt`, `npm run pack:release`) and the private website release (`npm run release:site`, `scripts/vps-update.sh`).
@@ -32,7 +38,7 @@ stable. The long internal changelog from before the first public release is not 
 ### Changed
 
 - **Handy 0.10.1** is the version WorkCraft is built and tested for: a real transcription through `--list-models --json` and `--transcribe-file --json` ran with it.
-- **Blip's color and the accent.** Changing Blip's color now reaches every Blip on screen at once (the big one on the empty chat stayed on the old color). "Blue" is the color of the workspace itself and changes nothing when the accent follows Blip (it used to switch to a lighter blue); Indigo and Ice have accents of their own.
+- **Blip's color and the accent.** Changing Blip's color now reaches every Blip on screen at once (the big one on the empty chat stayed on the old color). "Blue" is the color of the workspace itself (it used to switch to a lighter blue); Indigo and Ice have accents of their own. (0.1.0-alpha.6 then made this one Color setting for the whole workspace.)
 - **Releases:** each release carries the browser build (`workcraft-web`), the run-it-yourself bundle (`workcraft-local`) and checksums, and links workcraft.cc/app for the full browser version with every app.
 
 ## [0.1.0-alpha.4] - 2026-11-18

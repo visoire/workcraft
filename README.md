@@ -31,11 +31,11 @@
 </p>
 <p align="center"><sub>The sample project and the empty AI assistant (no model is set up yet), one app at a time: WordCraft and GridCraft, and the welcome page. Screenshots of the real workspace.</sub></p>
 
-> **Alpha software.** This is an alpha (`0.1.0-alpha.5`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built and lightly tried on a real iPad (touch and tap and hold work), but not verified widely. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
+> **Alpha software.** This is an alpha (`0.1.0-alpha.6`, after the first public alpha `0.1.0-alpha.1`); there is no stable release yet. Expect bugs, and expect settings and data formats to change between alphas. iPadOS support is built and lightly tried on a real iPad (touch and tap and hold work), but not verified widely. [Report what you find](https://github.com/visoire/workcraft/issues/new/choose).
 
 Developers have long had editors where code, a terminal and the file tree sit side by side in one window. Everyone else still juggles separate heavy applications, loose browser tabs and cloud accounts that keep their files hostage. WorkCraft brings the single-window way of working to every kind of work: documents, spreadsheets, presentations and PDFs, but also photos, vector art, video, audio, music, design, 3D and CAD, in ready-made workspaces with dozens of open-source apps (44 at the time of writing). Your files live in a folder you own, an AI assistant you control works across all of them, and nothing leaves your computer unless you decide it should.
 
-Version **0.1.0-alpha.5** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
+Version **0.1.0-alpha.6** (alpha), licensed **MIT OR Apache-2.0**. Runs on Windows, macOS and Linux, and on iPadOS with Apple Pencil.
 
 | | |
 | :--- | :--- |
