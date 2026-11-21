@@ -14,6 +14,12 @@ stable. The long internal changelog from before the first public release is not 
 
 ## [Unreleased]
 
+### Changed
+
+- **Dependencies at latest.** hono 4.13.19, `@hono/node-server` 2.1.11 (major; `@hono/node-ws` 1.3.2 requires it), `@modelcontextprotocol/client` and `server` 2.4.0, unpdf 2.2.1, docx 9.16.0, playwright 1.65.1. This replaces the five open Dependabot pull requests. Typecheck, the 442 server tests and the build pass and the built server answers; the browser e2e run was not repeated.
+- **Seven apps moved to newer web builds:** SolidCraft 0.44.1 to 0.45.0, MailCraft 0.13.0 to 0.14.0, LightCraft Classic 26.47.1 to 26.47.2, PaintRS 0.7.3 to 0.8.0, Honeydew 0.5.3 to 0.5.5, TraceDraw 0.48.0 to 0.50.0 and SubCraft 0.4.3 to 0.4.5. Installed with `npm run apps:fetch`. Verified: each starts on its own and draws a canvas (`npm run apps:audit`); not tried inside a panel with real files. `apps:audit` reports theme declarations in `catalog.json` that no longer match SolidCraft, TraceDraw, PaintRS and SubCraft, and console errors for LightCraft Classic, PaintRS, SubCraft and TraceDraw (software rendering, not compared with the old builds). Both are left as they were.
+- **Not updated:** these apps have no web build upstream, only source, and need a build from source (WebAssembly toolchain, not installed here): PixelCraft 0.11.0, NoteCraft 0.0.16, Align 0.3.5, OxyBrush 4.0.0-beta.21.2, Retake 0.50.0, Suhina nightly, OxiGuitar 0.21.5, Transit 0.7.4, ProCraft 0.0.7-beta, FireCraft 0.2.6 (no release yet). SolidCraft 0.45.0 is the release build; the nightly after it was not taken.
+
 ## [0.1.0-alpha.6] - 2026-11-18
 
 ### Changed

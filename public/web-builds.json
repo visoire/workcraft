@@ -96,11 +96,11 @@
     },
     {
       "app": "honeydew",
-      "version": "0.5.3",
-      "dir": "honeydew-web-0.5.3",
-      "bytes": 15921103,
-      "source": "local: versions/independent",
-      "fetched": "2026-11-12"
+      "version": "0.5.5",
+      "dir": "honeydew-web-0.5.5",
+      "bytes": 1426401409,
+      "source": "https://github.com/daijro/honeydew/releases/tag/v0.5.5",
+      "fetched": "2026-11-21"
     },
     {
       "app": "humanmotioncraft",
@@ -129,19 +129,19 @@
     },
     {
       "app": "lightcraft-classic",
-      "version": "26.47.1",
-      "dir": "lightcraft-classic-web-26.47.1",
-      "bytes": 111004425,
-      "source": "https://github.com/emmertex/chromaforge/releases/tag/v26.47.1",
-      "fetched": "2026-11-17"
+      "version": "26.47.2",
+      "dir": "lightcraft-classic-web-26.47.2",
+      "bytes": 111239673,
+      "source": "https://github.com/emmertex/chromaforge/releases/tag/v26.47.2",
+      "fetched": "2026-11-21"
     },
     {
       "app": "mailcraft",
-      "version": "0.13.0",
-      "dir": "mailcraft-web-0.13.0",
-      "bytes": 12455221,
-      "source": "https://github.com/UCS-Care-Group/mailcraft/releases/tag/v0.13.0",
-      "fetched": "2026-11-17"
+      "version": "0.14.0",
+      "dir": "mailcraft-web-0.14.0",
+      "bytes": 13992339,
+      "source": "https://github.com/UCS-Care-Group/mailcraft/releases/tag/v0.14.0",
+      "fetched": "2026-11-21"
     },
     {
       "app": "matcraft",
@@ -204,11 +204,11 @@
     },
     {
       "app": "paintrs",
-      "version": "0.7.3",
-      "dir": "paintrs-web-0.7.3",
-      "bytes": 116565737,
-      "source": "https://github.com/daijro/paint.rs/releases/tag/v0.7.3",
-      "fetched": "2026-11-12"
+      "version": "0.8.0",
+      "dir": "paintrs-web-0.8.0",
+      "bytes": 122619030,
+      "source": "https://github.com/daijro/paint.rs/releases/tag/v0.8.0",
+      "fetched": "2026-11-21"
     },
     {
       "app": "photocraft",
@@ -266,11 +266,11 @@
     },
     {
       "app": "solidcraft",
-      "version": "0.44.1",
-      "dir": "solidcraft-web-0.44.1",
-      "bytes": 61634177,
-      "source": "https://github.com/tangency-labs/solidcraft/releases/tag/v0.44.1",
-      "fetched": "2026-11-17"
+      "version": "0.45.0",
+      "dir": "solidcraft-web-0.45.0",
+      "bytes": 83517675,
+      "source": "https://github.com/tangency-labs/solidcraft/releases/tag/v0.45.0",
+      "fetched": "2026-11-21"
     },
     {
       "app": "soundcraft",
@@ -282,11 +282,11 @@
     },
     {
       "app": "subcraft",
-      "version": "0.4.3",
-      "dir": "subcraft-web-0.4.3",
+      "version": "0.4.5",
+      "dir": "subcraft-web-0.4.5",
       "bytes": 17708676,
       "source": "https://aalzard.github.io/subcraft/",
-      "fetched": "2026-11-17"
+      "fetched": "2026-11-21"
     },
     {
       "app": "suhina",
@@ -316,11 +316,11 @@
     },
     {
       "app": "tracedraw",
-      "version": "0.48.0",
-      "dir": "tracedraw-web-0.48.0",
-      "bytes": 36776710,
+      "version": "0.50.0",
+      "dir": "tracedraw-web-0.50.0",
+      "bytes": 41102014,
       "source": "https://tracedraw.github.io/tracedraw/",
-      "fetched": "2026-11-17"
+      "fetched": "2026-11-21"
     },
     {
       "app": "transit",
